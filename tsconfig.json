@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "baseUrl": ".",
+    "paths": {
+      "@atoms/*": ["app/components/atmos/*"],
+      "@element/*": ["app/components/molecules/*"],
+      "@layout/*": ["./app/components/layouts/*"],
+      "@module/*": ["app/components/organisms/*"],
+      "@template/*": ["./app/components/templates/*"],
+      "@svgs/*": ["app/components/molecules/svgElements/*"],
+      "@styles/*": ["./styles/*"],
+      "@constant/*": ["./app/constants/*"],
+      "@reduxStore/*": ["app/redux/*"],
+      "@type/*": ["./app/types/*"],
+      "@hook/*": ["./app/hooks/*"],
+      "@action/*": ["app/redux/actions/*"],
+      "@reducer/*": ["app/redux/reducers/*"],
+      "@store/*": ["app/redux/stateProvider/*"],
+      "@util/*": ["./app/utils/*"],
+      "@apiService/*": ["./app/apis/*"],
+      "@assets/*": ["./public/assets/*"]
+    },
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveConstEnums": true,
+    "strictFunctionTypes": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.svg",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}
