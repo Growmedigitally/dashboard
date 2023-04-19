@@ -38,7 +38,9 @@ export default function Layout({ children }: LayoutProps) {
       <HeadMetaTags title={'Nextjs-redux-ts-layout'} description={'Nextjs-redux-ts-layout'} image={'Nextjs-redux-ts-layout'} siteName={'Nextjs-redux-ts-layout'} storeData={'Nextjs-redux-ts-layout'} />
       <main className={styles.main}>
         <div>
-          Header
+          <div className={styles.logoWrap}>
+            <img src={'/assets/4.png'} />
+          </div>
         </div>
         {children}
         <footer className={styles.footer}>

@@ -5,3 +5,8 @@
     display: none;
   }
 }
+
+@mixin glass-card {
+  backdrop-filter: saturate(200%) blur(30px);
+  background-color: hsla(0, 0%, 100%, 0.8) !important;
+}
