@@ -1,10 +1,11 @@
 import React, { useEffect, ReactElement, ReactNode } from "react";
 import { AppProps } from "next/app";
-import { wrapper } from "app/redux/store/store";
+import { wrapper } from "src/redux/store/store";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "@styles/app.scss";
 import { NextPage } from "next";
+import withTheme from "src/theme";
 NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -21,16 +22,16 @@ type AppPropsWithLayout = AppProps & {
 const WrappedApp = ({ Component, pageProps, }: AppPropsWithLayout) => {
 
   useEffect(() => {
-    console.log("_app called")
-    // if (pageProps) {
-    // updateManifestFile(pageProps.storeData);
-    // }
+    console.log("_app called", pageProps)
+    if (pageProps) {
+      // updateManifestFile(pageProps.storeData);
+    }
   }, []);
 
   // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? ((page) => page);
+  const getLayout: any = Component.getLayout ?? ((page) => page);
 
-  return getLayout(<Component {...pageProps} />);
+  return withTheme(getLayout(<Component {...pageProps} />));
 };
 
 export default wrapper.withRedux(WrappedApp);

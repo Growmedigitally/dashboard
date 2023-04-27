@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import jwt, { sign } from "jsonwebtoken";
 import { serialize } from "cookie";
-import { USER_COOKIE_KEY } from '@constant/user';
+import { USER_COOKIE_KEY } from 'src/constants/user';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     const { cookies } = req;

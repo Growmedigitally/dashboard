@@ -1,0 +1,162 @@
+export declare const PresetColors: readonly ["blue", "purple", "cyan", "green", "magenta", "pink", "red", "orange", "yellow", "volcano", "geekblue", "lime", "gold"];
+export interface SeedToken extends PresetColorType {
+    /**     
+     * * @nameEN Brand Color
+     * @descEN Brand color is one of the most direct visual elements to reflect the characteristics and communication of the product. After you have selected the brand color, we will automatically generate a complete color palette and assign it effective design semantics.
+     */
+    colorPrimary: string;
+    /**     
+     * * @nameEN Success Color
+     * @descEN Used to represent the token sequence of operation success, such as Result, Progress and other components will use these map tokens.
+     */
+    colorSuccess: string;
+    /**     
+     * * @nameEN Warning Color
+     * @descEN Used to represent the warning map token, such as Notification, Alert, etc. Alert or Control component(like Input) will use these map tokens.
+     */
+    colorWarning: string;
+    /**     
+     * * @nameEN Error Color
+     * @descEN Used to represent the visual elements of the operation failure, such as the error Button, error Result component, etc.
+     */
+    colorError: string;
+    /**     
+     * * @nameEN Info Color
+     * @descEN Used to represent the operation information of the Token sequence, such as Alert, Tag, Progress, and other components use these map tokens.
+     */
+    colorInfo: string;
+    /**     
+     * * @nameEN Seed Text Color
+     * @descEN Used to derive the base variable of the text color gradient. In v5, we added a layer of text color derivation algorithm to produce gradient variables of text color gradient. But please do not use this Seed Token directly in the code!
+     */
+    colorTextBase: string;
+    /**     
+     * * @nameEN Seed Background Color
+     * @descEN Used to derive the base variable of the background color gradient. In v5, we added a layer of background color derivation algorithm to produce map token of background color. But PLEASE DO NOT USE this Seed Token directly in the code!
+     */
+    colorBgBase: string;
+    /**     
+     * * @nameEN Font family for default text
+     * @descEN The font family of Ant Design prioritizes the default interface font of the system, and provides a set of alternative font libraries that are suitable for screen display to maintain the readability and readability of the font under different platforms and browsers, reflecting the friendly, stable and professional characteristics.
+     */
+    fontFamily: string;
+    /**     
+     * * @nameEN Font family for code text
+     * @descEN Code font, used for code, pre and kbd elements in Typography
+     */
+    fontFamilyCode: string;
+    /**     
+     * * @nameEN Default Font Size
+     * @descEN The most widely used font size in the design system, from which the text gradient will be derived.
+     * @default 14
+     */
+    fontSize: number;
+    /**     
+     * * @nameEN Base Line Width
+     * @descEN Border width of base components
+     */
+    lineWidth: number;
+    /**     
+     * * @nameEN Line Style
+     * @descEN Border style of base components
+     */
+    lineType: string;
+    /**     
+     * * @nameEN Base Border Radius
+     * @desc 基础组件的圆角大小，例如按钮、输入框、卡片等
+     */
+    borderRadius: number;
+    /**     
+     * * @nameEN Size Change Unit
+     * @descEN The unit of size change, in Ant Design, our base unit is 4, which is more fine-grained control of the size step
+     * @default 4
+     */
+    sizeUnit: number;
+    /**     
+     * * @nameEN Size Base Step
+     * @descEN The base step of size change, the size step combined with the size change unit, can derive various size steps. By adjusting the step, you can get different layout modes, such as the size step of the compact mode of V5 is 2
+     * @default 4
+     */
+    sizeStep: number;
+    /**     
+     * * @desc 组件箭头的尺寸
+     */
+    sizePopupArrow: number;
+    /**     
+     * * @nameEN Base Control Height
+     * @descEN The height of the basic controls such as buttons and input boxes in Ant Design
+     * @default 32
+     */
+    controlHeight: number;
+    /**     
+     * * @nameEN Base zIndex
+     * @descEN The base Z axis value of all components, which can be used to control the level of some floating components based on the Z axis value, such as BackTop, Affix, etc.
+     *
+     * @default 0
+     */
+    zIndexBase: number;
+    /**     
+     * * @nameEN popup base zIndex
+     * @descEN Base zIndex of component like FloatButton, Affix which can be cover by large popup
+     * @default 1000
+     */
+    zIndexPopupBase: number;
+    /**     
+     * * @nameEN Define default Image opacity. Useful when in dark-like theme
+    opacityImage: number;
+    /**     
+     * * @nameEN Animation Duration Unit
+     * @descEN The unit of animation duration change
+     * @default 100ms
+     */
+    motionUnit: number;
+    /**     
+     * * @nameEN Animation Base Duration.
+    motionBase: number;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseOutCirc: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseInOutCirc: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseInOut: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseOutBack: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseInBack: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseInQuint: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseOutQuint: string;
+    /**
+     * @desc 预设动效曲率
+     * @descEN Preset motion curve.
+     */
+    motionEaseOut: string;
+    /**     
+     * * @nameEN Wireframe Style
+     * @descEN Used to change the visual effect of the component to wireframe, if you need to use the V4 effect, you need to enable the configuration item
+     * @default false
+     */
+    wireframe: boolean;
+}

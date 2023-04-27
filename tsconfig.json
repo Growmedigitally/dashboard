@@ -3,23 +3,26 @@
     "target": "es5",
     "baseUrl": ".",
     "paths": {
-      "@atoms/*": ["app/components/atmos/*"],
-      "@element/*": ["app/components/molecules/*"],
-      "@layout/*": ["./app/components/layouts/*"],
-      "@module/*": ["app/components/organisms/*"],
-      "@template/*": ["./app/components/templates/*"],
-      "@svgs/*": ["app/components/molecules/svgElements/*"],
-      "@styles/*": ["./styles/*"],
-      "@constant/*": ["./app/constants/*"],
-      "@reduxStore/*": ["app/redux/*"],
-      "@type/*": ["./app/types/*"],
-      "@hook/*": ["./app/hooks/*"],
-      "@action/*": ["app/redux/actions/*"],
-      "@reducer/*": ["app/redux/reducers/*"],
-      "@store/*": ["app/redux/stateProvider/*"],
-      "@util/*": ["./app/utils/*"],
-      "@apiService/*": ["./app/apis/*"],
-      "@assets/*": ["./public/assets/*"]
+      "@atoms/*": ["src/components/atmos/*"],
+      "@molecules/*": ["src/components/molecules/*"],
+      "@organisms/*": ["src/components/organisms/*"],
+      "@template/*": ["src/components/templates/*"],
+      "@svgs/*": ["src/components/molecules/svgElements/*"],
+      "@styles/*": ["styles/*"],
+      "@atomsCSS/*": ["styles/components/atoms/*"],
+      "@moleculesCSS/*": ["styles/components/molecules/*"],
+      "@organismsCSS/*": ["styles/components/organisms/*"],
+      "@templatesCSS/*": ["styles/components/templates/*"],
+      "@constant/*": ["src/constants/*"],
+      "@reduxStore/*": ["src/redux/*"],
+      "@type/*": ["src/types/*"],
+      "@hook/*": ["src/hooks/*"],
+      "@action/*": ["src/redux/actions/*"],
+      "@reducer/*": ["src/redux/reducers/*"],
+      "@store/*": ["src/redux/stateProvider/*"],
+      "@util/*": ["src/utils/*"],
+      "@apiService/*": ["pages/apis/*"],
+      "@assets/*": ["public/assets/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -35,7 +38,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveConstEnums": true,
-    "strictFunctionTypes": true,
+    "strictFunctionTypes": false,
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
@@ -43,7 +46,7 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": false
   },
   "include": [
     "next-env.d.ts",

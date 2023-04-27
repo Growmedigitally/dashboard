@@ -42,9 +42,9 @@ if (process.env.NODE_ENV === 'development') {
     images: {
       disableStaticImages: true
     },
-    experimental: {
-      appDir: true,
-    },
+    // experimental: {
+    //   appDir: true,
+    // },
     // webpack(config) {
     //   config.module.rules.push({
     //     test: /\.svg$/,

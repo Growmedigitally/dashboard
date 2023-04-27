@@ -1,4 +1,4 @@
-import LoginPage from "@template/loginPage";
+import LoginPage from "src/components/templates/loginPage";
 import React from "react";
 
 function Login() {

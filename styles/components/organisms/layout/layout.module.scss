@@ -1,14 +1,8 @@
-.main {
+.layoutContainer {
   width: 100vw;
-  min-height: calc(100vh - calc(100vh - 100%));
+  min-height: var(--fullHeight);
   transition: all ease-out 0.4s;
   background-image: var(--);
-  .logoWrap {
-    width: auto;
-    height: auto;
-    img {
-      width: auto;
-      height: 50px;
-    }
+  .contentContainer {
   }
 }

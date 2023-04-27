@@ -15,8 +15,8 @@ $color-error: #ff003d;
   --primary-color-alpha: #9d94ba;
   --primary-color-beta: #d1d5e8;
 
-  --secondary-color: #ccabd8;
-  --secondary-color-bg-image: linear-gradient(195deg, #ccabd8, #9d94ba);
+  --secondary-color: #a599c0;
+  --secondary-color-bg-image: linear-gradient(195deg, #a599c0, #9d94ba);
   --secondary-color-alpha: #9d94ba;
   --secondary-color-beta: #d1d5e8;
 
@@ -29,4 +29,6 @@ $color-error: #ff003d;
   --atlantika: "atlantika";
   --bringHeart: "bringHeart";
   --mvboli: "mvboli";
+
+  --fullHeight: calc(100vh - calc(100vh - 100%));
 }
