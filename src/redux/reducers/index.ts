@@ -1,37 +1,7 @@
-import { combineReducers } from 'redux';
-import { alert } from 'src/redux/reducers/alert';
-import { user } from 'src/redux/reducers/user';
-import { isDarkMode } from 'src/redux/reducers/common';
-
-import { AnyAction } from "redux";
-import { HYDRATE } from "next-redux-wrapper";
-
-export interface State {
-  app: string;
-  page: string;
-}
-
-export const reducer = (
-  state: State = { app: "init", page: "init" },
-  action: AnyAction
-) => {
-  switch (action.type) {
-    case HYDRATE:
-      if (action.payload.app === "init") delete action.payload.app;
-      if (action.payload.page === "init") delete action.payload.page;
-      return { ...state, ...action.payload };
-    case "APP":
-      return { ...state, app: action.payload };
-    case "PAGE":
-      return { ...state, page: action.payload };
-    default:
-      return state;
-  }
-};
-
+import { combineReducers } from "@reduxjs/toolkit";
+import { authSlice } from "../reducers/authSlice";
 
 const rootReducer = combineReducers({
-  reducer
+  [authSlice.name]: authSlice.reducer,
 });
-
 export default rootReducer;

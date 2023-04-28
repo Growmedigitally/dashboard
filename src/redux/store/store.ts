@@ -1,34 +1,56 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux'
-import rootReducer from "src/redux/reducers/index";
-import { composeWithDevTools } from "redux-devtools-extension";
-import { MakeStore, HYDRATE, createWrapper, Context } from "next-redux-wrapper";
-import { windowRef } from 'src/utils/window';
-import { consoleLog } from 'src/utils/conole.log';
+import {
+  configureStore,
+  combineReducers,
+  ThunkAction,
+  Action,
+} from "@reduxjs/toolkit";
+import { createWrapper } from "next-redux-wrapper";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import rootReducer from "@reduxStore/reducers";
 
+const makeConfiguredStore = () =>
+  configureStore({
+    reducer: rootReducer,
+    devTools: true,
+  });
 
-const bindMiddleware = (middleware) => {
-    if (process.env.NODE_ENV !== 'production') {
-        return composeWithDevTools(applyMiddleware(...middleware))
-    }
-    return applyMiddleware(...middleware)
-}
+export const makeStore = () => {
+  const isServer = typeof window === "undefined";
 
-const reducer = (state, action) => {
-    if (action.type === HYDRATE) {
-        const nextState = {
-            ...state, // use previous state
-            ...action.payload, // apply delta from hydration
-        }
-        if (state.isDarkMode.isDarkMode) nextState.isDarkMode.isDarkMode = state.isDarkMode.isDarkMode
-        return nextState
-    } else {
-        return rootReducer(state, action)
-    }
-}
+  if (isServer) {
+    return makeConfiguredStore();
+  } else {
+    // we need it only on client side
 
-export const makeStore: any = (context: Context) =>
-    createStore(reducer, bindMiddleware([]));
+    const persistConfig = {
+      key: "nextjs",
+      whitelist: ["auth"], // make sure it does not clash with server keys
+      storage,
+    };
 
-export type RootState = ReturnType<typeof makeStore.getState>;
-export type AppDispatch = typeof makeStore.dispatch;
-export const wrapper = createWrapper(makeStore, { debug: false });
+    const persistedReducer = persistReducer(persistConfig, rootReducer);
+    let store: any = configureStore({
+      reducer: persistedReducer,
+      devTools: process.env.NODE_ENV !== "production",
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+    });
+
+    store.__persistor = persistStore(store); // Nasty hack
+
+    return store;
+  }
+};
+
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppState = ReturnType<AppStore["getState"]>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppState,
+  unknown,
+  Action
+>;
+
+export const wrapper = createWrapper<AppStore>(makeStore);

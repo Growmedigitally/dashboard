@@ -1,11 +1,14 @@
 import React, { useEffect, ReactElement, ReactNode } from "react";
 import { AppProps } from "next/app";
-import { wrapper } from "src/redux/store/store";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "@styles/app.scss";
 import { NextPage } from "next";
 import withTheme from "src/theme";
+import { useStore } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { wrapper } from "@reduxStore/store/store";
+
 NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -19,22 +22,18 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const WrappedApp = ({ Component, pageProps, }: AppPropsWithLayout) => {
-
-  useEffect(() => {
-    console.log("_app called", pageProps)
-    if (pageProps) {
-      // updateManifestFile(pageProps.storeData);
-    }
-  }, []);
-
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const store: any = useStore();
   // Use the layout defined at the page level, if available
   const getLayout: any = Component.getLayout ?? ((page) => page);
+  return (
+    <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
+      {withTheme(getLayout(<Component {...pageProps} />))}
+    </PersistGate>
+  )
+}
 
-  return withTheme(getLayout(<Component {...pageProps} />));
-};
-
-export default wrapper.withRedux(WrappedApp);
+export default wrapper.withRedux(MyApp);
 
 export function reportWebVitals(metric) {
   // console.log('Largest Contentful Paint', metric)

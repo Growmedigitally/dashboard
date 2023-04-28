@@ -7,8 +7,8 @@ import { consoleLog } from '@util/conole.log';
 import { Button, ConfigProvider, Space, Select, theme, Switch } from 'antd';
 import { connect, useSelector } from 'react-redux';
 import { ReactElement, useEffect, useState } from 'react';
-import { wrapper } from '@reduxStore/store/store';
 import { TOGGLE_DARK_MODE } from '@constant/common';
+import { wrapper } from '@reduxStore/store/store';
 
 const options = [
     { value: 'jack', label: 'Jack' },
