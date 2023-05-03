@@ -1,31 +1,37 @@
 import React, { useState } from "react";
 import { ConfigProvider } from "antd";
 import { theme } from 'antd';
+import { useAppSelector } from "@hook/useAppSelector";
+import { getDarkModeState } from "@reduxStore/slices/darkMode";
 
-const withTheme = (children: JSX.Element) => (
+const withTheme = (children: JSX.Element) => {
+    const isDarkMode = useAppSelector(getDarkModeState);
 
-    <>
-        <ConfigProvider
-            theme={{
-                algorithm: theme.darkAlgorithm,
-                token: {
-                    colorPrimary: '#dee1ec',
-                    borderRadius: 5,
-                    wireframe: false
-                }
-            }}
-        >
+    return (
+        <>
             <ConfigProvider
                 theme={{
+                    algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
                     token: {
-                        borderRadius: 4,
-                    },
+                        // colorPrimary: '#3bceac',
+                        colorPrimary: '#f283b6',
+                        borderRadius: 5,
+                        wireframe: false
+                    }
                 }}
             >
-                {children}
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            borderRadius: 4,
+                        },
+                    }}
+                >
+                    {children}
+                </ConfigProvider>
             </ConfigProvider>
-        </ConfigProvider>
-    </>
-)
+        </>
+    )
+}
 
 export default withTheme;

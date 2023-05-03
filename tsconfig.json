@@ -3,8 +3,8 @@
     "target": "es5",
     "baseUrl": ".",
     "paths": {
-      "@atoms/*": ["src/components/atmos/*"],
       "@molecules/*": ["src/components/molecules/*"],
+      "@atoms/*": ["src/components/atoms/*"],
       "@organisms/*": ["src/components/organisms/*"],
       "@template/*": ["src/components/templates/*"],
       "@svgs/*": ["src/components/molecules/svgElements/*"],
@@ -17,8 +17,6 @@
       "@reduxStore/*": ["src/redux/*"],
       "@type/*": ["src/types/*"],
       "@hook/*": ["src/hooks/*"],
-      "@action/*": ["src/redux/actions/*"],
-      "@reducer/*": ["src/redux/reducers/*"],
       "@store/*": ["src/redux/stateProvider/*"],
       "@util/*": ["src/utils/*"],
       "@apiService/*": ["pages/apis/*"],

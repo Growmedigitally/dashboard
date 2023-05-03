@@ -1,43 +1,41 @@
+import { useAppDispatch } from '@hook/useAppDispatch';
+import { useAppSelector } from '@hook/useAppSelector';
+import { clearAlert, getAlertState } from '@reduxStore/slices/alert';
+import { Space, Alert } from 'antd';
 import React, { useEffect, useState, SyntheticEvent, MouseEvent } from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import { useSelector } from 'react-redux';
-import Slide, { SlideProps } from '@material-ui/core/Slide';
-type TransitionProps = Omit<SlideProps, 'direction'>;
-
-
-function TransitionRightToLeft(props: TransitionProps) {
-    return <Slide {...props} direction="down" />;
-}
-
+import Style from "@organismsCSS/alert/alert.module.scss";
 function AlertNotification() {
 
-    const alert = useSelector(state => state.alert);
+    const alert = useAppSelector(getAlertState);
     const [displayAlert, setDisplayAlert] = useState(false);
+    const dispatch = useAppDispatch();
+
     const handleClose = (event: SyntheticEvent | MouseEvent, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
+        dispatch(clearAlert(null));
         setDisplayAlert(false);
     };
 
     useEffect(() => {
-        if (alert.type && !displayAlert) {
+        if (alert?.type && !displayAlert) {
             setDisplayAlert(true);
             setTimeout(() => {
                 setDisplayAlert(false);
-            }, alert.time)
+                dispatch(clearAlert(null));
+            }, alert?.time)
         }
     }, [alert])
 
     return (
         <>
-            {displayAlert && alert.message ? <div className="alert-wrap">
-                <Snackbar open={displayAlert}
-                    className={alert.type}
-                    autoHideDuration={alert.duration}
+            {displayAlert && alert?.message ? <div className={Style.alertWrap}>
+                {/* <Snackbar open={displayAlert}
+                    className={alert?.type}
+                    autoHideDuration={alert?.duration}
                     TransitionComponent={TransitionRightToLeft}
-                    // message={alert.message}
+                    // message={alert?.message}
                     onClose={handleClose}
                     anchorOrigin={{
                         vertical: 'top',
@@ -47,7 +45,7 @@ function AlertNotification() {
                 >
                     <Alert
                         // onClose={handleClose}
-                        severity={alert.type}
+                        severity={alert?.type}
                     // action={
                     //     <IconButton
                     //         aria-label="close"
@@ -60,8 +58,26 @@ function AlertNotification() {
                     // <SvgIcon icon="closeLarge" />
                     //     </IconButton>
                     // }
-                    >{alert.message}</Alert>
-                </Snackbar>
+                    >{alert?.message}</Alert>
+                </Snackbar> */}
+
+                <Space direction="vertical" style={{ width: '100%' }}>
+                    {alert?.title ?
+                        <Alert
+                            message={alert?.title}
+                            type={alert?.type}
+                            description={alert?.message}
+                            closable
+                            afterClose={() => setDisplayAlert(false)}
+                            showIcon
+                        /> :
+                        <Alert
+                            message={alert?.message}
+                            type={alert?.type}
+                            closable
+                            afterClose={() => setDisplayAlert(false)}
+                            showIcon />}
+                </Space>
             </div> : null}
         </>
     )

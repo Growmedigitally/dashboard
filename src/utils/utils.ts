@@ -1,8 +1,5 @@
 // This file will export the basic utitlity function to use globally.
-import moment from 'moment';
-import cookie from "cookie"
-import { APPOINTMENT_SLOT_GAP_IN_MINS } from '@constant/appointment';
-import { updateGenericImages } from '@context/actions';
+import cookie from "cookie";
 import { windowRef } from './window';
 
 /**
@@ -91,92 +88,6 @@ export const TruncateText = (desc, chars) => {
   } else {
     return desc
   }
-}
-/**
- * Will return time/days spent from now
- * @param {*} date 
- */
-export const TimeFromNow = (date) => {
-  let timeFromNow = '';
-  if (moment(date).fromNow(true) === 'a few seconds') {
-    timeFromNow = 'few seconds';
-  } else if (moment(date).fromNow(true) === 'a month') {
-    timeFromNow = '1 month';
-  } else if (moment(date).fromNow(true).includes('minutes')) {
-    const timenow = moment(date).fromNow(true);
-    timeFromNow = timenow.replace('minutes', 'mins');
-  } else if (moment(date).fromNow(true).includes('minute')) {
-    const timenow = moment(date).fromNow(true);
-    timeFromNow = timenow.replace('minute', 'min');
-  } else {
-    timeFromNow = moment(date).fromNow(true);
-  }
-  return timeFromNow;
-}
-
-/**
-   * Will return the formated date
-   * @param {*} date 
-   */
-export const GetDateValue = (date) => {
-  const today = moment().endOf('day');
-  const yesterday = moment().subtract(1, 'day').endOf('day');
-
-  if (date <= today && date > yesterday) {
-    return 'Today'
-  } else if (date < today && date >= yesterday) {
-    return 'Yesterday';
-  } else {
-    // return <DateTime what="date" value={date} />
-  }
-}
-
-// import { pluralize, underscore } from 'inflected'
-let pluralize: any;
-let underscore: any;
-export function buildRelationshipData(type, ids) {
-  let data = []
-
-  if (ids === null || ids?.length === 0) return data
-
-  if (typeof ids === 'string') {
-    const obj = { type: underscore(type), id: ids }
-
-    return [obj]
-  }
-
-  if (Array.isArray(ids)) {
-    data = ids?.map(id => ({
-      type: underscore(type),
-      id
-    }))
-  }
-
-  return data
-}
-
-export function formatUrlResource(type) {
-  if (type === 'main-image') return type
-
-  return pluralize(type)
-}
-
-export function createCartIdentifier() {
-  return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[x]/g, () =>
-    ((Math.random() * 16) | 0).toString(16)
-  )
-}
-
-export function cartIdentifier(storage) {
-  const cartId = createCartIdentifier()
-
-  if (storage.get('mcart') !== null) {
-    return storage.get('mcart')
-  }
-
-  storage.set('mcart', cartId)
-
-  return cartId
 }
 
 export function parseJSON(response) {
@@ -375,117 +286,6 @@ export function formatTimeTo12Hr(time) {
     return `${hour}:${minutes} ${ampm}`;
   } else return '';
 };
-
-
-export function getUpcommingDates(number: number = 15, storeConfigData: any = null) {
-  var actualDate = new Date();
-  var dateArray = [];
-
-  for (var i = 0; i < number; i++) {
-    let upcommingDate = new Date(actualDate.getFullYear(), actualDate.getMonth(), actualDate.getDate() + i);
-    const month = (upcommingDate.getMonth() + 1).toString().length == 1 ? `0${upcommingDate.getMonth() + 1}` : upcommingDate.getMonth() + 1;
-    const date = upcommingDate.getDate().toString().length == 1 ? `0${upcommingDate.getDate()}` : upcommingDate.getDate();
-    const currentday = upcommingDate.toLocaleString('en-us', { weekday: 'long' }).substring(0, 3);
-    if (!storeConfigData.weeklyOff?.includes(currentday)) {
-      const dateObj = {
-        displayDate: date,
-        displayDay: upcommingDate.toLocaleString('en-us', { weekday: 'long' }).substring(0, 3),
-        newDate: upcommingDate,
-        dateObj: `${upcommingDate.getFullYear()}-${month}-${date}`,
-        active: true
-      }
-      if (storeConfigData) {
-        //validation for weeklyOff
-        if (('weeklyOff' in storeConfigData) && storeConfigData.weeklyOff) {
-          if (storeConfigData.weeklyOff.toLowerCase() == 'all') dateObj.active = false;
-          else if (storeConfigData.weeklyOff.includes(dateObj.displayDay)) dateObj.active = false;
-        } else dateObj.active = true;
-      }
-      if (dateObj.active) dateArray.push(dateObj);
-    }
-  }
-  return dateArray;
-}
-
-export function createSlotsWithRange(starttime: any, endtime: any, interval: any = APPOINTMENT_SLOT_GAP_IN_MINS) {
-  function addMinutes(time: any, minutes: any) {
-    var date = new Date(new Date('01/01/2015 ' + time).getTime() + minutes * 60000);
-    var tempTime = ((date.getHours().toString().length == 1) ? '0' + date.getHours() : date.getHours()) + ':' +
-      ((date.getMinutes().toString().length == 1) ? '0' + date.getMinutes() : date.getMinutes())
-    // + ':' + ((date.getSeconds().toString().length == 1) ? '0' + date.getSeconds() : date.getSeconds());
-    return tempTime;
-  }
-  var timeslots = [starttime];
-
-  while (starttime != endtime && starttime <= endtime) {
-    starttime = addMinutes(starttime, interval);
-    timeslots.push(starttime);
-  }
-  const slotWithRange: { slot: string, range: any, nextSlot: any }[] = [];
-  timeslots.map((slot: string, index: number) => {
-    const slotData = {
-      slot,
-      range: timeslots[index + 1] ? `${slot} - ${timeslots[index + 1]}` : null,
-      nextSlot: timeslots[index + 1] ? timeslots[index + 1] : null
-    }
-    slotWithRange.push(slotData);
-  })
-  // console.log("slotWithRange", slotWithRange)
-  return slotWithRange;
-}
-
-export function createSlots(starttime: any, endtime: any, interval: any = APPOINTMENT_SLOT_GAP_IN_MINS) {
-  function addMinutes(time: any, minutes: any) {
-    var date = new Date(new Date('01/01/2015 ' + time).getTime() + minutes * 60000);
-    var tempTime = ((date.getHours().toString().length == 1) ? '0' + date.getHours() : date.getHours()) + ':' +
-      ((date.getMinutes().toString().length == 1) ? '0' + date.getMinutes() : date.getMinutes())
-    // + ':' + ((date.getSeconds().toString().length == 1) ? '0' + date.getSeconds() : date.getSeconds());
-    return tempTime;
-  }
-  var timeslots = [starttime];
-
-  while (starttime != endtime && starttime <= endtime) {
-    starttime = addMinutes(starttime, interval);
-    timeslots.push(starttime);
-  }
-  return timeslots;
-}
-
-export function createSlotsObjList(starttime: any, endtime: any, interval: any = APPOINTMENT_SLOT_GAP_IN_MINS) {
-  function addMinutes(time: any, minutes: any) {
-    var date = new Date(new Date('01/01/2015 ' + time).getTime() + minutes * 60000);
-    var tempTime = ((date.getHours().toString().length == 1) ? '0' + date.getHours() : date.getHours()) + ':' +
-      ((date.getMinutes().toString().length == 1) ? '0' + date.getMinutes() : date.getMinutes())
-    // + ':' + ((date.getSeconds().toString().length == 1) ? '0' + date.getSeconds() : date.getSeconds());
-    return tempTime;
-  }
-  var timeslots = [{ slot: starttime, active: true, disabled: false }];
-
-  while (starttime != endtime && starttime <= endtime) {
-    starttime = addMinutes(starttime, interval);
-    timeslots.push({ slot: starttime, active: true, disabled: false });
-  }
-  return timeslots;
-}
-
-
-const getImage = (configData, activeGroup, forImg) => {
-  if (configData?.genericImages[forImg]) {
-    let img = configData?.genericImages[forImg].filter((i: any) => (!i.group || i.group.toLowerCase() === 'both') ? true : i.group.toLowerCase() == activeGroup);
-    return img && img[0] && img[0].path;
-  } else return '';
-}
-
-export function getGenericImages(configData, activeGroup) {
-  if (configData?.genericImages) {
-    let appBg = getImage(configData, activeGroup, 'appBg');
-    let footerBg = getImage(configData, activeGroup, 'footerBg');
-    let loginScreenBg = getImage(configData, activeGroup, 'loginScreenBg');
-    let hamburgerBg = getImage(configData, activeGroup, 'hamburgerBg');
-    return { appBg, footerBg, loginScreenBg, hamburgerBg }
-  }
-}
-
 export function hex2rgb(colour, alpha) {
   var r, g, b;
   if (colour.charAt(0) == "#") {
@@ -575,4 +375,21 @@ export function getDateObj(startDate: any = new Date()) {
     newDate: dateObj,
     dateObj: `${dateObj.getFullYear()}-${month}-${date}`
   }
+}
+
+export function initialThemeHandler() {
+  let isDark = false;
+  if (localStorage.getItem("theme")) {
+    isDark = localStorage.getItem("theme") == 'dark' ? true : false
+  } else {
+    const darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
+    if (darkTheme) {
+      localStorage.setItem("theme", 'dark');
+      isDark = true;
+    } else {
+      localStorage.setItem("theme", 'light');
+      isDark = false;
+    }
+  }
+  return isDark
 }

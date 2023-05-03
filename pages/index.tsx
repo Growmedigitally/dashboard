@@ -1,24 +1,19 @@
+import SvgIcon from "@atoms/svgIcon";
+import { useAppDispatch } from "@hook/useAppDispatch";
 import Layout from "@organisms/layout";
-import { selectAuthUser, setAuthUser } from "@reduxStore/reducers/authSlice";
+import { showErrorToast, showSuccessToast, showToast, showWarningToast } from "@reduxStore/slices/toast";
 import { wrapper } from "@reduxStore/store/store";
+import { Button } from "antd";
 import { ReactElement } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-    const authUser = useSelector(selectAuthUser);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     return (
         <div>
-            <div style={{ color: 'white' }}>{authUser ? "Logged in" : "Not Logged In"}</div>
-            <button
-                onClick={() =>
-                    authUser
-                        ? dispatch(setAuthUser(false))
-                        : dispatch(setAuthUser(true))
-                }
-            >
-                {authUser ? "Logout" : "LogIn"}
-            </button>
+            <Button onClick={() => dispatch(showToast("Toast Toast Message"))}>Show  Toast</Button>
+            <Button onClick={() => dispatch(showSuccessToast("Toast Success Message"))}>Show  Success</Button>
+            <Button onClick={() => dispatch(showErrorToast("Toast Error Message"))}>Show  Error</Button>
+            <Button onClick={() => dispatch(showWarningToast("Toast warning Message"))}>Show  warning</Button>
         </div>
     );
 };
@@ -28,11 +23,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
         async ({ params }) => {
             // we can set the initial User from here
             // we are setting to false but you can run your custom logic here
-            await store.dispatch(setAuthUser(false));
+            // await store.dispatch(showAlert({ message: "hieee" }));
             console.log("User on server", store.getState());
             return {
                 props: {
-                    authUser: false,
+                    loader: null,
                 },
             };
         }

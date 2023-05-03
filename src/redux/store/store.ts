@@ -7,7 +7,7 @@ import {
 import { createWrapper } from "next-redux-wrapper";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import rootReducer from "@reduxStore/reducers";
+import rootReducer from "@reduxStore/slices";
 
 const makeConfiguredStore = () =>
   configureStore({
@@ -45,6 +45,7 @@ export const makeStore = () => {
 };
 
 export type AppStore = ReturnType<typeof makeStore>;
+export type AppDispatch = ReturnType<AppStore["dispatch"]>;
 export type AppState = ReturnType<AppStore["getState"]>;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,

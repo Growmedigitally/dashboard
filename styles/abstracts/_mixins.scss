@@ -10,3 +10,22 @@
   backdrop-filter: saturate(200%) blur(30px);
   background-color: hsla(0, 0%, 100%, 0.8) !important;
 }
+
+@mixin flexCenter {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+@mixin flexStartAlC {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+@mixin flexCenterCol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

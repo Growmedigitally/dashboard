@@ -1,10 +1,13 @@
 import IRoute from "src/types/navigation"
+import SvgIcon from '@atoms/svgIcon';
+
 
 const routes: IRoute[] = [
     {
-        name: 'Main Dashboard',
-        url: '/admin',
-        icon: '',
+        name: 'Dashboard',
+        url: '/',
+        icon: 'dashboard',
+        secondary: true
     },
     {
         name: 'NFT Marketplace',

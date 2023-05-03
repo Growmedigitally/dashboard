@@ -8,6 +8,9 @@ import withTheme from "src/theme";
 import { useStore } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { wrapper } from "@reduxStore/store/store";
+import Loader from "@organisms/loader";
+import AlertNotification from "@organisms/alert";
+import Toast from "@organisms/toast";
 
 NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
@@ -27,7 +30,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout: any = Component.getLayout ?? ((page) => page);
   return (
-    <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
+    <PersistGate persistor={store.__persistor} loading={<Loader />}>
+      <Loader />
+      <Toast />
+      <AlertNotification />
       {withTheme(getLayout(<Component {...pageProps} />))}
     </PersistGate>
   )
