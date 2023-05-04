@@ -11,6 +11,8 @@ import { BsPhone } from 'react-icons/bs';
 import { BsTabletLandscape } from 'react-icons/bs';
 import { BsFillLayersFill } from 'react-icons/bs';
 import { consoleLog } from '@util/conole.log';
+import SectionsList from './sectionsList';
+import Editor from './editor';
 
 
 const DEVICE_TYPES = [
@@ -45,7 +47,9 @@ function BuilderPage() {
                     </Row>
                 </Header>
                 <Content className={`${styles.editorWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`}>
-
+                    <div className={styles.editorContent}>
+                        <Editor />
+                    </div>
                 </Content>
             </Layout>
             <Sider
@@ -84,7 +88,7 @@ function BuilderPage() {
                             Drag and drop section to left builder area
                         </div>
                         <div className={styles.sectionWrap}>
-
+                            <SectionsList />
                         </div>
                     </div>
                 </div>

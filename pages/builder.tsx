@@ -2,9 +2,14 @@ import Layout from "@organisms/layout";
 import { wrapper } from "@reduxStore/store/store";
 import BuilderPage from "@template/builderPage";
 import { ReactElement } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { NextPageWithLayout } from "./_app";
 
-const Builder: NextPageWithLayout = () => <BuilderPage />
+const Builder: NextPageWithLayout = () => <DndProvider backend={HTML5Backend}>
+    <BuilderPage />
+</DndProvider>
+
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store) =>
