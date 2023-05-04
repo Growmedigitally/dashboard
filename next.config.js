@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'development') {
 
       return config;
     },
-    reactStrictMode: true
+    reactStrictMode: false
   }
 } else {
   module.exports = withPWA({
@@ -53,6 +53,6 @@ if (process.env.NODE_ENV === 'development') {
 
     //   return config;
     // },
-    reactStrictMode: true
+    reactStrictMode: false
   })
 }

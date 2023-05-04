@@ -25,13 +25,16 @@
     "next-redux-wrapper": "^7.0.5",
     "nprogress": "^0.2.0",
     "react": "18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "react-redux": "^8.0.2",
     "redux": "4.0.5",
     "redux-devtools-extension": "2.13.8",
     "redux-persist": "^6.0.0",
-    "sass": "^1.27.0"
+    "sass": "^1.27.0",
+    "uuid": "^9.0.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.12.1",
