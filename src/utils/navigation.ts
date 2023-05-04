@@ -4,12 +4,10 @@ import IRoute from "src/types/navigation";
 export const isWindowAvailable = () => typeof window !== "undefined";
 
 export const findCurrentRoute = (routes: IRoute[]): IRoute => {
-  const foundRoute: any = routes.find(
-    (route) =>
-      isWindowAvailable() &&
-      window.location.href.indexOf(route.url + route.url) !== -1 &&
-      route
-  );
+  const foundRoute: any = routes.find((route) => {
+    if (isWindowAvailable() && window.location.href.indexOf(route.url + route.url) !== -1)
+      return route
+  });
 
   return foundRoute;
 };

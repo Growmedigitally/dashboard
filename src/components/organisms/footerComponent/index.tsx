@@ -5,7 +5,7 @@ import styles from '@organismsCSS/footerComponent/footerComponent.module.scss'
 const { Header, Content, Footer, Sider }: any = Layout;
 function FooterComponent() {
     return (
-        <Footer style={{ textAlign: 'center' }}>GrowMeDigitally ©2023</Footer>
+        <Footer style={{ textAlign: 'center' }}>EcomAI ©2023</Footer>
     )
 }
 

@@ -11,8 +11,7 @@ import { wrapper } from "@reduxStore/store/store";
 import Loader from "@organisms/loader";
 import AlertNotification from "@organisms/alert";
 import Toast from "@organisms/toast";
-
-NProgress.configure({ showSpinner: false });
+NProgress.configure({ showSpinner: true });
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());

@@ -6,7 +6,7 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   return (
     <div className={styles.homePageContainer}>
-
+      Home
     </div>
   );
 }

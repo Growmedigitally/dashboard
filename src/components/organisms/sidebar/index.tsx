@@ -10,6 +10,8 @@ import { consoleLog } from '@util/conole.log';
 import { windowRef } from '@util/window';
 import { isWindowAvailable } from '@util/navigation';
 import { initialThemeHandler } from '@util/utils';
+import Router, { useRouter } from 'next/router';
+import { navigateTo } from '@util/routerService';
 const { Sider }: any = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -21,6 +23,7 @@ const SidebarComponent = () => {
     const [activeNav, setActiveNav] = useState('dashboard');
     const dispatch = useAppDispatch();
     const { token } = theme.useToken();
+    const router = useRouter();
 
     useEffect(() => {
         if (isWindowAvailable()) {
@@ -28,13 +31,11 @@ const SidebarComponent = () => {
         }
     }, [windowRef])
 
-
-
     const navMenu = [
         { label: 'Dashboard', key: 'dashboard', icon: 'dashboard' },
         { label: 'Analytics', key: 'analytics', icon: 'analytics' },
         { label: 'Reports', key: 'reports', icon: 'reports' },
-        { label: 'website', key: 'website', icon: 'website' },
+        { label: 'website', key: 'builder', icon: 'website' },
         { label: 'CRM', key: 'CRM', icon: 'CRM' },
         { label: 'Ecommerce', key: 'ecommerce', icon: 'ecommerce' },
         { label: 'Settings', key: 'settings', icon: 'settings' },
@@ -78,7 +79,7 @@ const SidebarComponent = () => {
         return menuItems;
     }
 
-    const onClick: MenuProps['onClick'] = (menu) => {
+    const onClickNav: MenuProps['onClick'] = (menu) => {
         console.log('click', menu);
         switch (menu.key) {
             case 'light':
@@ -96,6 +97,7 @@ const SidebarComponent = () => {
                 setOpen(!open);
                 break;
             default:
+                router.push(`${menu.key}`)
                 setActiveNav(menu.key);
                 break;
         }
@@ -129,7 +131,7 @@ const SidebarComponent = () => {
                     </div>
                     <Menu
                         className={`${styles.siderNavWrap} ${collapsed ? styles.collapsedMenu : ""}`}
-                        onClick={onClick} theme={isDarkMode ? 'dark' : 'light'}
+                        onClick={onClickNav} theme={isDarkMode ? 'dark' : 'light'}
                         mode="vertical" selectedKeys={[activeNav]}
                         defaultSelectedKeys={['1']}
                         items={getMenuItems(navMenu)}

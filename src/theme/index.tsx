@@ -14,7 +14,7 @@ const withTheme = (children: JSX.Element) => {
                     algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
                     token: {
                         // colorPrimary: '#3bceac',
-                        colorPrimary: '#f283b6',
+                        colorPrimary: isDarkMode ? '#a7ffe4' : '#f283b6',
                         borderRadius: 5,
                         wireframe: false
                     }

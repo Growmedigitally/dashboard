@@ -25,8 +25,13 @@ export default function LayoutComponent({ children }: LayoutProps) {
   const state = useSelector((state: any) => state);
   const userDetails = useAppSelector(getAuthUserState);
   const dispatch = useAppDispatch();
-
   const { token: { colorBgContainer } } = theme.useToken();
+  const [toggleHeader, setToggleHeader] = useState(false);
+  Router.events.on('routeChangeComplete', (route) => {
+    if (route.indexOf('builder') != -1) {
+      setToggleHeader(false);
+    }
+  });
 
   useEffect(() => {
     console.log('redux state', state)
@@ -42,21 +47,20 @@ export default function LayoutComponent({ children }: LayoutProps) {
     }
   }, []);
 
+
   return (
     <>
       <HeadMetaTags title={'GrowMeDigitally'} description={'GrowMeDigitally'} image={'GrowMeDigitally'} siteName={'GrowMeDigitally'} storeData={'GrowMeDigitally'} />
       <Layout style={{ minHeight: '100vh' }}>
         <SidebarComponent />
         <Layout>
-          <HeaderComponent />
-          <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-            <div style={{ padding: 24, textAlign: 'center', background: colorBgContainer }}>
-              <ErrorBoundary>
-                {children}
-              </ErrorBoundary>
-            </div>
+          {toggleHeader && <HeaderComponent />}
+          <Content>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </Content>
-          <FooterComponent />
+          {/* <FooterComponent /> */}
           <div className={styles.contentContainer}>
           </div>
         </Layout>

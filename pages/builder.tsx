@@ -1,20 +1,10 @@
-import SvgIcon from "@atoms/svgIcon";
-import { useAppDispatch } from "@hook/useAppDispatch";
 import Layout from "@organisms/layout";
-import { showErrorToast, showSuccessToast, showToast, showWarningToast } from "@reduxStore/slices/toast";
 import { wrapper } from "@reduxStore/store/store";
-import { Button } from "antd";
+import BuilderPage from "@template/builderPage";
 import { ReactElement } from "react";
 import { NextPageWithLayout } from "./_app";
 
-const Home: NextPageWithLayout = () => {
-    const dispatch = useAppDispatch();
-    return (
-        <div>
-            <Button onClick={() => dispatch(showToast("Toast Toast Message"))}>Show  Toast</Button>
-        </div>
-    );
-};
+const Builder: NextPageWithLayout = () => <BuilderPage />
 
 export const getServerSideProps = wrapper.getServerSideProps(
     (store) =>
@@ -29,5 +19,5 @@ export const getServerSideProps = wrapper.getServerSideProps(
         }
 );
 
-Home.getLayout = (page: ReactElement) => <Layout>{page}</Layout>
-export default Home;
+Builder.getLayout = (page: ReactElement) => <Layout>{page}</Layout>
+export default Builder;

@@ -228,6 +228,16 @@
     height: 100%;
   }
 }
+
+.hover {
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 2px 10px #dee1ec;
+    transition: all 0.3s ease-in;
+    transform: scale(1.07);
+  }
+}
 @media (min-width: 320px) {
   /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
 }

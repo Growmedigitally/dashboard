@@ -1,0 +1,107 @@
+@import "/styles/abstracts/mixins";
+
+.builderPageWrap {
+  height: 100vh;
+  .builderLeftWrap {
+    height: auto;
+    gap: 5px;
+    padding: 5px;
+    .headerWrap {
+      height: unset;
+      line-height: unset;
+      padding: 7px;
+      border-radius: 5px;
+      backdrop-filter: blur(20px);
+      background: #fff;
+      box-shadow: rgba(76, 78, 100, 0.22) 0px 2px 10px 0px;
+      .headingWrap {
+        padding: 0 10px;
+        @include flexStartAlC;
+        justify-content: flex-start;
+        span {
+          color: var(--primary-color);
+          margin: unset;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+        }
+      }
+      .sizeWrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        .iconWrap {
+          background: var(--lightest-slate);
+          color: #000000;
+          border-radius: 15px;
+          padding: 6px;
+          width: 32px;
+          @include transition;
+          box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 10px 0px;
+          &.active {
+            @include transition;
+            color: #fff;
+            background: var(--primary-color-bg-image);
+          }
+        }
+      }
+    }
+    .editorWrap {
+      background: #fff;
+      box-shadow: rgba(76, 78, 100, 0.22) 0px 2px 10px 0px;
+    }
+  }
+  .builderRightWrap {
+    height: 100vh;
+    overflow: auto;
+    flex: 0 0 300px !important;
+    max-width: 300px !important;
+    min-width: 300px !important;
+    width: 300px !important;
+    .sidebarWrap {
+      width: 100%;
+      > div {
+        padding: 5px;
+      }
+      .segmentWrap {
+        position: sticky;
+        top: 0;
+        left: 0;
+        background: white;
+        backdrop-filter: blur(20px);
+        .segmentItem {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          padding: 2px;
+          color: var(--secondary-color-beta);
+          font-size: 13px;
+          letter-spacing: 1.3px;
+          .iconWrap {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            background-color: #dee1ec46;
+            border-radius: 16px;
+            box-shadow: rgba(76, 78, 100, 0.22) 0px 2px 10px 0px;
+            //   color: black;
+          }
+        }
+      }
+      .sidebarContentWrap {
+        padding: 10px;
+        .note {
+          font-size: var(--fz-xs);
+          letter-spacing: 0.2px;
+          margin-bottom: 10px;
+        }
+        .sectionWrap {
+        }
+      }
+    }
+  }
+}
