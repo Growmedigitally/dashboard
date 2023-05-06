@@ -15,7 +15,7 @@ import backNavigation from "./backNavigation.svg";
 import next from "./next.svg";
 import home from "./home.svg";
 import dashboard from "@assets/Icons/sidebar/dashboard.svg";
-import website from "@assets/Icons/sidebar/website.svg";
+import builder from "@assets/Icons/sidebar/builder.svg";
 import analytics from "@assets/Icons/sidebar/analytics.svg";
 import CRM from "@assets/Icons/sidebar/CRM.svg";
 import ecommerce from "@assets/Icons/sidebar/ecommerce.svg";
@@ -51,7 +51,7 @@ const icons: any = {
     closeLarge: closeLarge,
     home: home,
     dashboard: dashboard,
-    website: website,
+    builder: builder,
     analytics: analytics,
     CRM: CRM,
     notifications: notifications,

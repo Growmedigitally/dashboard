@@ -11,9 +11,14 @@ import { BsPhone } from 'react-icons/bs';
 import { BsTabletLandscape } from 'react-icons/bs';
 import { BsFillLayersFill } from 'react-icons/bs';
 import { consoleLog } from '@util/conole.log';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
-import SectionsList from './sectionsList';
+import SectionsContainer from './sectionsContainer';
+import BuilderContainer from './builderContainer';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { useAppDispatch } from '@hook/useAppDispatch';
+import { getBuilderState, updateBuilderState } from '@reduxStore/slices/builderState';
+import ComponentEditor from '@organisms/componentEditor';
+import { getActiveEditorComponent, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
 
 
 const DEVICE_TYPES = [
@@ -25,23 +30,23 @@ const DEVICE_TYPES = [
 const ITEMS = [
     {
         id: uuid(),
-        content: 'Headline'
+        text: 'Header Bar'
     },
     {
         id: uuid(),
-        content: 'Copy'
+        text: 'Hero Banners'
     },
     {
         id: uuid(),
-        content: 'Image'
+        text: 'How it works'
     },
     {
         id: uuid(),
-        content: 'Slideshow'
+        text: 'Slideshow'
     },
     {
         id: uuid(),
-        content: 'Quote'
+        text: 'Footer'
     }
 ];
 
@@ -51,15 +56,22 @@ function BuilderPage() {
     const { token } = theme.useToken();
     const [activeOptionTab, setActiveOptionTab] = useState('Sections');
     const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].name);
-    const [droppedComponentsList, setDroppedComponentsList] = useState({
-        [uuid()]: []
-    })
+    const dispatch = useAppDispatch();
+    // const [droppedComponentsList, setDroppedComponentsList] = useState({
+    //     [uuid()]: []
+    // })
+    const droppedComponentsList = useAppSelector(getBuilderState) || { [uuid()]: [] };
+    const activeComponentID = useAppSelector(getActiveEditorComponent);
 
     useEffect(() => {
-        consoleLog(activeOptionTab)
-    }, [activeOptionTab])
+        if (activeComponentID != null) setActiveOptionTab('Editor');
+    }, [activeComponentID])
 
 
+    const onClickOptionsTab = (tab: any) => {
+        setActiveOptionTab(tab);
+        dispatch(updateActiveEditorComponent(null));
+    }
     // a little function to help us with reordering the result
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
@@ -105,33 +117,19 @@ function BuilderPage() {
 
         switch (source.droppableId) {
             case destination.droppableId:
-                setDroppedComponentsList({
-                    [destination.droppableId]: reorder(
-                        droppedComponentsList[source.droppableId],
-                        source.index,
-                        destination.index
-                    )
-                });
+                dispatch(updateBuilderState({
+                    [destination.droppableId]: reorder(droppedComponentsList[source.droppableId], source.index, destination.index)
+                }));
                 break;
             case 'ITEMS':
-                setDroppedComponentsList({
-                    [destination.droppableId]: copy(
-                        ITEMS,
-                        droppedComponentsList[destination.droppableId],
-                        source,
-                        destination
-                    )
-                });
+                dispatch(updateBuilderState({
+                    [destination.droppableId]: copy(ITEMS, droppedComponentsList[destination.droppableId], source, destination)
+                }));
                 break;
             default:
-                setDroppedComponentsList(
-                    move(
-                        droppedComponentsList[source.droppableId],
-                        droppedComponentsList[destination.droppableId],
-                        source,
-                        destination
-                    )
-                );
+                dispatch(updateBuilderState(
+                    move(droppedComponentsList[source.droppableId], droppedComponentsList[destination.droppableId], source, destination)
+                ));
                 break;
         }
     };
@@ -140,82 +138,40 @@ function BuilderPage() {
         <Layout className={styles.builderPageWrap}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Layout className={styles.builderLeftWrap}>
-                    <Header className={`${styles.headerWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`}>
+                    <Header className={`${styles.headerWrap}`} style={{ background: token.colorBgLayout }}>
                         <Row>
                             <Col className={styles.headingWrap} span={18}>
-                                <Text>EcomAi Website Builder</Text>
+                                <Text style={{ color: token.colorPrimary }}>EcomAi Website Builder</Text>
                             </Col>
                             <Col className={styles.sizeWrap} span={6}>
                                 {DEVICE_TYPES.map((device: any, i: number) => {
-                                    return <div key={i} onClick={() => setActiveDeviceType(device.name)} className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.name ? styles.active : ''}`}>
+                                    return <div key={i}
+                                        style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.name ? token.colorPrimary : '#dee1ec46' }}
+                                        onClick={() => setActiveDeviceType(device.name)}
+                                        className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.name ? styles.active : ''}`}>
                                         {device.icon}
                                     </div>
                                 })}
                             </Col>
                         </Row>
                     </Header>
-                    <Content className={`${styles.editorWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`}>
+                    <Content className={`${styles.editorWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{
+                        background: token.colorBgLayout
+                    }}>
                         <div className={styles.editorContent}>
-                            {Object.keys(droppedComponentsList).map((list, i) => {
-                                console.log('==> list', list);
-                                return (
-                                    <Droppable key={list} droppableId={list}>
-                                        {(provided, snapshot) => (
-                                            <div className={`${styles.listWrap} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`}
-                                                ref={provided.innerRef}>
-                                                {droppedComponentsList[list].length
-                                                    ? droppedComponentsList[list].map(
-                                                        (item, index) => (
-                                                            <Draggable
-                                                                key={item.id}
-                                                                draggableId={item.id}
-                                                                index={index}>
-                                                                {(
-                                                                    provided,
-                                                                    snapshot
-                                                                ) => (
-                                                                    <div className={`${styles.itemWrap} ${snapshot.isDragging ? styles.isDragging : ''}`}
-                                                                        {...provided.dragHandleProps}
-                                                                        ref={
-                                                                            provided.innerRef
-                                                                        }
-                                                                        {...provided.draggableProps}
-                                                                        isDragging={
-                                                                            snapshot.isDragging
-                                                                        }
-                                                                        style={
-                                                                            provided
-                                                                                .draggableProps
-                                                                                .style
-                                                                        }>
-                                                                        {item.content}
-                                                                    </div>
-                                                                )}
-                                                            </Draggable>
-                                                        )
-                                                    )
-                                                    : !provided.placeholder && (
-                                                        <div className={styles.emptyEditorWrap}>
-                                                            Drop items here
-                                                        </div>
-                                                    )}
-                                                {provided.placeholder}
-                                            </div>
-                                        )}
-                                    </Droppable>
-                                );
-                            })}
+                            <BuilderContainer droppedComponentsList={droppedComponentsList} activeDeviceType={activeDeviceType} />
                         </div>
                     </Content>
                 </Layout>
                 <Sider
-                    className={`${styles.builderRightWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`}>
+                    className={`${styles.builderRightWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"} ${styles[activeDeviceType]}`}>
                     <div className={styles.sidebarWrap}>
                         <div className={styles.segmentWrap}>
                             <Segmented
                                 size="large"
                                 block={true}
-                                onChange={(tab: any) => setActiveOptionTab(tab)}
+                                value={activeOptionTab}
+                                onChange={(tab: any) => onClickOptionsTab(tab)}
                                 options={[
                                     {
                                         label: <div style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }} className={`${styles.segmentItem}`}>
@@ -238,14 +194,21 @@ function BuilderPage() {
                                 ]}
                             />
                         </div>
-                        <div className={styles.sidebarContentWrap}>
+                        {activeOptionTab == 'Sections' ? <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
                                 Drag and drop section to left builder area
                             </div>
                             <div className={styles.sectionWrap}>
-                                <SectionsList ITEMS={ITEMS} />
+                                <SectionsContainer ITEMS={ITEMS} />
                             </div>
-                        </div>
+                        </div> : <div className={styles.sidebarContentWrap}>
+                            <div className={styles.note} style={{ color: token.colorPrimary }}>
+                                {activeComponentID != null ? 'Edit content of selected section' : 'You have no component selected'}
+                            </div>
+                            {activeComponentID != null && <div className={styles.editorWrap}>
+                                <ComponentEditor activeComponentID={activeComponentID} droppedComponentsList={droppedComponentsList} />
+                            </div>}
+                        </div>}
                     </div>
                 </Sider>
             </DragDropContext>

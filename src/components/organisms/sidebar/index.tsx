@@ -28,6 +28,8 @@ const SidebarComponent = () => {
     useEffect(() => {
         if (isWindowAvailable()) {
             dispatch(toggleDarkMode(initialThemeHandler()));
+            console.log(router);
+            setActiveNav(router.asPath.split('/')[0]);
         }
     }, [windowRef])
 
@@ -35,7 +37,7 @@ const SidebarComponent = () => {
         { label: 'Dashboard', key: 'dashboard', icon: 'dashboard' },
         { label: 'Analytics', key: 'analytics', icon: 'analytics' },
         { label: 'Reports', key: 'reports', icon: 'reports' },
-        { label: 'website', key: 'builder', icon: 'website' },
+        { label: 'Builder', key: 'builder', icon: 'builder' },
         { label: 'CRM', key: 'CRM', icon: 'CRM' },
         { label: 'Ecommerce', key: 'ecommerce', icon: 'ecommerce' },
         { label: 'Settings', key: 'settings', icon: 'settings' },
@@ -133,7 +135,7 @@ const SidebarComponent = () => {
                         className={`${styles.siderNavWrap} ${collapsed ? styles.collapsedMenu : ""}`}
                         onClick={onClickNav} theme={isDarkMode ? 'dark' : 'light'}
                         mode="vertical" selectedKeys={[activeNav]}
-                        defaultSelectedKeys={['1']}
+                        defaultSelectedKeys={[activeNav]}
                         items={getMenuItems(navMenu)}
                     // openKeys={['profile']}
                     />
