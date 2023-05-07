@@ -3,16 +3,14 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '@templatesCSS/builderPage/sectionsContainer.module.scss'
 import ComponentRenderer from '@organisms/componentRenderer';
 
-function SectionsContainer({ ITEMS }) {
+function SectionsContainer({ componentConfigs }) {
 
     return (
         <div>
-            <Droppable droppableId="ITEMS" isDropDisabled={true}>
+            <Droppable droppableId="ECOMAI_BUILDER" isDropDisabled={true}>
                 {(provided, snapshot) => (
-                    <div className={`${snapshot.isDraggingOver ? 'isDraggingOver' : ''}`}
-                        ref={provided.innerRef}
-                    >
-                        {ITEMS.map((item, index) => (
+                    <div className={`${styles.sectionsContainer} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`} ref={provided.innerRef}>
+                        {componentConfigs.map((item, index) => (
                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided, snapshot) => (
                                     <React.Fragment>
@@ -21,12 +19,23 @@ function SectionsContainer({ ITEMS }) {
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                             style={provided.draggableProps.style}>
-                                            <ComponentRenderer componentConfig={item}
+                                            <ComponentRenderer
+                                                uid={item.uid}
+                                                componentsList={componentConfigs}
+                                                itemIndex={index}
+                                                currentPage={'SECTIONS'}
+                                                componentConfig={item}
                                             />
                                         </div>
                                         {snapshot.isDragging && (
                                             <div className={`${styles.componentWrap} ${styles.draggingItem} ${styles.draggingInProgress}`}>
-                                                <ComponentRenderer componentConfig={item} />
+                                                <ComponentRenderer
+                                                    uid={item.uid}
+                                                    componentsList={componentConfigs}
+                                                    itemIndex={index}
+                                                    currentPage={'SECTIONS'}
+                                                    componentConfig={item}
+                                                />
                                             </div>
                                         )}
                                     </React.Fragment>

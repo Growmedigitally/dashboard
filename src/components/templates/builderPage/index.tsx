@@ -3,14 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Layout, Row, Segmented, theme, Typography } from 'antd';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getDarkModeState } from '@reduxStore/slices/darkMode';
-const { Header, Content, Sider } = Layout;
-const { Text } = Typography;
-import { BsPencil } from 'react-icons/bs';
-import { BsLaptop } from 'react-icons/bs';
-import { BsPhone } from 'react-icons/bs';
-import { BsTabletLandscape } from 'react-icons/bs';
-import { BsFillLayersFill } from 'react-icons/bs';
-import { consoleLog } from '@util/conole.log';
+import { BsPencil, BsLaptop, BsPhone, BsTabletLandscape, BsFillLayersFill } from 'react-icons/bs';
 import { v4 as uuid } from 'uuid';
 import SectionsContainer from './sectionsContainer';
 import BuilderContainer from './builderContainer';
@@ -19,7 +12,11 @@ import { useAppDispatch } from '@hook/useAppDispatch';
 import { getBuilderState, updateBuilderState } from '@reduxStore/slices/builderState';
 import ComponentEditor from '@organisms/componentEditor';
 import { getActiveEditorComponent, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import componentConfigs from '@organisms/ComponentsList/configs';
+import { copy, move, reorder } from '@util/dndHelpers';
 
+const { Header, Content, Sider } = Layout;
+const { Text } = Typography;
 
 const DEVICE_TYPES = [
     { name: 'Mobile', icon: <BsPhone /> },
@@ -27,108 +24,47 @@ const DEVICE_TYPES = [
     { name: 'Laptop', icon: <BsLaptop /> },
 ]
 
-const ITEMS = [
-    {
-        id: uuid(),
-        text: 'Header Bar'
-    },
-    {
-        id: uuid(),
-        text: 'Hero Banners'
-    },
-    {
-        id: uuid(),
-        text: 'How it works'
-    },
-    {
-        id: uuid(),
-        text: 'Slideshow'
-    },
-    {
-        id: uuid(),
-        text: 'Footer'
-    }
-];
-
-
 function BuilderPage() {
     const isDarkMode = useAppSelector(getDarkModeState)
     const { token } = theme.useToken();
     const [activeOptionTab, setActiveOptionTab] = useState('Sections');
     const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].name);
     const dispatch = useAppDispatch();
-    // const [droppedComponentsList, setDroppedComponentsList] = useState({
-    //     [uuid()]: []
-    // })
-    const droppedComponentsList = useAppSelector(getBuilderState) || { [uuid()]: [] };
-    const activeComponentID = useAppSelector(getActiveEditorComponent);
+    const builderState = useAppSelector(getBuilderState) || { [uuid()]: [] };
+    const componentUID = useAppSelector(getActiveEditorComponent);
 
     useEffect(() => {
-        if (activeComponentID != null) setActiveOptionTab('Editor');
-    }, [activeComponentID])
+        if (componentUID != null) setActiveOptionTab('Editor');
+        console.log(componentUID)
+    }, [componentUID])
 
 
     const onClickOptionsTab = (tab: any) => {
         setActiveOptionTab(tab);
         dispatch(updateActiveEditorComponent(null));
     }
-    // a little function to help us with reordering the result
-    const reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-
-        return result;
-    };
-    /**
-     * Moves an item from one list to another list.
-     */
-    const copy = (source, destination, droppableSource, droppableDestination) => {
-        console.log('==> dest', destination);
-        const sourceClone = Array.from(source);
-        const destClone = Array.from(destination);
-        const item: any = sourceClone[droppableSource.index];
-        destClone.splice(droppableDestination.index, 0, { ...item, id: uuid() });
-        return destClone;
-    };
-
-    const move = (source, destination, droppableSource, droppableDestination) => {
-        const sourceClone = Array.from(source);
-        const destClone = Array.from(destination);
-        const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-        destClone.splice(droppableDestination.index, 0, removed);
-
-        const result = {};
-        result[droppableSource.droppableId] = sourceClone;
-        result[droppableDestination.droppableId] = destClone;
-
-        return result;
-    };
 
     const onDragEnd = result => {
         const { source, destination } = result;
-
         console.log('==> result', result);
         // dropped outside the list
         if (!destination) {
             return;
         }
-
         switch (source.droppableId) {
             case destination.droppableId:
                 dispatch(updateBuilderState({
-                    [destination.droppableId]: reorder(droppedComponentsList[source.droppableId], source.index, destination.index)
+                    [destination.droppableId]: reorder(builderState[source.droppableId], source.index, destination.index)
                 }));
                 break;
-            case 'ITEMS':
+            case 'ECOMAI_BUILDER':
                 dispatch(updateBuilderState({
-                    [destination.droppableId]: copy(ITEMS, droppedComponentsList[destination.droppableId], source, destination)
+                    [destination.droppableId]: copy(componentConfigs, builderState[destination.droppableId], source, destination)
                 }));
                 break;
             default:
                 dispatch(updateBuilderState(
-                    move(droppedComponentsList[source.droppableId], droppedComponentsList[destination.droppableId], source, destination)
+                    move(builderState[source.droppableId], builderState[destination.droppableId], source, destination)
                 ));
                 break;
         }
@@ -155,11 +91,11 @@ function BuilderPage() {
                             </Col>
                         </Row>
                     </Header>
-                    <Content className={`${styles.editorWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{
+                    <Content className={`${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{
                         background: token.colorBgLayout
                     }}>
-                        <div className={styles.editorContent}>
-                            <BuilderContainer droppedComponentsList={droppedComponentsList} activeDeviceType={activeDeviceType} />
+                        <div className={styles.editorContent} >
+                            <BuilderContainer builderState={builderState} activeDeviceType={activeDeviceType} />
                         </div>
                     </Content>
                 </Layout>
@@ -198,16 +134,12 @@ function BuilderPage() {
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
                                 Drag and drop section to left builder area
                             </div>
-                            <div className={styles.sectionWrap}>
-                                <SectionsContainer ITEMS={ITEMS} />
-                            </div>
+                            <SectionsContainer componentConfigs={componentConfigs} />
                         </div> : <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
-                                {activeComponentID != null ? 'Edit content of selected section' : 'You have no component selected'}
+                                {componentUID != null ? 'Edit content of selected section' : 'You have no component selected'}
                             </div>
-                            {activeComponentID != null && <div className={styles.editorWrap}>
-                                <ComponentEditor activeComponentID={activeComponentID} droppedComponentsList={droppedComponentsList} />
-                            </div>}
+                            {componentUID != null && <ComponentEditor componentUID={componentUID} builderState={builderState} />}
                         </div>}
                     </div>
                 </Sider>

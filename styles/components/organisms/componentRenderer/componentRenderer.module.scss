@@ -1,70 +1,78 @@
 @import "/styles/abstracts/mixins";
 
 .componentRendererWrap {
-  position: relative;
   width: 100%;
-  padding: 40px;
-  border: 1px dashed transparent;
-  @include transition;
-  .actionsWrap {
-    height: 0;
-    width: 0;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 4px;
-    gap: 10px;
+  .componentContentWrap {
+    position: relative;
+    width: 100%;
+    padding: 40px;
+    border: 2px dashed transparent;
     @include transition;
-    .iconWrap {
-      top: -47px;
-      cursor: pointer;
+    .actionsWrap {
+      height: 0;
+      width: 0;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border-radius: 4px;
-      background-color: var(--secondary-color-beta);
-      color: var(--dark-navy);
-      z-index: 2;
-      box-shadow: 0 2px 10px #dee1ec;
-      border: 1px solid var(--secondary-color-beta);
-      padding: 7px;
+      gap: 10px;
       @include transition;
-      &:hover {
-        border-color: white;
-        color: white;
-        transform: scale(1.2);
-        background-color: var(--secondary-color);
-        @include transition;
-      }
-    }
-  }
-  &.active,
-  &:hover {
-    border: 1px dashed var(--navy);
-    @include transition;
-    .actionsWrap {
-      padding: 10px;
-      height: auto;
-      width: auto;
-      overflow: auto;
-      @include transition;
-    }
-  }
-  &.firstChild {
-    .actionsWrap {
       .iconWrap {
-        &:first-child {
-          display: none;
+        top: -47px;
+        cursor: pointer;
+        border-radius: 4px;
+        background-color: var(--secondary-color-beta);
+        color: var(--dark-navy);
+        z-index: 2;
+        box-shadow: 0 2px 10px #dee1ec;
+        border: 1px solid var(--secondary-color-beta);
+        padding: 7px;
+        @include transition;
+        &:hover {
+          border-color: white;
+          color: white;
+          transform: scale(1.2);
+          background-color: var(--secondary-color);
+          @include transition;
         }
       }
     }
-  }
-  &.lastChild {
-    .actionsWrap {
-      .iconWrap {
-        &:nth-child(2) {
-          display: none;
+    &.active,
+    &:hover {
+      border: 2px dashed var(--navy);
+      @include transition;
+      .actionsWrap {
+        padding: 10px;
+        height: auto;
+        width: auto;
+        overflow: auto;
+        opacity: 1;
+        @include transition;
+      }
+    }
+    &.active {
+      border-color: var(--primary-color);
+    }
+    &.firstChild {
+      .actionsWrap {
+        .iconWrap {
+          &:first-child {
+            display: none;
+          }
+        }
+      }
+    }
+    &.lastChild {
+      .actionsWrap {
+        .iconWrap {
+          &:nth-child(2) {
+            display: none;
+          }
         }
       }
     }

@@ -47,13 +47,10 @@
         }
       }
     }
-    .editorWrap {
-      background: #fff;
+    .editorContent {
+      width: 100%;
       box-shadow: rgba(76, 78, 100, 0.22) 0px 2px 10px 0px;
-      .editorContent {
-        width: 100%;
-        @include flexCenter;
-      }
+      @include flexCenter;
     }
   }
   .builderRightWrap {
@@ -104,10 +101,6 @@
           letter-spacing: 0.2px;
           margin-bottom: 10px;
           text-align: center;
-        }
-        .sectionWrap {
-        }
-        .editorWrap {
         }
       }
     }
