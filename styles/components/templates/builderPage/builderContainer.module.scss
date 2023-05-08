@@ -30,8 +30,8 @@
       display: flex;
       user-select: none;
       background: #fff;
-      border: 1px solid #dee1ec;
-      @include transition;
+      // @include transition;
+      transition: all ease-out 0.4s;
       cursor: pointer;
       &:hover {
         border: 1px solid var(--light-slate);
@@ -39,7 +39,7 @@
       }
       &.sortingInProgress {
         @include transition;
-        background: var(--lightest-slate);
+        background: var(--secondary-color-alpha);
         border: 1px dashed #4099ff;
       }
     }

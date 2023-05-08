@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import styles from '@organismsCSS/componentRenderer/componentRenderer.module.scss';
 import ComponentWrapper from './componentWrapper';
-import ComponentsList from '@organisms/ComponentsList';
+import ComponentsList from '@organisms/sections';
 
 function ComponentRenderer(props) {
     const getComponent = useCallback((config) => {

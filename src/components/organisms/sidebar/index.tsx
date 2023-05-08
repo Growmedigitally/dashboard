@@ -8,10 +8,9 @@ import { useAppDispatch } from '@hook/useAppDispatch';
 import SvgIcon from '@atoms/svgIcon';
 import { consoleLog } from '@util/conole.log';
 import { windowRef } from '@util/window';
-import { isWindowAvailable } from '@util/navigation';
+import { isWindowAvailable, navigateTo } from '@util/navigation';
 import { initialThemeHandler } from '@util/utils';
-import Router, { useRouter } from 'next/router';
-import { navigateTo } from '@util/routerService';
+import { useRouter } from 'next/router';
 const { Sider }: any = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -28,7 +27,6 @@ const SidebarComponent = () => {
     useEffect(() => {
         if (isWindowAvailable()) {
             dispatch(toggleDarkMode(initialThemeHandler()));
-            console.log(router);
             setActiveNav(router.asPath.split('/')[0]);
         }
     }, [windowRef])
@@ -99,7 +97,7 @@ const SidebarComponent = () => {
                 setOpen(!open);
                 break;
             default:
-                router.push(`${menu.key}`)
+                navigateTo(`${menu.key}`);
                 setActiveNav(menu.key);
                 break;
         }

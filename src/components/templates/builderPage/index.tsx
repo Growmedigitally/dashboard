@@ -1,9 +1,9 @@
 import styles from '@templatesCSS/builderPage/builderPage.module.scss'
 import React, { useEffect, useState } from 'react'
-import { Col, Layout, Row, Segmented, theme, Typography } from 'antd';
+import { Col, Layout, Popconfirm, Row, Segmented, theme, Tooltip, Typography } from 'antd';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getDarkModeState } from '@reduxStore/slices/darkMode';
-import { BsPencil, BsLaptop, BsPhone, BsTabletLandscape, BsFillLayersFill } from 'react-icons/bs';
+import { BsFillPencilFill, BsLaptop, BsPhone, BsTabletLandscape, BsFillLayersFill, BsArrowCounterclockwise, BsFillPhoneFill, BsFillTabletLandscapeFill, BsLaptopFill } from 'react-icons/bs';
 import { v4 as uuid } from 'uuid';
 import SectionsContainer from './sectionsContainer';
 import BuilderContainer from './builderContainer';
@@ -11,9 +11,10 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { getBuilderState, updateBuilderState } from '@reduxStore/slices/builderState';
 import ComponentEditor from '@organisms/componentEditor';
-import { getActiveEditorComponent, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
-import componentConfigs from '@organisms/ComponentsList/configs';
+import { getActiveEditorComponent, initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import ComponentConfigs from '@organisms/sections/configsList';
 import { copy, move, reorder } from '@util/dndHelpers';
+import { showSuccessToast } from '@reduxStore/slices/toast';
 
 const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
@@ -22,6 +23,9 @@ const DEVICE_TYPES = [
     { name: 'Mobile', icon: <BsPhone /> },
     { name: 'Tablet', icon: <BsTabletLandscape /> },
     { name: 'Laptop', icon: <BsLaptop /> },
+    // { name: 'Mobile', icon: <BsFillPhoneFill /> },
+    // { name: 'Tablet', icon: <BsFillTabletLandscapeFill /> },
+    // { name: 'Laptop', icon: <BsLaptopFill /> },
 ]
 
 function BuilderPage() {
@@ -31,17 +35,17 @@ function BuilderPage() {
     const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].name);
     const dispatch = useAppDispatch();
     const builderState = useAppSelector(getBuilderState) || { [uuid()]: [] };
-    const componentUID = useAppSelector(getActiveEditorComponent);
-
+    const activeComponent = useAppSelector(getActiveEditorComponent);
+    const [originalDesignState, setOriginalDesignState] = useState({ [uuid()]: [] })
     useEffect(() => {
-        if (componentUID != null) setActiveOptionTab('Editor');
-        console.log(componentUID)
-    }, [componentUID])
+        if (Boolean(activeComponent.uid)) setActiveOptionTab('Editor');
+        console.log(activeComponent)
+    }, [activeComponent])
 
 
     const onClickOptionsTab = (tab: any) => {
         setActiveOptionTab(tab);
-        dispatch(updateActiveEditorComponent(null));
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
     }
 
     const onDragEnd = result => {
@@ -51,6 +55,7 @@ function BuilderPage() {
         if (!destination) {
             return;
         }
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
         switch (source.droppableId) {
             case destination.droppableId:
                 dispatch(updateBuilderState({
@@ -59,7 +64,7 @@ function BuilderPage() {
                 break;
             case 'ECOMAI_BUILDER':
                 dispatch(updateBuilderState({
-                    [destination.droppableId]: copy(componentConfigs, builderState[destination.droppableId], source, destination)
+                    [destination.droppableId]: copy(ComponentConfigs, builderState[destination.droppableId], source, destination)
                 }));
                 break;
             default:
@@ -70,6 +75,12 @@ function BuilderPage() {
         }
     };
 
+    const onClickRevert = () => {
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
+        dispatch(updateBuilderState(originalDesignState));
+        dispatch(showSuccessToast('Changes reverted successfully'));
+    }
+
     return (
         <Layout className={styles.builderPageWrap}>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -79,14 +90,32 @@ function BuilderPage() {
                             <Col className={styles.headingWrap} span={18}>
                                 <Text style={{ color: token.colorPrimary }}>EcomAi Website Builder</Text>
                             </Col>
-                            <Col className={styles.sizeWrap} span={6}>
+                            <Col className={styles.actionsWrap} span={6}>
+
+                                <Tooltip title="Revert Changes" color={'#8892b0'} key='3'>
+                                    <Popconfirm
+                                        title="Revert Changes"
+                                        description="Are you sure you want revert?"
+                                        onConfirm={onClickRevert}
+                                    >
+                                        <div style={{ color: isDarkMode ? 'white' : 'black', background: '#dee1ec46' }}
+                                            onClick={() => { }}
+                                            className={`iconWrap hover ${styles.iconWrap}`}>
+                                            <BsArrowCounterclockwise />
+                                        </div>
+                                    </Popconfirm>
+                                </Tooltip>
+
                                 {DEVICE_TYPES.map((device: any, i: number) => {
-                                    return <div key={i}
-                                        style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.name ? token.colorPrimary : '#dee1ec46' }}
-                                        onClick={() => setActiveDeviceType(device.name)}
-                                        className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.name ? styles.active : ''}`}>
-                                        {device.icon}
-                                    </div>
+                                    return <React.Fragment key={i}>
+                                        <Tooltip title={`${device.name} View`} color={'#8892b0'} key='3'>
+                                            <div style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.name ? token.colorPrimary : '#dee1ec46' }}
+                                                onClick={() => setActiveDeviceType(device.name)}
+                                                className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.name ? styles.active : ''}`}>
+                                                {device.icon}
+                                            </div>
+                                        </Tooltip>
+                                    </React.Fragment>
                                 })}
                             </Col>
                         </Row>
@@ -110,8 +139,9 @@ function BuilderPage() {
                                 onChange={(tab: any) => onClickOptionsTab(tab)}
                                 options={[
                                     {
-                                        label: <div style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }} className={`${styles.segmentItem}`}>
-                                            <div className={styles.iconWrap} style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }} >
+                                        label: <div style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }}
+                                            className={`${styles.segmentItem} ${activeOptionTab == 'Sections' ? styles.active : ''}`}>
+                                            <div className={styles.iconWrap} >
                                                 <BsFillLayersFill />
                                             </div>
                                             <div>Sections</div>
@@ -119,9 +149,10 @@ function BuilderPage() {
                                         value: 'Sections'
                                     },
                                     {
-                                        label: <div style={{ color: activeOptionTab == 'Editor' ? token.colorPrimary : 'inherit' }} className={`${styles.segmentItem}`}>
-                                            <div className={styles.iconWrap} style={{ color: activeOptionTab == 'Editor' ? token.colorPrimary : 'inherit' }} >
-                                                <BsPencil />
+                                        label: <div style={{ color: activeOptionTab == 'Editor' ? token.colorPrimary : 'inherit' }}
+                                            className={`${styles.segmentItem} ${activeOptionTab == 'Editor' ? styles.active : ''}`}>
+                                            <div className={styles.iconWrap} >
+                                                <BsFillPencilFill />
                                             </div>
                                             <div>Editor</div>
                                         </div>,
@@ -134,12 +165,12 @@ function BuilderPage() {
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
                                 Drag and drop section to left builder area
                             </div>
-                            <SectionsContainer componentConfigs={componentConfigs} />
+                            <SectionsContainer ComponentConfigs={ComponentConfigs} />
                         </div> : <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
-                                {componentUID != null ? 'Edit content of selected section' : 'You have no component selected'}
+                                {Boolean(activeComponent.uid) ? 'Edit content of selected section' : 'You have no component selected'}
                             </div>
-                            {componentUID != null && <ComponentEditor componentUID={componentUID} builderState={builderState} />}
+                            {Boolean(activeComponent.uid) && <ComponentEditor activeComponent={activeComponent} builderState={builderState} />}
                         </div>}
                     </div>
                 </Sider>

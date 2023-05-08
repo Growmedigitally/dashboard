@@ -44,7 +44,7 @@
     }
     &.active,
     &:hover {
-      border: 2px dashed var(--navy);
+      border: 2px dashed var(--lightest-slate);
       @include transition;
       .actionsWrap {
         padding: 10px;
@@ -56,7 +56,7 @@
       }
     }
     &.active {
-      border-color: var(--primary-color);
+      border-color: var(--secondary-color);
     }
     &.firstChild {
       .actionsWrap {

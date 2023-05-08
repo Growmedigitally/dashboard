@@ -3,14 +3,14 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '@templatesCSS/builderPage/sectionsContainer.module.scss'
 import ComponentRenderer from '@organisms/componentRenderer';
 
-function SectionsContainer({ componentConfigs }) {
+function SectionsContainer({ ComponentConfigs }) {
 
     return (
         <div>
             <Droppable droppableId="ECOMAI_BUILDER" isDropDisabled={true}>
                 {(provided, snapshot) => (
                     <div className={`${styles.sectionsContainer} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`} ref={provided.innerRef}>
-                        {componentConfigs.map((item, index) => (
+                        {ComponentConfigs.map((item, index) => (
                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided, snapshot) => (
                                     <React.Fragment>
@@ -21,7 +21,7 @@ function SectionsContainer({ componentConfigs }) {
                                             style={provided.draggableProps.style}>
                                             <ComponentRenderer
                                                 uid={item.uid}
-                                                componentsList={componentConfigs}
+                                                componentsList={ComponentConfigs}
                                                 itemIndex={index}
                                                 currentPage={'SECTIONS'}
                                                 componentConfig={item}
@@ -31,7 +31,7 @@ function SectionsContainer({ componentConfigs }) {
                                             <div className={`${styles.componentWrap} ${styles.draggingItem} ${styles.draggingInProgress}`}>
                                                 <ComponentRenderer
                                                     uid={item.uid}
-                                                    componentsList={componentConfigs}
+                                                    componentsList={ComponentConfigs}
                                                     itemIndex={index}
                                                     currentPage={'SECTIONS'}
                                                     componentConfig={item}

@@ -8,7 +8,7 @@ import { Popconfirm, theme, Tooltip } from 'antd';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { move, toArray } from '@util/moveItem';
 import { updateBuilderState } from '@reduxStore/slices/builderState';
-import { getActiveEditorComponent, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import { getActiveEditorComponent, initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
 import { useAppSelector } from '@hook/useAppSelector';
 
 type pageProps = {
@@ -21,7 +21,7 @@ type pageProps = {
 }
 function ComponentWrapper({ builderState, lastChild, itemIndex, uid, currentPage, children }: pageProps) {
     const dispatch = useAppDispatch();
-    const activeComponentId = useAppSelector(getActiveEditorComponent);
+    const activeComponent = useAppSelector(getActiveEditorComponent);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
     const actionWrapCss = { "padding": "10px", "height": "auto", "width": "auto", "overflow": "auto" };
 
@@ -46,12 +46,12 @@ function ComponentWrapper({ builderState, lastChild, itemIndex, uid, currentPage
                 break;
         }
         dispatch(updateBuilderState(builderStateCopy));
-        dispatch(updateActiveEditorComponent(action == 'EDIT' ? uid : null));
+        dispatch(updateActiveEditorComponent(action == 'EDIT' ? { itemIndex, uid, originalState: builderState[Object.keys(builderState)[0]][itemIndex] } : initialState.activeEditorComponent));
         event.stopPropagation();
     }
 
     return (
-        <div className={`${styles.componentContentWrap} ${activeComponentId == itemIndex ? styles.active : ''} ${lastChild ? styles.lastChild : ''} ${itemIndex == 0 ? styles.firstChild : ''}`}>
+        <div className={`${styles.componentContentWrap} ${activeComponent.itemIndex === itemIndex ? styles.active : ''} ${lastChild ? styles.lastChild : ''} ${itemIndex == 0 ? styles.firstChild : ''}`}>
             {currentPage == 'BUILDER' && <div className={styles.actionsWrap} style={confirmationOpen ? actionWrapCss : {}}>
                 <Tooltip title="Move Up" color={'#8892b0'} key='1'>
                     <div className={`iconWrap hover ${styles.iconWrap}`} onClick={(e) => onClickAction(e, 'UP')}>
