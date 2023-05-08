@@ -144,7 +144,7 @@ function BuilderPage() {
                                             <div className={styles.iconWrap} >
                                                 <BsFillLayersFill />
                                             </div>
-                                            <div>Sections</div>
+                                            <div className={styles.title}>Sections</div>
                                         </div>,
                                         value: 'Sections'
                                     },
@@ -154,7 +154,7 @@ function BuilderPage() {
                                             <div className={styles.iconWrap} >
                                                 <BsFillPencilFill />
                                             </div>
-                                            <div>Editor</div>
+                                            <div className={styles.title}>Editor</div>
                                         </div>,
                                         value: 'Editor',
                                     },

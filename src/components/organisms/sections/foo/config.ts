@@ -1,14 +1,15 @@
 import { FOO, SECTIONS_CATEGORIES } from "@constant/components";
+import { v4 as uuid } from 'uuid';
 
 export default {
+    id: uuid(),
     uid: FOO,
-    id: FOO,
     section: SECTIONS_CATEGORIES.FEATURES,
     style: {
         background: 'white',
         width: '100%',
         height: '100%',
-        boxShadow: '',
+        boxShadow: 'unset',
     },
     children: [
         {

@@ -8,8 +8,8 @@ import { updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComp
 function BuilderContainer({ builderState, activeDeviceType }) {
     const dispatch = useAppDispatch();
 
-    const onClickComponent = (event: any, itemIndex: any, uid: number) => {
-        dispatch(updateActiveEditorComponent({ itemIndex, uid, originalState: builderState[Object.keys(builderState)[0]][itemIndex] }))
+    const onClickComponent = (event: any, index: any, uid: number) => {
+        dispatch(updateActiveEditorComponent({ index, uid, originalState: builderState[Object.keys(builderState)[0]][index] }))
         event.stopPropagation()
     }
     return (
@@ -34,7 +34,7 @@ function BuilderContainer({ builderState, activeDeviceType }) {
                                                     <ComponentRenderer
                                                         builderState={builderState}
                                                         lastChild={builderState[list].length - 1 == index}
-                                                        itemIndex={index}
+                                                        index={index}
                                                         uid={item.uid}
                                                         currentPage={'BUILDER'}
                                                         componentConfig={item}

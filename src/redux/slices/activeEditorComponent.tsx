@@ -8,7 +8,7 @@ export interface ActiveEditorComponent {
 }
 
 export const initialState: ActiveEditorComponent = {
-    activeEditorComponent: { itemIndex: '', uid: '', originalState: null },
+    activeEditorComponent: { index: '', uid: '', originalState: null },
 };
 
 export const activeEditorComponent = createSlice({

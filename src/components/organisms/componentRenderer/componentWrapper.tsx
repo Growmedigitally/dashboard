@@ -14,12 +14,12 @@ import { useAppSelector } from '@hook/useAppSelector';
 type pageProps = {
     builderState: any,
     lastChild: any,
-    itemIndex: any,
+    index: any,
     uid: any,
     currentPage: any,
     children: any
 }
-function ComponentWrapper({ builderState, lastChild, itemIndex, uid, currentPage, children }: pageProps) {
+function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, children }: pageProps) {
     const dispatch = useAppDispatch();
     const activeComponent = useAppSelector(getActiveEditorComponent);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -30,14 +30,14 @@ function ComponentWrapper({ builderState, lastChild, itemIndex, uid, currentPage
         const builderStateCopy: any = { ...builderState };
         switch (action) {
             case 'UP':
-                builderStateCopy[listKey] = move(builderStateCopy[listKey], { from: itemIndex, to: itemIndex - 1 });
+                builderStateCopy[listKey] = move(builderStateCopy[listKey], { from: index, to: index - 1 });
                 break;
             case 'DOWN':
-                builderStateCopy[listKey] = move(builderStateCopy[listKey], { from: itemIndex + 1, to: itemIndex });
+                builderStateCopy[listKey] = move(builderStateCopy[listKey], { from: index + 1, to: index });
                 break;
             case 'DELETE':
                 const components: any = [...toArray(builderStateCopy[listKey])];
-                components.splice(itemIndex, 1);
+                components.splice(index, 1);
                 builderStateCopy[listKey] = components;
                 break;
             case 'EDIT':
@@ -46,12 +46,12 @@ function ComponentWrapper({ builderState, lastChild, itemIndex, uid, currentPage
                 break;
         }
         dispatch(updateBuilderState(builderStateCopy));
-        dispatch(updateActiveEditorComponent(action == 'EDIT' ? { itemIndex, uid, originalState: builderState[Object.keys(builderState)[0]][itemIndex] } : initialState.activeEditorComponent));
+        dispatch(updateActiveEditorComponent(action == 'EDIT' ? { index, uid, originalState: builderState[Object.keys(builderState)[0]][index] } : initialState.activeEditorComponent));
         event.stopPropagation();
     }
 
     return (
-        <div className={`${styles.componentContentWrap} ${activeComponent.itemIndex === itemIndex ? styles.active : ''} ${lastChild ? styles.lastChild : ''} ${itemIndex == 0 ? styles.firstChild : ''}`}>
+        <div className={`${styles.componentContentWrap} ${activeComponent.index === index ? styles.active : ''} ${lastChild ? styles.lastChild : ''} ${index == 0 ? styles.firstChild : ''}`}>
             {currentPage == 'BUILDER' && <div className={styles.actionsWrap} style={confirmationOpen ? actionWrapCss : {}}>
                 <Tooltip title="Move Up" color={'#8892b0'} key='1'>
                     <div className={`iconWrap hover ${styles.iconWrap}`} onClick={(e) => onClickAction(e, 'UP')}>

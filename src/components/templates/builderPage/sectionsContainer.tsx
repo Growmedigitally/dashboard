@@ -22,7 +22,7 @@ function SectionsContainer({ ComponentConfigs }) {
                                             <ComponentRenderer
                                                 uid={item.uid}
                                                 componentsList={ComponentConfigs}
-                                                itemIndex={index}
+                                                index={index}
                                                 currentPage={'SECTIONS'}
                                                 componentConfig={item}
                                             />
@@ -32,7 +32,7 @@ function SectionsContainer({ ComponentConfigs }) {
                                                 <ComponentRenderer
                                                     uid={item.uid}
                                                     componentsList={ComponentConfigs}
-                                                    itemIndex={index}
+                                                    index={index}
                                                     currentPage={'SECTIONS'}
                                                     componentConfig={item}
                                                 />
