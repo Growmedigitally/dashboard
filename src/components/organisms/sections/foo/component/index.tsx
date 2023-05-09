@@ -1,13 +1,10 @@
 import React from 'react'
+import RenderComponent from '@organisms/sections/renderComponent';
 
-function Foo({ componentConfig }) {
+function Foo({ config }) {
     return (
-        <div className="foo">
-            <hr />
-            Hi I'm a Foo component with the headline:
-            <h2>{componentConfig.headline}</h2>
-        </div>
+        <RenderComponent config={config} />
     )
 }
 
-export default Foo
+export default Foo;

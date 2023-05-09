@@ -2,33 +2,46 @@ import { FOO, SECTIONS_CATEGORIES } from "@constant/components";
 import { v4 as uuid } from 'uuid';
 
 export default {
-    id: uuid(),
-    uid: FOO,
-    section: SECTIONS_CATEGORIES.FEATURES,
-    style: {
-        background: 'white',
-        width: '100%',
-        height: '100%',
-        boxShadow: 'unset',
+    "id": uuid(),
+    "uid": FOO,
+    "section": SECTIONS_CATEGORIES.NAVIGATION,
+    "className": "componentWrap",
+    "style": {
+        "background": '#dee1ec',
+        "width": '100%',
+        "height": '100%',
+        "boxShadow": 'unset',
+        "padding": '20px',
+        "color": 'black'
     },
-    children: [
+    "editable": { style: ['background', 'color', 'padding'], props: [] },
+    "component": "div",
+    "children": [
         {
-            component: "img",
-            src: "https://images.pexels.com/photos/2877188/pexels-photo-2877188.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-            style: {
-                background: 'white',
-                width: '100px',
-                height: '100px',
-            }
-        },
-        {
-            component: "text",
-            value: 'HEYYYY',
-            style: {
-                fontSize: '10px',
-                color: 'green'
-            }
+            "component": "div",
+            "props": {
+                "text": "Hello, World!"
+            },
+            "editable": { style: ['background', 'color', 'fontSize'], props: ['text'] },
+            "style": {
+                "background": '#dee1ec',
+                "color": "red",
+                "fontSize": "30px"
+            },
+            children: [
+                {
+                    "component": "p",
+                    "props": {
+                        "text": "Welcome to the world of React components!"
+                    },
+                    "editable": { style: ['color', 'fontSize'], props: ['text'] },
+                    "style": {
+                        "background": '#dee1ec',
+                        "color": "blue",
+                        "fontSize": "18px"
+                    }
+                }
+            ]
         }
     ]
-
 }

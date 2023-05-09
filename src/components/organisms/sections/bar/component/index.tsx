@@ -1,12 +1,10 @@
+import RenderComponent from '@organisms/sections/renderComponent';
 import React from 'react'
 import styles from './index.module.scss';
 
-function Bar({ componentConfig }) {
+function Bar({ config }) {
     return (
-        <div className={styles.fooWrapper}>
-            Hi I'm a Bar component with the title:
-            <h2>{componentConfig.title}</h2>
-        </div>
+        <RenderComponent config={config} />
     )
 }
 

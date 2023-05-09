@@ -1,11 +1,9 @@
-import React from 'react'
-import styles from './index.module.scss';
+import Editor from '@organisms/editor';
+import React from 'react';
 
-function Bar({ componentConfig }) {
+function Bar({ config }) {
     return (
-        <div className={styles.barEditorComponentWrap}>
-
-        </div>
+        <Editor config={config} />
     )
 }
 

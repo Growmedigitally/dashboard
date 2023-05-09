@@ -4,11 +4,11 @@ import ComponentWrapper from './componentWrapper';
 import ComponentsList from '@organisms/sections';
 
 function ComponentRenderer(props) {
-    const getComponent = useCallback((config) => {
-        if (typeof ComponentsList[config.uid] !== "undefined") {
-            return React.createElement(ComponentsList[config.uid], {
-                key: config.uid,
-                componentConfig: config
+    const getComponent = useCallback((componentConfig) => {
+        if (typeof ComponentsList[componentConfig.uid] !== "undefined") {
+            return React.createElement(ComponentsList[componentConfig.uid], {
+                key: componentConfig.uid,
+                config: componentConfig
             });
         }
         return null;

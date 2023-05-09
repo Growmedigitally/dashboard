@@ -1,12 +1,12 @@
 import React from 'react'
+import Editor from '@organisms/editor';
 
-function Foo({ componentConfig }) {
+function Foo({ config }) {
     return (
-        <div className="foo">
-            Hi I'm a Foo component with the headline: Editor
-            <h2>{componentConfig.headline}</h2>
-        </div>
+        <Editor config={config} />
     )
 }
 
-export default Foo
+export default Foo;
+
+

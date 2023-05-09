@@ -68,7 +68,7 @@ function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, ch
                         title="Delete Section"
                         description="Are you sure you want to delete this section?"
                         onConfirm={(e) => onClickAction(e, 'DELETE')}
-                        onOpenChange={(status) => setConfirmationOpen(status)}
+                    // onOpenChange={(status) => setConfirmationOpen(status)}
                     >
                         <div className={`iconWrap hover ${styles.iconWrap}`}>
                             <FiTrash2 />

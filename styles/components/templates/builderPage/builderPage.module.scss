@@ -61,9 +61,7 @@
     width: 300px !important;
     .sidebarWrap {
       width: 100%;
-      > div {
-        padding: 5px;
-      }
+
       .segmentWrap {
         position: sticky;
         top: 0;
@@ -108,11 +106,14 @@
         }
       }
       .sidebarContentWrap {
-        padding: 10px;
+        height: calc(100vh - 45px);
+        overflow: auto;
+        padding: 5px;
+
         .note {
           font-size: var(--fz-xs);
           letter-spacing: 0.2px;
-          margin-bottom: 10px;
+          margin: 5px 0;
           text-align: center;
         }
       }
