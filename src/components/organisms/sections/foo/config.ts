@@ -14,7 +14,7 @@ export default {
         "padding": '20px',
         "color": 'black'
     },
-    "editable": { style: ['background', 'color', 'padding'], props: [] },
+    "editable": { label: 'Container', style: ['background', 'padding'], props: [] },
     "component": "div",
     "children": [
         {
@@ -22,7 +22,7 @@ export default {
             "props": {
                 "text": "Hello, World!"
             },
-            "editable": { style: ['background', 'color', 'fontSize'], props: ['text'] },
+            "editable": { label: 'Heading', style: ['background', 'color', 'fontSize'], props: ['text'] },
             "style": {
                 "background": '#dee1ec',
                 "color": "red",
@@ -34,7 +34,7 @@ export default {
                     "props": {
                         "text": "Welcome to the world of React components!"
                     },
-                    "editable": { style: ['color', 'fontSize'], props: ['text'] },
+                    "editable": { label: 'Subheading', style: ['color', 'fontSize'], props: ['text'] },
                     "style": {
                         "background": '#dee1ec',
                         "color": "blue",

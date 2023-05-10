@@ -21,6 +21,7 @@ function SectionsContainer({ ComponentConfigs }) {
                             {SectionsList.map((section, i) => {
                                 return <Collapse key={i}
                                     // bordered={false}
+                                    style={{ background: token.colorBgLayout }}
                                     expandIconPosition='end'
                                     defaultActiveKey={[section]}
                                     onChange={onChange}

@@ -1,6 +1,8 @@
 import React from 'react'
+import styles from '@organismsCSS/editor/stylesEditor.module.scss';
+import BackgroundElement from '@molecules/styleElement/background';
 
-function StyleEditor({ config, onConfigUpdate }) {
+function StylesEditor({ config, onConfigUpdate }) {
 
     const handleStyleChange = (event) => {
         const { name, value } = event.target;
@@ -11,10 +13,24 @@ function StyleEditor({ config, onConfigUpdate }) {
         onConfigUpdate(configCopy);
     };
 
+    const getStyleComponent = (property: string) => {
+        let component = null;
+        switch (property) {
+            case 'background':
+                component = <BackgroundElement />
+                break;
+
+            default:
+                break;
+        }
+        return component;
+    }
+
     return (
-        <React.Fragment>
+        <div className={styles.stylesEditor}>
             {config?.editable?.style.map((property, index) => {
                 return <React.Fragment key={index}>
+                    {getStyleComponent(property)}
                     {property == 'background' && <>
                         <label htmlFor="background">BG Color:  </label>
                         <input
@@ -55,11 +71,10 @@ function StyleEditor({ config, onConfigUpdate }) {
                             onChange={handleStyleChange}
                         />
                     </>}
-                    <hr />
                 </React.Fragment>
             })}
-        </React.Fragment>
+        </div>
     )
 }
 
-export default StyleEditor
+export default StylesEditor

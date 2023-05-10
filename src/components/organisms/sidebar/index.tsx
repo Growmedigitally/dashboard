@@ -42,7 +42,7 @@ const SidebarComponent = () => {
         { label: 'PWA', key: 'PWA', icon: 'PWA' },
         { label: 'Chat', key: 'chat', icon: 'chat' },
         { label: 'Note', key: 'note', icon: 'note' },
-        { label: 'Query', key: 'query', icon: 'query' },
+        { label: 'Blogs', key: 'query', icon: 'query' },
         { label: 'Promotion', key: 'promotion', icon: 'promotion' },
         {
             label: 'Profile', key: 'profile', icon: 'profile',

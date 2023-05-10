@@ -1,0 +1,14 @@
+.editorComponent {
+  width: 100%;
+  border-radius: 4px;
+
+  .elementContainer {
+    margin-bottom: 4px;
+  }
+  .elementName {
+    font-family: var(--f-SemiBold);
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 5px;
+  }
+}

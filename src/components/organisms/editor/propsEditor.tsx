@@ -1,4 +1,5 @@
 import React from 'react'
+import styles from '@organismsCSS/editor/propsEditor.module.scss';
 
 function PropsEditor({ config, onConfigUpdate }) {
 
@@ -15,7 +16,7 @@ function PropsEditor({ config, onConfigUpdate }) {
 
 
     return (
-        <React.Fragment>
+        <div className={styles.propsEditor}>
             {config?.editable?.props.map((property, index) => {
                 return <React.Fragment key={index}>
                     <label htmlFor={property}>Prop Value:  </label>
@@ -26,11 +27,9 @@ function PropsEditor({ config, onConfigUpdate }) {
                         value={config.props ? config.props[property] : ''}
                         onChange={handlePropsChange}
                     />
-
-                    <hr />
                 </React.Fragment>
             })}
-        </React.Fragment>
+        </div>
     )
 }
 

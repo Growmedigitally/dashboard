@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import styles from '@organismsCSS/componentEditor/componentEditor.module.scss';
+import React, { useCallback, useEffect, useState } from 'react';
 import EditorComponentsList from '@organisms/sections/editorComponentsList';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
@@ -24,11 +23,7 @@ function ComponentEditor({ activeComponent, builderState }) {
     }, [componentConfig])
 
 
-    return (
-        <div className={styles.componentEditorWrap}>
-            {getComponent()}
-        </div>
-    )
+    return getComponent();
 }
 
 export default ComponentEditor

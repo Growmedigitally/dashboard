@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import style from '@sections/foo/editor/editor.module.scss';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getBuilderState, updateBuilderState } from '@reduxStore/slices/builderState';
 import { getActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import EditorComponent from './editorComponent';
+import styles from '@organismsCSS/editor/editorContainer.module.scss';
 
 function Editor({ config }) {
     const dispatch = useAppDispatch();
@@ -25,7 +25,7 @@ function Editor({ config }) {
     };
 
     return (
-        <div className={style.editorComponentContainer}>
+        <div className={styles.editorContainer}>
             <EditorComponent index={null} config={componentConfig} onConfigUpdate={(con) => handleConfigUpdate(con)} />
         </div>
     )
