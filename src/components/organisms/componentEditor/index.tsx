@@ -9,19 +9,19 @@ function ComponentEditor({ activeComponent, builderState }) {
     const stateActiveComponent = useAppSelector(getActiveEditorComponent);
 
     useEffect(() => {
-        setComponentConfig(builderState[Object.keys(builderState)[0]][stateActiveComponent.index] || {});
+        const config = builderState[Object.keys(builderState)[0]].find(i => i.id == stateActiveComponent.parentId);
+        setComponentConfig(config || {});
     }, [activeComponent])
 
     const getComponent = useCallback(() => {
         if (typeof EditorComponentsList[activeComponent.uid] !== "undefined") {
             return React.createElement(EditorComponentsList[activeComponent.uid], {
-                key: activeComponent.uid,
+                key: activeComponent.parentId,
                 config: componentConfig
             });
         }
         return null;
     }, [componentConfig])
-
 
     return getComponent();
 }

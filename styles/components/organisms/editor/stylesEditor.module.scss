@@ -1,8 +1,8 @@
+@import "/styles/abstracts/mixins";
 .stylesEditor {
   width: 100%;
-  background-color: white;
-  padding: 7px;
-  border-radius: 4px;
+  background-color: transparent;
+  border-radius: 0 0 4px 4px;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;

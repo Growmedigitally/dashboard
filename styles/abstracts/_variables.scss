@@ -10,7 +10,7 @@ $color-error: #ff003d;
 
 :root {
   // --primary-color: #042953;
-  --transition: all ease-out 0.3s;
+  transition: all ease-out 0.3s;
   --primary-color: #ff8dc7;
   --primary-color-bg-image: linear-gradient(195deg, #463c52, #9d94ba);
   --primary-color-alpha: #9d94ba;
@@ -49,6 +49,7 @@ $color-error: #ff003d;
   --fz-lg: 18px;
   --fz-xl: 20px;
   --fz-xxl: 22px;
-
+  --styleElementBg: #d1d5e8;
+  --outlineColor: #fa9110;
   --fullHeight: calc(100vh - calc(100vh - 100%));
 }

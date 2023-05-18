@@ -1,10 +1,14 @@
 import React from 'react';
-import styles from './index.module.scss'
+import styles from './backgroundColor.module.scss'
+import ColorPickerComponent from '../colorPicker';
+import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 
-function BackgroundColor() {
+function BackgroundColor({ showLabel = true, value, onChange }) {
+
     return (
-        <div className={styles.backgroundColorWrapp}>
-            <input type='color' />
+        <div className={`${styleElementCSS.styleElementWrap} ${styles.backgroundColorWrapp}`}>
+            {showLabel && <div className={styleElementCSS.label}>Backgound Color</div>}
+            <ColorPickerComponent value={value} onChange={onChange} />
         </div>
     )
 }

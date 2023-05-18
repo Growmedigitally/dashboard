@@ -4,10 +4,10 @@ import styles from '@templatesCSS/builderPage/sectionsContainer.module.scss'
 import ComponentRenderer from '@organisms/componentRenderer';
 import SectionsList from '@organisms/sections/sectionsList';
 import { Collapse, theme } from 'antd';
+import { SECTION_PAGE } from '@constant/common';
 const { Panel } = Collapse;
 
 function SectionsContainer({ ComponentConfigs }) {
-
     const { token } = theme.useToken();
     const onChange = (key: string | string[]) => {
         console.log(key);
@@ -47,7 +47,8 @@ function SectionsContainer({ ComponentConfigs }) {
                                                                     uid={item.uid}
                                                                     componentsList={ComponentConfigs}
                                                                     index={index}
-                                                                    currentPage={'SECTIONS'}
+                                                                    parentId={item.id}
+                                                                    currentPage={SECTION_PAGE}
                                                                     componentConfig={item}
                                                                 />
                                                             </div>
@@ -57,7 +58,8 @@ function SectionsContainer({ ComponentConfigs }) {
                                                                         uid={item.uid}
                                                                         componentsList={ComponentConfigs}
                                                                         index={index}
-                                                                        currentPage={'SECTIONS'}
+                                                                        parentId={item.id}
+                                                                        currentPage={SECTION_PAGE}
                                                                         componentConfig={item}
                                                                     />
                                                                 </div>

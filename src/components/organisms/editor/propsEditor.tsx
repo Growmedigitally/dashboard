@@ -1,32 +1,35 @@
 import React from 'react'
 import styles from '@organismsCSS/editor/propsEditor.module.scss';
+import TextElement from '@molecules/propsElement/textElement';
 
 function PropsEditor({ config, onConfigUpdate }) {
 
-
-
-    const handlePropsChange = (event) => {
-        const { name, value } = event.target;
+    const handlePropsChange = (from, value) => {
         const configCopy = { ...config };
         let propsCopy = { ...configCopy.props };
-        propsCopy = { ...propsCopy, [name]: value };
+        propsCopy = { ...propsCopy, [from]: value };
         configCopy.props = propsCopy;
         onConfigUpdate(configCopy);
     };
 
+    const getPropsComponent = (property: string, value: any) => {
+        let component = null;
+        switch (property) {
+            case 'text':
+                component = <TextElement label={'Heading Text'} value={value} onChange={(value) => handlePropsChange(property, value)} placeholder={'Heading text'} />
+                break;
+
+            default:
+                break;
+        }
+        return component;
+    }
 
     return (
         <div className={styles.propsEditor}>
             {config?.editable?.props.map((property, index) => {
                 return <React.Fragment key={index}>
-                    <label htmlFor={property}>Prop Value:  </label>
-                    <input
-                        type="text"
-                        id={property}
-                        name={property}
-                        value={config.props ? config.props[property] : ''}
-                        onChange={handlePropsChange}
-                    />
+                    {getPropsComponent(property, config.props[property])}
                 </React.Fragment>
             })}
         </div>

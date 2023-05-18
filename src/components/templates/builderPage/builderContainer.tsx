@@ -3,18 +3,21 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '@templatesCSS/builderPage/builderContainer.module.scss'
 import ComponentRenderer from '@organisms/componentRenderer/index';
 import { useAppDispatch } from '@hook/useAppDispatch';
-import { updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import { initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import { BUILDER_PAGE } from '@constant/common';
 
 function BuilderContainer({ builderState, activeDeviceType }) {
     const dispatch = useAppDispatch();
 
     const onClickComponent = (event: any, index: any, uid: number) => {
-        dispatch(updateActiveEditorComponent({ index, uid, originalState: builderState[Object.keys(builderState)[0]][index] }))
+        console.log("onClickComponent BuilderContainer")
+        if (uid) dispatch(updateActiveEditorComponent({ parentId: builderState[Object.keys(builderState)[0]][index].id, uid, originalState: builderState[Object.keys(builderState)[0]][index] }))
+        else dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
         event.stopPropagation()
     }
     return (
         <React.Fragment>
-            <div className={`${styles.builderDroppableList} ${styles[activeDeviceType]}`}>
+            <div className={`${styles.builderDroppableList} ${styles[activeDeviceType]}`} onClick={(e) => onClickComponent(e, null, null)}>
                 {Object.keys(builderState).map((list, i) => {
                     return (
                         <Droppable key={list} droppableId={list}>
@@ -35,8 +38,9 @@ function BuilderContainer({ builderState, activeDeviceType }) {
                                                         builderState={builderState}
                                                         lastChild={builderState[list].length - 1 == index}
                                                         index={index}
+                                                        parentId={item.id}
                                                         uid={item.uid}
-                                                        currentPage={'BUILDER'}
+                                                        currentPage={BUILDER_PAGE}
                                                         componentConfig={item}
                                                     />
                                                 </div>

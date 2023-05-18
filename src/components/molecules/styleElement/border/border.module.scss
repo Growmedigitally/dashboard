@@ -1,0 +1,21 @@
+@import "/styles/abstracts/mixins";
+
+.borderWrap {
+  width: 100%;
+  .elementWrapp {
+    width: 100%;
+    @include flexStartAlC;
+    gap: 5px;
+    .borderItemWrap {
+      padding: unset;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .radiusElement {
+      @include flexStartAlC;
+      gap: 5px;
+    }
+  }
+}

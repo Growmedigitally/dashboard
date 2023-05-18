@@ -8,7 +8,9 @@ function ComponentRenderer(props) {
         if (typeof ComponentsList[componentConfig.uid] !== "undefined") {
             return React.createElement(ComponentsList[componentConfig.uid], {
                 key: componentConfig.uid,
-                config: componentConfig
+                config: componentConfig,
+                currentPage: props.currentPage,
+                parentId: props.parentId
             });
         }
         return null;

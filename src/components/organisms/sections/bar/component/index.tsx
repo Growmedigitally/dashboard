@@ -1,10 +1,14 @@
-import RenderComponent from '@organisms/sections/renderComponent';
+import ComposerComponent from '@organisms/composer/composerComponent';
 import React from 'react'
-import styles from './index.module.scss';
 
-function Bar({ config }) {
+type pageProps = {
+    config: any,
+    currentPage: string,
+    parentId: any
+}
+function Bar(props: pageProps) {
     return (
-        <RenderComponent config={config} />
+        <ComposerComponent {...props} />
     )
 }
 

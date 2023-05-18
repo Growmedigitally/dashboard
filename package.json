@@ -16,7 +16,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
     "add": "^2.0.6",
-    "antd": "^5.4.2",
+    "antd": "^5.5.0",
     "cookie": "^0.5.0",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^9.0.0",

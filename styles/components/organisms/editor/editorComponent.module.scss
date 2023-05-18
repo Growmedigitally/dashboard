@@ -4,6 +4,9 @@
 
   .elementContainer {
     margin-bottom: 4px;
+    .ant-collapse-content-box {
+      padding: 0 !important;
+    }
   }
   .elementName {
     font-family: var(--f-SemiBold);

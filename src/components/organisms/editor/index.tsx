@@ -19,7 +19,8 @@ function Editor({ config }) {
         const listKey = Object.keys(builderState)[0];
         const builderStateCopy: any = { ...builderState };
         const components = [...builderStateCopy[listKey]];
-        components[activeComponent.index] = updatedConfig;
+        const index = components.findIndex(i => i.id == activeComponent.parentId);
+        components[index] = updatedConfig;
         builderStateCopy[listKey] = components;
         dispatch(updateBuilderState(builderStateCopy));
     };

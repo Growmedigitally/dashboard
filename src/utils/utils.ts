@@ -393,3 +393,62 @@ export function initialThemeHandler() {
   }
   return isDark
 }
+
+export function convertRGBtoOBJ(colorString) {
+  const rgbKeys = ['r', 'g', 'b', 'a'];
+  let rgbObj = {};
+  let color = colorString.replace(/^rgba?\(|\s+|\)$/g, '').split(',');
+
+  for (let i in rgbKeys)
+    rgbObj[rgbKeys[i]] = color[i] || 1;
+
+  return rgbObj;
+}
+
+export function convertOBJtoRgb(obj) {
+  return `rgba(${obj.r}, ${obj.g}, ${obj.b}, ${obj.a})`;
+}
+
+export const uid = () => String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, '');
+
+export const isContainerElement = (config) => config.section ? true : false;
+
+export const findKeyPath = (ob, key, value) => {
+  const path = [];
+  const keyExists = (obj) => {
+    if (!obj || (typeof obj !== "object" && !Array.isArray(obj))) {
+      return false;
+    }
+    else if (obj.hasOwnProperty(key) && obj[key] === value) {
+      return true;
+    }
+    else if (Array.isArray(obj)) {
+      let parentKey = path.length ? path.pop() : "";
+
+      for (let i = 0; i < obj.length; i++) {
+        path.push(`${parentKey}[${i}]`);
+        const result = keyExists(obj[i]);
+        if (result) {
+          return result;
+        }
+        path.pop();
+      }
+    }
+    else {
+      for (const k in obj) {
+        path.push(k);
+        const result = keyExists(obj[k]);
+        if (result) {
+          return result;
+        }
+        path.pop();
+      }
+    }
+
+    return false;
+  };
+
+  keyExists(ob);
+
+  return path.join(".");
+}

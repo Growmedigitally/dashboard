@@ -1,0 +1,21 @@
+@import "/styles/abstracts/mixins";
+
+.gradientColorWrap {
+  width: 100%;
+  background: var(--primary-color-beta);
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  .label {
+    font-size: 13px;
+    font-family: var(--f-Regular);
+    color: var(--dark-navy);
+    letter-spacing: 0.2px;
+  }
+  .elementWrapp {
+    width: 100%;
+  }
+}

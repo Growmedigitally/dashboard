@@ -8,7 +8,7 @@ export interface ActiveEditorComponent {
 }
 
 export const initialState: ActiveEditorComponent = {
-    activeEditorComponent: { index: '', uid: '', originalState: null },
+    activeEditorComponent: { parentId: '', uid: '', originalState: null, childId: '' },
 };
 
 export const activeEditorComponent = createSlice({
@@ -16,7 +16,7 @@ export const activeEditorComponent = createSlice({
     initialState,
     reducers: {
         updateActiveEditorComponent(state, action) {
-            state.activeEditorComponent = action.payload;
+            state.activeEditorComponent = action.payload ? JSON.parse(JSON.stringify(action.payload)) : initialState.activeEditorComponent;
         },
     },
     extraReducers: (builder) => {

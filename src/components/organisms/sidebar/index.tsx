@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { MenuProps, theme } from 'antd';
+import { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import styles from '@organismsCSS/sidebarComponent/sidebarComponent.module.scss'
 import { useAppSelector } from '@hook/useAppSelector';
 import { getDarkModeState, toggleDarkMode } from '@reduxStore/slices/darkMode';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import SvgIcon from '@atoms/svgIcon';
-import { consoleLog } from '@util/conole.log';
 import { windowRef } from '@util/window';
 import { isWindowAvailable, navigateTo } from '@util/navigation';
 import { initialThemeHandler } from '@util/utils';
@@ -21,7 +20,6 @@ const SidebarComponent = () => {
     const [open, setOpen] = useState(false);
     const [activeNav, setActiveNav] = useState('dashboard');
     const dispatch = useAppDispatch();
-    const { token } = theme.useToken();
     const router = useRouter();
 
     useEffect(() => {

@@ -1,9 +1,14 @@
 import React from 'react'
-import RenderComponent from '@organisms/sections/renderComponent';
+import ComposerComponent from '@organisms/composer/composerComponent';
 
-function Foo({ config }) {
+type pageProps = {
+    config: any,
+    currentPage: string,
+    parentId: any
+}
+function Foo(props: pageProps) {
     return (
-        <RenderComponent config={config} />
+        <ComposerComponent {...props} />
     )
 }
 

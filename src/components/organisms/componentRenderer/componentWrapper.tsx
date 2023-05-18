@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import styles from '@organismsCSS/componentRenderer/componentRenderer.module.scss';
-import { FiArrowUp } from 'react-icons/fi';
-import { FiArrowDown } from 'react-icons/fi';
-import { FiTrash2 } from 'react-icons/fi';
-import { FiEdit2 } from 'react-icons/fi';
+import { FiArrowUp, FiArrowDown, FiTrash2, FiEdit2 } from 'react-icons/fi';
 import { Popconfirm, theme, Tooltip } from 'antd';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { move, toArray } from '@util/moveItem';
@@ -17,9 +14,10 @@ type pageProps = {
     index: any,
     uid: any,
     currentPage: any,
+    parentId: any,
     children: any
 }
-function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, children }: pageProps) {
+function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, parentId, children }: pageProps) {
     const dispatch = useAppDispatch();
     const activeComponent = useAppSelector(getActiveEditorComponent);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -45,13 +43,14 @@ function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, ch
             default:
                 break;
         }
-        dispatch(updateBuilderState(builderStateCopy));
-        dispatch(updateActiveEditorComponent(action == 'EDIT' ? { index, uid, originalState: builderState[Object.keys(builderState)[0]][index] } : initialState.activeEditorComponent));
+        dispatch(updateBuilderState(JSON.parse(JSON.stringify(builderStateCopy))));
+        dispatch(updateActiveEditorComponent(action == 'EDIT' ? { parentId, uid, originalState: builderState[Object.keys(builderState)[0]][index] } : initialState.activeEditorComponent));
         event.stopPropagation();
     }
 
     return (
-        <div className={`${styles.componentContentWrap} ${activeComponent.index === index ? styles.active : ''} ${lastChild ? styles.lastChild : ''} ${index == 0 ? styles.firstChild : ''}`}>
+        <div className={`${styles.componentContentWrap} ${activeComponent.parentId === parentId ? styles.active : ''} ${lastChild ? styles.lastChild : ''} ${index == 0 ? styles.firstChild : ''}`}>
+            {/* //this section shows when you click on section or hover over on section  */}
             {currentPage == 'BUILDER' && <div className={styles.actionsWrap} style={confirmationOpen ? actionWrapCss : {}}>
                 <Tooltip title="Move Up" color={'#8892b0'} key='1'>
                     <div className={`iconWrap hover ${styles.iconWrap}`} onClick={(e) => onClickAction(e, 'UP')}>
@@ -61,6 +60,11 @@ function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, ch
                 <Tooltip title="Move Down" color={'#8892b0'} key='2'>
                     <div className={`iconWrap hover ${styles.iconWrap}`} onClick={(e) => onClickAction(e, 'DOWN')}>
                         <FiArrowDown />
+                    </div>
+                </Tooltip>
+                <Tooltip title="Edit Section" color={'#8892b0'} key='4'>
+                    <div className={`iconWrap hover ${styles.iconWrap}`} onClick={(e) => onClickAction(e, 'EDIT')}>
+                        <FiEdit2 />
                     </div>
                 </Tooltip>
                 <Tooltip title="Delete Section" color={'#8892b0'} key='3'>
@@ -74,11 +78,6 @@ function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, ch
                             <FiTrash2 />
                         </div>
                     </Popconfirm>
-                </Tooltip>
-                <Tooltip title="Edit Section" color={'#8892b0'} key='4'>
-                    <div className={`iconWrap hover ${styles.iconWrap}`} onClick={(e) => onClickAction(e, 'EDIT')}>
-                        <FiEdit2 />
-                    </div>
                 </Tooltip>
             </div>}
             {children}

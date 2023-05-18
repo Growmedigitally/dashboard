@@ -21,20 +21,21 @@
     background: #f8f9fe;
     overflow: auto;
     border: 1px dashed var(--lightest-slate);
+    padding: 3px;
     @include transition;
     &.isDraggingOver {
       // @include transition;
-      background: var(--secondary-color-beta);
+      background: var(--secondary-color);
     }
     .draggComponentWrap {
       display: flex;
       user-select: none;
       background: #fff;
-      // @include transition;
-      transition: all ease-out 0.4s;
+      @include transition;
       cursor: pointer;
       &:hover {
-        border: 1px solid var(--light-slate);
+        @include transition;
+        outline: 1px solid var(--outlineColor);
         box-shadow: 0 2px 10px #dee1ec;
       }
       &.sortingInProgress {

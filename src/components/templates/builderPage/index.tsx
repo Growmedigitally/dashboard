@@ -29,14 +29,15 @@ const DEVICE_TYPES = [
 ]
 
 function BuilderPage() {
-    const isDarkMode = useAppSelector(getDarkModeState)
     const { token } = theme.useToken();
+    const isDarkMode = useAppSelector(getDarkModeState)
     const [activeOptionTab, setActiveOptionTab] = useState('Sections');
     const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].name);
     const dispatch = useAppDispatch();
     const builderState = useAppSelector(getBuilderState) || { [uuid()]: [] };
     const activeComponent = useAppSelector(getActiveEditorComponent);
-    const [originalDesignState, setOriginalDesignState] = useState({ [uuid()]: [] })
+    const [originalDesignState, setOriginalDesignState] = useState({ [uuid()]: [] });
+
     useEffect(() => {
         if (Boolean(activeComponent.uid)) setActiveOptionTab('Editor');
         console.log(activeComponent)
@@ -81,6 +82,9 @@ function BuilderPage() {
         dispatch(showSuccessToast('Changes reverted successfully'));
     }
 
+    const onOutsideEditorClick = () => {
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
+    }
     return (
         <Layout className={styles.builderPageWrap}>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -120,10 +124,8 @@ function BuilderPage() {
                             </Col>
                         </Row>
                     </Header>
-                    <Content className={`${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{
-                        background: token.colorBgLayout
-                    }}>
-                        <div className={styles.editorContent} >
+                    <Content className={`${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{ background: token.colorBgLayout }}>
+                        <div className={styles.editorContent} onClick={onOutsideEditorClick} >
                             <BuilderContainer builderState={builderState} activeDeviceType={activeDeviceType} />
                         </div>
                     </Content>

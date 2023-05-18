@@ -1,4 +1,5 @@
 import { BAR, SECTIONS_CATEGORIES } from "@constant/components";
+import { BACKGROUND, BORDER, BORDER_RADIUS, BOX_SHADOW, MARGIN, PADDING, TEXT_STYLES } from "@constant/editorStylesProperties";
 import { v4 as uuid } from 'uuid';
 
 export default {
@@ -6,37 +7,41 @@ export default {
     uid: BAR,//uniqe id used for interbnal identifications
     section: SECTIONS_CATEGORIES.HERO,//category
     "className": "componentWrap",
+    "appearance": {
+        "mobile": true,
+        "desktop": true
+    },
     "style": {
-        "background": '#dee1ec',
+        "background": '#ffff',
         "width": '100%',
         "height": '100%',
         "boxShadow": 'unset',
         "padding": '20px',
         "color": 'black'
     },
-    "editable": { label: 'Container', style: ['background', 'padding'], props: [] },
+    "editable": { label: 'Container', style: [BACKGROUND, BORDER, BORDER_RADIUS, MARGIN, PADDING], props: [] },
     "component": "div",
     "children": [
         {
+            "uid": `${BAR}#${uuid()}`,
             "component": "div",
             "props": {
                 "text": "Hello, BARR!"
             },
-            "editable": { label: 'Heading', style: ['background', 'color', 'fontSize'], props: ['text'] },
+            "editable": { label: 'Heading', style: [TEXT_STYLES, BACKGROUND, BORDER_RADIUS, BOX_SHADOW], props: ['text'] },
             "style": {
-                "background": '#dee1ec',
                 "color": "red",
                 "fontSize": "30px"
             }
         },
         {
+            "uid": `${BAR}#${uuid()}`,
             "component": "p",
             "props": {
                 "text": "Welcome to the BARR world!"
             },
-            "editable": { label: 'Subheading', style: ['color', 'fontSize'], props: ['text'] },
+            "editable": { label: 'Subheading', style: [TEXT_STYLES], props: ['text'] },
             "style": {
-                "background": '#dee1ec',
                 "color": "blue",
                 "fontSize": "18px"
             }
