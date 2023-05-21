@@ -10,7 +10,7 @@ const { Panel } = Collapse;
 function SectionsContainer({ ComponentConfigs }) {
     const { token } = theme.useToken();
     const onChange = (key: string | string[]) => {
-        console.log(key);
+        // console.log(key);
     };
     return (
         <div>

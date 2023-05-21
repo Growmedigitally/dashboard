@@ -78,7 +78,6 @@ const SidebarComponent = () => {
     }
 
     const onClickNav: MenuProps['onClick'] = (menu) => {
-        console.log('click', menu);
         switch (menu.key) {
             case 'light':
                 localStorage.setItem("theme", 'light');

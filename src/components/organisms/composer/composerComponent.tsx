@@ -1,13 +1,12 @@
-import { Popover, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import styles from '@organismsCSS/composer/composer.module.scss'
-import { BUILDER_PAGE, SECTION_PAGE } from '@constant/common';
-import { findKeyPath, isContainerElement } from '@util/utils';
-import { FiEdit2 } from 'react-icons/fi';
+import { BUILDER_PAGE } from '@constant/common';
+import { isContainerElement } from '@util/utils';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getBuilderState } from '@reduxStore/slices/builderState';
 import { getActiveEditorComponent, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import getBackground from '@util/getBackgroundStyle';
 
 type pageProps = {
     config: any,
@@ -27,7 +26,6 @@ function ComposerComponent({ config, currentPage, parentId }: pageProps) {
                 case 'EDIT':
                     const parentConfig = builderState[Object.keys(builderState)[0]].find(i => i.id == parentId);
                     dispatch(updateActiveEditorComponent({ parentId: parentId, uid: parentConfig.uid, originalState: parentConfig, childId: componentConfig.uid }))
-                    console.log(parentConfig);
                     break;
                 default:
                     break;
@@ -38,7 +36,12 @@ function ComposerComponent({ config, currentPage, parentId }: pageProps) {
 
     const renerComponent = () => {
         return <React.Fragment>
-            <ComponentType style={componentConfig.style} id={componentConfig.uid} className={`${styles.composerWrap}  ${(activeComponent.parentId === parentId && activeComponent.childId === componentConfig.uid) ? styles.active : ''} ${currentPage == BUILDER_PAGE ? styles.hoverOutline : ''}`} onClick={(e) => onClickAction(e, 'EDIT')}>
+            <ComponentType
+                style={{ ...componentConfig.style, ...getBackground(componentConfig.background) }}
+                id={componentConfig.uid}
+                className={`${styles.composerWrap}  ${(activeComponent.parentId === parentId && activeComponent.childId === componentConfig.uid) ? styles.active : ''} ${currentPage == BUILDER_PAGE ? styles.hoverOutline : ''}`}
+                onClick={(e) => onClickAction(e, 'EDIT')}
+            >
                 {props?.text && props.text}
                 {/* {(Boolean(currentPage == BUILDER_PAGE) && !isContainerElement(componentConfig)) && <div className={`${styles.actionsWrap}`}>
                     <Tooltip title="Edit Section" color={'#8892b0'} key='4'>

@@ -5,12 +5,16 @@ import ComponentRenderer from '@organisms/componentRenderer/index';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
 import { BUILDER_PAGE } from '@constant/common';
+import SiteConfig from '@type/siteConfig';
+import { useAppSelector } from '@hook/useAppSelector';
+import { getSiteConfig } from '@reduxStore/slices/siteConfig';
+import getBackground from '@util/getBackgroundStyle';
 
 function BuilderContainer({ builderState, activeDeviceType }) {
     const dispatch = useAppDispatch();
+    const siteConfig = useAppSelector(getSiteConfig);
 
     const onClickComponent = (event: any, index: any, uid: number) => {
-        console.log("onClickComponent BuilderContainer")
         if (uid) dispatch(updateActiveEditorComponent({ parentId: builderState[Object.keys(builderState)[0]][index].id, uid, originalState: builderState[Object.keys(builderState)[0]][index] }))
         else dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
         event.stopPropagation()
@@ -22,8 +26,10 @@ function BuilderContainer({ builderState, activeDeviceType }) {
                     return (
                         <Droppable key={list} droppableId={list}>
                             {(provided, snapshot) => (
-                                <div className={`${styles.droppedListWrap} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`}
-                                    ref={provided.innerRef}>
+                                <div className={`${styles.bodyFrame} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`}
+                                    ref={provided.innerRef}
+                                    style={{ ...siteConfig?.style, ...getBackground(siteConfig?.background) }}
+                                >
                                     {builderState[list].length ? builderState[list].map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id} index={index}>
                                             {(provided, snapshot) => (

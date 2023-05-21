@@ -1,14 +1,13 @@
 import React from 'react'
 import styles from '@organismsCSS/editor/propsEditor.module.scss';
 import TextElement from '@molecules/propsElement/textElement';
+import { removeObjRef } from '@util/utils';
 
 function PropsEditor({ config, onConfigUpdate }) {
 
     const handlePropsChange = (from, value) => {
-        const configCopy = { ...config };
-        let propsCopy = { ...configCopy.props };
-        propsCopy = { ...propsCopy, [from]: value };
-        configCopy.props = propsCopy;
+        const configCopy = removeObjRef(config);
+        configCopy.props = { ...configCopy.props, [from]: value };
         onConfigUpdate(configCopy);
     };
 

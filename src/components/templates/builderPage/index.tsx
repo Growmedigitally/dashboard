@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Layout, Popconfirm, Row, Segmented, theme, Tooltip, Typography } from 'antd';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getDarkModeState } from '@reduxStore/slices/darkMode';
-import { BsFillPencilFill, BsLaptop, BsPhone, BsTabletLandscape, BsFillLayersFill, BsArrowCounterclockwise, BsFillPhoneFill, BsFillTabletLandscapeFill, BsLaptopFill } from 'react-icons/bs';
+import { BsFillPencilFill, BsLaptop, BsPhone, BsTabletLandscape, BsFillLayersFill, BsArrowCounterclockwise, BsFillPhoneFill, BsFillTabletLandscapeFill, BsLaptopFill, BsMagic } from 'react-icons/bs';
 import { v4 as uuid } from 'uuid';
 import SectionsContainer from './sectionsContainer';
 import BuilderContainer from './builderContainer';
@@ -15,24 +15,31 @@ import { getActiveEditorComponent, initialState, updateActiveEditorComponent } f
 import ComponentConfigs from '@organisms/sections/configsList';
 import { copy, move, reorder } from '@util/dndHelpers';
 import { showSuccessToast } from '@reduxStore/slices/toast';
+import GlobalContainer from './globalContainer';
 
 const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
 
 const DEVICE_TYPES = [
-    { name: 'Mobile', icon: <BsPhone /> },
-    { name: 'Tablet', icon: <BsTabletLandscape /> },
-    { name: 'Laptop', icon: <BsLaptop /> },
-    // { name: 'Mobile', icon: <BsFillPhoneFill /> },
-    // { name: 'Tablet', icon: <BsFillTabletLandscapeFill /> },
-    // { name: 'Laptop', icon: <BsLaptopFill /> },
+    { title: 'Mobile', icon: <BsPhone /> },
+    { title: 'Tablet', icon: <BsTabletLandscape /> },
+    { title: 'Laptop', icon: <BsLaptop /> },
+    // { title: 'Mobile', icon: <BsFillPhoneFill /> },
+    // { title: 'Tablet', icon: <BsFillTabletLandscapeFill /> },
+    // { title: 'Laptop', icon: <BsLaptopFill /> },
+]
+
+const SEGMENT_OPTIONS = [
+    { title: 'Sections', icon: <BsFillLayersFill /> },
+    { title: 'Editor', icon: <BsFillPencilFill /> },
+    { title: 'Global', icon: <BsMagic /> },
 ]
 
 function BuilderPage() {
     const { token } = theme.useToken();
     const isDarkMode = useAppSelector(getDarkModeState)
     const [activeOptionTab, setActiveOptionTab] = useState('Sections');
-    const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].name);
+    const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].title);
     const dispatch = useAppDispatch();
     const builderState = useAppSelector(getBuilderState) || { [uuid()]: [] };
     const activeComponent = useAppSelector(getActiveEditorComponent);
@@ -40,9 +47,22 @@ function BuilderPage() {
 
     useEffect(() => {
         if (Boolean(activeComponent.uid)) setActiveOptionTab('Editor');
-        console.log(activeComponent)
     }, [activeComponent])
 
+    const getSegmentOptions = () => {
+        return SEGMENT_OPTIONS.map((option) => {
+            return {
+                label: <div style={{ color: activeOptionTab == option.title ? token.colorPrimary : 'inherit' }}
+                    className={`${styles.segmentItem} ${activeOptionTab == option.title ? styles.active : ''}`}>
+                    <div className={styles.iconWrap} >
+                        {option.icon}
+                    </div>
+                    <div className={styles.title}>{option.title}</div>
+                </div>,
+                value: option.title
+            }
+        })
+    }
 
     const onClickOptionsTab = (tab: any) => {
         setActiveOptionTab(tab);
@@ -51,7 +71,6 @@ function BuilderPage() {
 
     const onDragEnd = result => {
         const { source, destination } = result;
-        console.log('==> result', result);
         // dropped outside the list
         if (!destination) {
             return;
@@ -112,10 +131,10 @@ function BuilderPage() {
 
                                 {DEVICE_TYPES.map((device: any, i: number) => {
                                     return <React.Fragment key={i}>
-                                        <Tooltip title={`${device.name} View`} color={'#8892b0'} key='3'>
-                                            <div style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.name ? token.colorPrimary : '#dee1ec46' }}
-                                                onClick={() => setActiveDeviceType(device.name)}
-                                                className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.name ? styles.active : ''}`}>
+                                        <Tooltip title={`${device.title} View`} color={'#8892b0'} key='3'>
+                                            <div style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.title ? token.colorPrimary : '#dee1ec46' }}
+                                                onClick={() => setActiveDeviceType(device.title)}
+                                                className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.title ? styles.active : ''}`}>
                                                 {device.icon}
                                             </div>
                                         </Tooltip>
@@ -139,40 +158,26 @@ function BuilderPage() {
                                 block={true}
                                 value={activeOptionTab}
                                 onChange={(tab: any) => onClickOptionsTab(tab)}
-                                options={[
-                                    {
-                                        label: <div style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }}
-                                            className={`${styles.segmentItem} ${activeOptionTab == 'Sections' ? styles.active : ''}`}>
-                                            <div className={styles.iconWrap} >
-                                                <BsFillLayersFill />
-                                            </div>
-                                            <div className={styles.title}>Sections</div>
-                                        </div>,
-                                        value: 'Sections'
-                                    },
-                                    {
-                                        label: <div style={{ color: activeOptionTab == 'Editor' ? token.colorPrimary : 'inherit' }}
-                                            className={`${styles.segmentItem} ${activeOptionTab == 'Editor' ? styles.active : ''}`}>
-                                            <div className={styles.iconWrap} >
-                                                <BsFillPencilFill />
-                                            </div>
-                                            <div className={styles.title}>Editor</div>
-                                        </div>,
-                                        value: 'Editor',
-                                    },
-                                ]}
+                                options={getSegmentOptions()}
                             />
                         </div>
-                        {activeOptionTab == 'Sections' ? <div className={styles.sidebarContentWrap}>
+                        {activeOptionTab == SEGMENT_OPTIONS[0].title && <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
                                 Drag and drop section to left builder area
                             </div>
                             <SectionsContainer ComponentConfigs={ComponentConfigs} />
-                        </div> : <div className={styles.sidebarContentWrap}>
+                        </div>}
+                        {activeOptionTab == SEGMENT_OPTIONS[1].title && <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
                                 {Boolean(activeComponent.uid) ? 'Edit content of selected section' : 'You have no component selected'}
                             </div>
                             {Boolean(activeComponent.uid) && <ComponentEditor activeComponent={activeComponent} builderState={builderState} />}
+                        </div>}
+                        {activeOptionTab == SEGMENT_OPTIONS[2].title && <div className={styles.sidebarContentWrap}>
+                            <div className={styles.note} style={{ color: token.colorPrimary }}>
+                                Edit global styles and elements
+                            </div>
+                            <GlobalContainer />
                         </div>}
                     </div>
                 </Sider>

@@ -5,10 +5,11 @@ import { getActiveEditorComponent } from '@reduxStore/slices/activeEditorCompone
 import { useAppDispatch } from '@hook/useAppDispatch';
 import EditorComponent from './editorComponent';
 import styles from '@organismsCSS/editor/editorContainer.module.scss';
+import { removeObjRef } from '@util/utils';
 
 function Editor({ config }) {
     const dispatch = useAppDispatch();
-    const [componentConfig, setComponentConfig] = useState<any>(JSON.parse(JSON.stringify(config)));
+    const [componentConfig, setComponentConfig] = useState<any>(removeObjRef(config));
     const builderState = useAppSelector(getBuilderState);
     const activeComponent = useAppSelector(getActiveEditorComponent);
 

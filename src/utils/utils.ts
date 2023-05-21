@@ -38,17 +38,17 @@ export function timeDiffCalc(dateFuture, dateNow, status) {
   // calculate days
   const days = Math.floor(diffInMilliSeconds / 86400);
   diffInMilliSeconds -= days * 86400;
-  console.log('calculated days', days);
+  // console.log('calculated days', days);
 
   // calculate hours
   const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
   diffInMilliSeconds -= hours * 3600;
-  console.log('calculated hours', hours);
+  // console.log('calculated hours', hours);
 
   // calculate minutes
   const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
   diffInMilliSeconds -= minutes * 60;
-  console.log('minutes', minutes);
+  // console.log('minutes', minutes);
 
   let difference: any = '';
   switch (status) {
@@ -360,7 +360,7 @@ export function updateManifestFile(storeData: any) {
       ]
     },
   });
-  console.log(manifestString)
+  // console.log(manifestString)
   const manifestElement = document.getElementById("manifest");
   manifestElement?.setAttribute("href", "data:application/json;charset=utf-8," + encodeURIComponent(manifestString));
 }
@@ -413,42 +413,12 @@ export const uid = () => String(Date.now().toString(32) + Math.random().toString
 
 export const isContainerElement = (config) => config.section ? true : false;
 
-export const findKeyPath = (ob, key, value) => {
-  const path = [];
-  const keyExists = (obj) => {
-    if (!obj || (typeof obj !== "object" && !Array.isArray(obj))) {
-      return false;
-    }
-    else if (obj.hasOwnProperty(key) && obj[key] === value) {
-      return true;
-    }
-    else if (Array.isArray(obj)) {
-      let parentKey = path.length ? path.pop() : "";
+export const removeObjRef = (obj) => JSON.parse(JSON.stringify(obj || {}));
 
-      for (let i = 0; i < obj.length; i++) {
-        path.push(`${parentKey}[${i}]`);
-        const result = keyExists(obj[i]);
-        if (result) {
-          return result;
-        }
-        path.pop();
-      }
-    }
-    else {
-      for (const k in obj) {
-        path.push(k);
-        const result = keyExists(obj[k]);
-        if (result) {
-          return result;
-        }
-        path.pop();
-      }
-    }
-
-    return false;
-  };
-
-  keyExists(ob);
-
-  return path.join(".");
+export const getGradientValue = (colors, direction = 'to right') => {
+  let colorsString = '';
+  colors.map((c, i) => {
+    colorsString = `${colorsString}${c.color}${i != colors.length - 1 ? ', ' : ''}`
+  })
+  return (`linear-gradient(${direction}, ${colorsString})`);
 }

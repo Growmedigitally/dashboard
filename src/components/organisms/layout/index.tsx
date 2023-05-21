@@ -34,10 +34,6 @@ export default function LayoutComponent({ children }: LayoutProps) {
   });
 
   useEffect(() => {
-    console.log('redux state', state)
-  }, [state])
-
-  useEffect(() => {
     if (!userDetails) {
       getUserByToken().then((user) => {
         dispatch(setAuthUser(user));

@@ -11,7 +11,7 @@
     @include transition;
     width: 768px;
   }
-  .droppedListWrap {
+  .bodyFrame {
     background: #fff;
     border-radius: 3px;
     flex: 0 0 150px;
@@ -30,7 +30,6 @@
     .draggComponentWrap {
       display: flex;
       user-select: none;
-      background: #fff;
       @include transition;
       cursor: pointer;
       &:hover {

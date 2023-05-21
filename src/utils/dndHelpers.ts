@@ -11,7 +11,6 @@ const reorder = (list, startIndex, endIndex) => {
  * Moves an item from one list to another list.
  */
 const copy = (source, destination, droppableSource, droppableDestination) => {
-    console.log('==> dest', destination);
     const sourceClone = Array.from(source);
     const destClone = Array.from(destination);
     const item: any = sourceClone[droppableSource.index];

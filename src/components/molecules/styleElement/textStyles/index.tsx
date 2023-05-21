@@ -1,5 +1,5 @@
 import React from 'react'
-import ColorPicker from '../colorPicker';
+import ColorPickerComponent from '../colorPicker';
 import FontFamily from '../fontFamily';
 import FontSize from '../fontSize';
 import styles from './textStyles.module.scss';
@@ -68,7 +68,7 @@ function TextStyles({ config, onChange }) {
                     <LetterSpacing value={config.fontSize} onChange={onChange} />
                     <LineHeight value={config.fontFamily} onChange={onChange} />
                 </div>
-                <ColorPicker hideTransparency value={config.color || '#000'} onChange={(value) => onChange('color', value)} label="Text Color" />
+                <ColorPickerComponent hideTransparency value={{ format: 'hex', color: config.color || '#000' }} onChange={(value) => onChange('color', value.color)} label="Text Color" />
             </div>
         </div>
     )

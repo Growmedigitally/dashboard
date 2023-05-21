@@ -7,6 +7,7 @@ import { move, toArray } from '@util/moveItem';
 import { updateBuilderState } from '@reduxStore/slices/builderState';
 import { getActiveEditorComponent, initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
 import { useAppSelector } from '@hook/useAppSelector';
+import { removeObjRef } from '@util/utils';
 
 type pageProps = {
     builderState: any,
@@ -43,7 +44,7 @@ function ComponentWrapper({ builderState, lastChild, index, uid, currentPage, pa
             default:
                 break;
         }
-        dispatch(updateBuilderState(JSON.parse(JSON.stringify(builderStateCopy))));
+        dispatch(updateBuilderState(removeObjRef(builderStateCopy)));
         dispatch(updateActiveEditorComponent(action == 'EDIT' ? { parentId, uid, originalState: builderState[Object.keys(builderState)[0]][index] } : initialState.activeEditorComponent));
         event.stopPropagation();
     }

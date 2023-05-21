@@ -5,6 +5,8 @@ import styles from '@organismsCSS/editor/editorComponent.module.scss';
 import { Collapse, theme } from "antd";
 import { useAppSelector } from "@hook/useAppSelector";
 import { getActiveEditorComponent } from "@reduxStore/slices/activeEditorComponent";
+import BackgroundEditor from "./backgroundEditor";
+import { removeObjRef } from "@util/utils";
 const { Panel } = Collapse;
 
 const EditorComponent = ({ index, config, onConfigUpdate }) => {
@@ -18,14 +20,12 @@ const EditorComponent = ({ index, config, onConfigUpdate }) => {
 
 
     const onChange = (key: string | string[]) => {
-        console.log(key);
         if (key.length) setActiveKey(key[0]);
         else setActiveKey(null)
     };
 
     const updatePrentConfig = (c, index) => {
-        const updatedConfig: any = { ...config };
-        updatedConfig.children = [...config.children]
+        const updatedConfig = removeObjRef(config);
         updatedConfig.children[index] = c;
         onConfigUpdate(updatedConfig);
     }
