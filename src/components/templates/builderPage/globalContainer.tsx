@@ -50,7 +50,7 @@ function GlobalContainer() {
     return (
         <div className={styles.globalContainer}>
             <div className={styles.propertyWrap}>
-                <BackgroundEditor config={siteConfig} onConfigUpdate={(value) => onBackgroundChange(value)} />
+                <BackgroundEditor component={'GLOBAL_BG'} config={siteConfig} onConfigUpdate={(value) => onBackgroundChange(value)} />
             </div>
 
             <div className={styles.propertyWrap}>

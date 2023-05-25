@@ -7,14 +7,14 @@
     border-radius: 4px;
     margin-bottom: 5px;
     padding: 5px;
-    background: white;
+    background: #ffffff00;
     box-shadow: var(--navy-shadow);
     box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08),
       0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
     .heading {
       font-size: 13px;
       font-family: var(--f-Regular);
-      color: var(--primary-heading-color);
+      color: inherit;
       letter-spacing: 0.2px;
       margin-bottom: 8px;
       font-weight: 800;
@@ -25,7 +25,7 @@
       gap: 10px;
       flex-wrap: wrap;
       .colorWrap {
-        border: 1px solid #ffffff;
+        // border: 1px solid #ffffff;
         border-radius: 4px;
         padding: 2px;
         width: auto;
@@ -44,7 +44,6 @@
           top: -11px;
           right: -11px;
           z-index: 1;
-          background: #f8f8f8;
           cursor: pointer;
           @include transition;
           &:hover {

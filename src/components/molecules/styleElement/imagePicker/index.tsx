@@ -1,15 +1,19 @@
 import React from 'react'
 import styles from './imagePicker.module.scss';
+import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 
-function ImagePicker({ showLabel = true }) {
+function ImagePicker({ label = false }) {
     return (
-        <div className={styles.imagePickerWrap}>
-            {showLabel && <div className={styles.label}>
-                Image Picker
-            </div>}
-            <div className={styles.elementWrapp}>
-                <div className={styles.actionWrap}>
+        <div className={`${styleElementCSS.styleElementWrap} ${styles.imagePickerWrap}`}>
+            {label && <div className={styleElementCSS.label}>{label}</div>}
+            <div className={`${styleElementCSS.elementWrapp}`}>
+                <div className={styles.uploadedImage}>
 
+                </div>
+                <div className={styles.actionsWrap}>
+                    <div className={styles.actions}>
+
+                    </div>
                 </div>
             </div>
         </div>

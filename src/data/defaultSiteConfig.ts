@@ -11,6 +11,9 @@ export default {
     background: {
         value: '#D3CCE3',
         type: 'Color',
+        src: 'https://orra.respark.in/assets/images/female/bg.png',
+        isMobile: true,
+        isDesktop: false,
         colors: [{ color: '#D3CCE3', format: 'hex' }]
     },
     colors: [

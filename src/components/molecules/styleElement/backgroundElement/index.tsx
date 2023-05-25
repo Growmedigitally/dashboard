@@ -10,6 +10,8 @@ import ImagePicker from '../imagePicker';
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 import { BACKGROUND_TYPES } from '@constant/common';
 import { COLOR_INITIAL_VALUE, GRADIENT_INITIAL_VALUE, IMAGE_INITIAL_VALUE } from 'src/data/backgroundValues';
+import BodyBackgroundImage from '../bodyBackgroundImage';
+import BackgroundImage from '../backgroundImage';
 
 const typeOptions = [
     { title: BACKGROUND_TYPES.COLOR, icon: <IoMdColorFilter /> },
@@ -22,7 +24,7 @@ const valueSample = {
     type: 'Color',
     colors: [{ color: '#000', format: 'hex' }]
 }
-function BackgroundElement({ onChange, value }) {
+function BackgroundElement({ component = '', onChange, value }) {
     const { token } = theme.useToken();
 
     const getTypeOptions = () => {
@@ -73,7 +75,7 @@ function BackgroundElement({ onChange, value }) {
                 <div className={styles.content}>
                     {value?.type == BACKGROUND_TYPES.COLOR && <BackgroundColor value={value?.colors[0]} onChange={(newColor) => onChangeBgColor(newColor)} />}
                     {value?.type == BACKGROUND_TYPES.GRADIENT && <GradientColor value={value} onChange={onChange} />}
-                    {value?.type == BACKGROUND_TYPES.IMAGE && <ImagePicker />}
+                    {value?.type == BACKGROUND_TYPES.IMAGE && (component == 'GLOBAL_BG' ? <BodyBackgroundImage value={value} onChange={onChange} /> : <BackgroundImage value={value} onChange={onChange} />)}
                 </div>
             </div>
         </div>

@@ -18,7 +18,6 @@ const EditorComponent = ({ index, config, onConfigUpdate }) => {
         setActiveKey(activeComponent.childId || '00')
     }, [activeComponent])
 
-
     const onChange = (key: string | string[]) => {
         if (key.length) setActiveKey(key[0]);
         else setActiveKey(null)

@@ -3,7 +3,6 @@ import { getGradientValue } from "./utils";
 
 const getBackground = (config) => {
 
-
     const configSample = {
         value: '#000',
         type: 'Color',
@@ -11,6 +10,7 @@ const getBackground = (config) => {
     }
 
     let background = '';
+    let backgroundImage = '';
     switch (config?.type) {
         case BACKGROUND_TYPES.COLOR:
             background = config.colors[0].color
@@ -19,7 +19,14 @@ const getBackground = (config) => {
             background = getGradientValue(config.colors, config.direction);
             break;
         case BACKGROUND_TYPES.IMAGE:
-            background = config.src
+            background = config.value;
+            backgroundImage = `url(${config.src})`;
+            return {
+                backgroundImage,
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover'
+            }
             break;
 
         default:

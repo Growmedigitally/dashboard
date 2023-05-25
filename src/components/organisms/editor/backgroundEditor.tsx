@@ -3,7 +3,7 @@ import BackgroundElement from '@molecules/styleElement/backgroundElement';
 import { removeObjRef } from '@util/utils';
 
 
-function BackgroundEditor({ config, onConfigUpdate }) {
+function BackgroundEditor({ component = '', config, onConfigUpdate }) {
 
     const configSample = {
         background: {
@@ -18,7 +18,7 @@ function BackgroundEditor({ config, onConfigUpdate }) {
         onConfigUpdate(configCopy);
     };
 
-    return (config ? <BackgroundElement value={config?.background} onChange={(value) => handleBgChange(value)} /> : null)
+    return (config ? <BackgroundElement component={component} value={config?.background} onChange={(value) => handleBgChange(value)} /> : null)
 }
 
 export default BackgroundEditor

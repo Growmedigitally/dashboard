@@ -15,7 +15,9 @@ export const COLOR_INITIAL_VALUE = {
 
 export const IMAGE_INITIAL_VALUE = {
     type: BACKGROUND_TYPES.IMAGE,
-    value: "#D3CCE3",
-    colors: [],
-    src: ''
+    value: '#D3CCE3',
+    src: 'https://orra.respark.in/assets/images/female/bg.png',
+    isMobile: true,
+    isDesktop: false,
+    colors: [{ color: '#D3CCE3', format: 'hex' }]
 }
