@@ -20,7 +20,7 @@
       "@hook/*": ["src/hooks/*"],
       "@store/*": ["src/redux/stateProvider/*"],
       "@util/*": ["src/utils/*"],
-      "@apiService/*": ["pages/apis/*"],
+      "@apiService/*": ["pages/apiService/*"],
       "@assets/*": ["public/assets/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],

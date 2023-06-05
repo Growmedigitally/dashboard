@@ -1,4 +1,4 @@
-import { Popover, Select } from 'antd';
+import { Button, Drawer, Popover, Select, Space } from 'antd';
 import React, { useEffect, useState } from 'react'
 import ColorPickerComponent from '../colorPicker';
 import styles from './gradientColor.module.scss';
@@ -30,9 +30,15 @@ const valueSample = {
 function GradientColor({ value, onChange }) {
 
     const [showGradientsList, setShowGradientsList] = useState(false);
+    const [originalState, setOriginalState] = useState({ isUpdated: false, value: null });
+
+
+    useEffect(() => {
+        (showGradientsList) && setOriginalState({ isUpdated: false, value })
+    }, [showGradientsList])
 
     const onSelectGradient = (selectedConfig) => {
-        setShowGradientsList(false);
+        !selectedConfig.doNotCloseDrawer && setShowGradientsList(false);
         const colors = selectedConfig.colors.map(c => { return { color: c, format: 'hex' } })
         const gradientObj = {
             value: getGradientValue(colors),
@@ -79,6 +85,19 @@ function GradientColor({ value, onChange }) {
         onChange(valueCopy);
     }
 
+
+    const handleSave = (imageData, doNotCloseDrawer) => {
+        onSelectGradient({ ...imageData, doNotCloseDrawer });
+    }
+
+    const handleCancel = () => {
+        if (!originalState.isUpdated) {
+            onChange(originalState.value)
+        }
+        setShowGradientsList(false);
+    }
+
+
     return (
         <div className={`${styleElementCSS.styleElementWrap} ${styles.gradientColorWrap}`}>
             {/* {showLabel && <div className={styleElementCSS.label}>Gradient Color</div>} */}
@@ -114,26 +133,30 @@ function GradientColor({ value, onChange }) {
                             options={gradientDirectionsList}
                         />
                     </div>
-                    <Popover
-                        // open={showGradientsList}
-                        content={<Gradients onSelect={(value) => onSelectGradient(value)} />}
-                        title={<div className={styles.popoverTitle}>
-                            Colorful Gradients Pallets
-                            <div className={`${styles.iconWrap}`} onClick={() => setShowGradientsList(false)}>
-                                <MdOutlineClose />
-                            </div>
-                        </div>}
-                        placement="left"
-                        trigger="hover"
-                        overlayInnerStyle={{ padding: '0px' }}
+                    <div className={`${styles.exploreWrap} ${showGradientsList ? styles.active : ''}`} onClick={() => setShowGradientsList(true)}>Explore More</div>
+                    <Drawer
+                        title="Colorful Gradients Pallets"
+                        placement='right'
+                        open={showGradientsList}
+                        width={450}
+                        destroyOnClose
+                        onClose={handleCancel}
+                        className={styles.imagePickerModalWrap}
+                        maskStyle={{ background: 'unset' }}
+                        bodyStyle={{ padding: '0px' }}
+                        footer={
+                            <Space>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                                <Button type="primary" onClick={() => setShowGradientsList(false)}>Update</Button>
+                            </Space>
+                        }
+                        footerStyle={{ display: 'flex', justifyContent: "flex-end", marginBottom: '5px' }}
                     >
-                        <div className={`${styles.exploreWrap} ${showGradientsList ? styles.active : ''}`}
-                            onMouseEnter={() => setShowGradientsList(true)}
-                        // onMouseLeave={() => setShowGradientsList(false)}
-                        >
-                            Explore More
+                        <div className={styles.modalContentWrap}>
+                            <Gradients onSelect={(value) => handleSave(value, true)} />
                         </div>
-                    </Popover>
+                    </Drawer>
+
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from "@organismsCSS/staticPages/staticPages.module.scss";
-import { Button } from 'antd';
+import { Button, Result } from 'antd';
 import Image from 'next/image'
 import Router from 'next/router';
 
@@ -8,7 +8,13 @@ function NotFound() {
     return (
         <div className={styles.pageWrap}>
             <div className={styles.contentWrap}>
-                <div className={styles.imageWrap}>
+                <Result
+                    status="404"
+                    title="404"
+                    subTitle="Sorry, the page you visited does not exist."
+                    extra={<Button type="primary" onClick={() => Router.push('/')}>Go to dashboard</Button>}
+                />
+                {/* <div className={styles.imageWrap}>
                     <Image src="/assets/images/404.png" alt="me" width="300" height="300" />
                 </div>
                 <div className={styles.textWrap}>
@@ -18,7 +24,7 @@ function NotFound() {
                     <Button type="link" onClick={() => Router.push('/')}>
                         Go to dashboard
                     </Button>
-                </div>
+                </div> */}
             </div>
         </div>
     )

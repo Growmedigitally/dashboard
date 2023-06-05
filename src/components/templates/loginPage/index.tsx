@@ -1,4 +1,4 @@
-import { getUserByCredentials } from "pages/apis/user";
+import { getUserByCredentials } from "pages/apiService/user";
 import { useAppDispatch } from "src/hooks/useAppDispatch";
 import { useAppSelector } from "src/hooks/useAppSelector";
 import Router from "next/router";

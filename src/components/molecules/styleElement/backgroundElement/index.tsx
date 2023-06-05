@@ -9,7 +9,7 @@ import GradientColor from '../gradientColor';
 import ImagePicker from '../imagePicker';
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 import { BACKGROUND_TYPES } from '@constant/common';
-import { COLOR_INITIAL_VALUE, GRADIENT_INITIAL_VALUE, IMAGE_INITIAL_VALUE } from 'src/data/backgroundValues';
+import { COLOR_INITIAL_VALUE, GRADIENT_INITIAL_VALUE, IMAGE_INITIAL_VALUE } from 'src/data/backgroundStyleValues';
 import BodyBackgroundImage from '../bodyBackgroundImage';
 import BackgroundImage from '../backgroundImage';
 
@@ -24,6 +24,7 @@ const valueSample = {
     type: 'Color',
     colors: [{ color: '#000', format: 'hex' }]
 }
+
 function BackgroundElement({ component = '', onChange, value }) {
     const { token } = theme.useToken();
 

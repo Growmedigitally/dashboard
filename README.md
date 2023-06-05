@@ -38,3 +38,9 @@ Contains all business logic
 
 
 ## Folder Structure
+
+## Images
+1. 3:2   = small banner/Blog Image
+2. 1:1   = square banner/Website Banner
+3. 16:9  = large banner/Hero Image
+4. 24:24 = Icons

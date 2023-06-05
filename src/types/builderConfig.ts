@@ -1,7 +1,7 @@
-interface BackgroundValue {
+interface BackgroundStyleValue {
     type: string,
     value: string,
     colors: string[],
 }
 
-export default BackgroundValue;
+export default BackgroundStyleValue;

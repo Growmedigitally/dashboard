@@ -6,14 +6,14 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { removeObjRef } from '@util/utils';
 import bodyBackgroundImages from 'src/data/bodyBackgroundImages';
 import { BiShow, BiCheck } from 'react-icons/bi'
+import BgImageRenderer from '@molecules/bgImageRenderer';
 
 
 function BodyBackgroundImage({ label = '', value, onChange }) {
 
     const { token } = theme.useToken();
-    const [showPreview, setShowPreview] = useState({ active: false, imageIndex: 0 });
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null)
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -21,7 +21,7 @@ function BodyBackgroundImage({ label = '', value, onChange }) {
 
     const handleOk = () => {
         setIsModalOpen(false);
-        onChangeImage();
+        onChangeImage(selectedImage);
     };
 
     const handleCancel = () => {
@@ -35,9 +35,9 @@ function BodyBackgroundImage({ label = '', value, onChange }) {
         onChange(valueCopy);
     };
 
-    const onChangeImage = () => {
+    const onChangeImage = (imageData) => {
         const valueCopy = removeObjRef(value);
-        valueCopy.src = selectedImage.src;
+        valueCopy.src = imageData.src;
         onChange(valueCopy);
         setSelectedImage(null)
     }
@@ -76,28 +76,12 @@ function BodyBackgroundImage({ label = '', value, onChange }) {
                         <div className={styles.bgImagesList}>
                             {bodyBackgroundImages.map((imageData, imageIndex) => {
                                 return <React.Fragment key={imageIndex}>
-                                    <div className={`${styles.imageWrap} ${selectedImage?.src == imageData.src ? styles.active : ''}`}
-                                        style={{ outlineColor: selectedImage?.src == imageData.src ? token.colorPrimary : '#d1d5e8' }}
-                                    >
-                                        <div className={styles.imageContent}>
-                                            <div className={styles.imageActionsWrap}>
-                                                <Button onClick={() => setShowPreview({ active: true, imageIndex })} type="text" icon={<BiShow />} size={'middle'}>Preview</Button>
-                                                <Button onClick={() => setSelectedImage(imageData)} type="primary" icon={<BiCheck />} size={'middle'}>Select</Button>
-                                            </div>
-                                            <Image src={imageData.src} preview={false} />
-                                            {(showPreview.active && showPreview.imageIndex == imageIndex) && <Image
-                                                style={{ display: 'none' }}
-                                                src={imageData.src}
-                                                preview={{
-                                                    visible: Boolean(showPreview.active && showPreview.imageIndex == imageIndex),
-                                                    scaleStep: 1,
-                                                    src: imageData.src,
-                                                    style: { background: token.colorBgLayout },
-                                                    onVisibleChange: (value) => setShowPreview({ active: value, imageIndex }),
-                                                }} />}
-                                        </div>
-                                        <div className={styles.title} style={{ backgroundColor: selectedImage?.src == imageData.src ? token.colorPrimary : '#d1d5e8' }}>{imageData.title}</div>
-                                    </div>
+                                    <BgImageRenderer
+                                        active={selectedImage?.src == imageData.src}
+                                        imageData={imageData}
+                                        onSelect={(image) => setSelectedImage(image)}
+                                        styleProps={{ height: '200px', column: 4 }}
+                                    />
                                 </React.Fragment>
                             })}
                         </div>
