@@ -19,7 +19,7 @@ function ContentAlignment({ value, onChange }) {
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.contentWrap}`}>
             <div className={styleElementCSS.label}>Content Alighnment</div>
-            <div className={`${styleElementCSS.elementWrapp} ${styles.propertyWrapper}`}>
+            <div className={`${styleElementCSS.elementWrap} ${styles.propertyWrapper}`}>
                 {optionsList.map((type, i) => {
                     return <React.Fragment key={i}>
                         <div className={styles.iconWrap} onClick={() => onChangeValue(type.value)} style={{

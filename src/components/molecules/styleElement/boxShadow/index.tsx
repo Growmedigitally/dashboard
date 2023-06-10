@@ -28,7 +28,7 @@ function BoxShadow({ onChange, value }) {
     return (
         <div className={`${styleElementCSS.styleWrap}`}>
             <div className={styleElementCSS.label}>Box Shadow</div>
-            <div className={`${styleElementCSS.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap}`}>
                 <Select
                     showSearch
                     defaultValue={optionsList[0].value}

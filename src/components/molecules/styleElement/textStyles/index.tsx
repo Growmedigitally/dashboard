@@ -45,7 +45,7 @@ function TextStyles({ config, onChange }) {
 
         <div className={`${styleElementCSS.styleWrap} ${styles.textStylesWrap}`}>
             <div className={`${styleElementCSS.label} ${styles.label}`}>Text Styles</div>
-            <div className={`${styleElementCSS.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap}`}>
                 <div className={styles.propertyWrapper}>
                     <FontFamily value={config.fontFamily} onChange={onChange} />
                     <FontSize value={config.fontSize} onChange={onChange} />

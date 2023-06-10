@@ -6,7 +6,7 @@ function ImagePicker({ label = false }) {
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.imagePickerWrap}`}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
-            <div className={`${styleElementCSS.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap}`}>
                 <div className={styles.uploadedImage}>
 
                 </div>

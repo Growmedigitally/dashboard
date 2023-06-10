@@ -28,7 +28,7 @@ function ColorPresets({ config, onConfigUpdate }) {
 
         <div className={`${styleElementCSS.styleWrap} ${styles.colorPresetsWrap}`}>
             <div className={styleElementCSS.label}>Saved Colors</div>
-            <div className={`${styleElementCSS.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap}`}>
                 {config.map((colorGroup: any, groupIndex: number) => {
                     return <div className={styles.colorGroupWrap} key={groupIndex + 1}>
                         <div className={styles.heading}>{colorGroup.label}</div>

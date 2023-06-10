@@ -15,7 +15,7 @@ function TextElement({ value, onChange, label = '', placeholder, minRows = 1, ma
     return (
         <div className={`${styleElementCSS.styleWrap}`}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
-            <div className={`${styleElementCSS.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap}`}>
                 <TextArea
                     value={activeValue}
                     onChange={(e) => onChangeValue(e.target.value)}

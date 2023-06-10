@@ -23,7 +23,7 @@ function FontSize({ showLabel = true, value, onChange }) {
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.fontSizeElementWrap}`}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Font Size</div>}
-            <div className={styleElementCSS.elementWrapp}>
+            <div className={styleElementCSS.elementWrap}>
                 <Select
                     // notFoundContent={<Empty description=""/>}
                     showSearch

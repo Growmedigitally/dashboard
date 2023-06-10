@@ -76,11 +76,11 @@ function DirectionProperty({ propertyType, onChange, value }) {
     return (
         <div className={`${styleElementCSS.styleWrap}`}>
             <div className={styleElementCSS.label}>{propertyType}</div>
-            <div className={`${styleElementCSS.elementWrapp} ${styles.elementOuter}`}>
+            <div className={`${styleElementCSS.elementWrap} ${styles.elementOuter}`}>
                 {typesList.map((type, i) => {
                     return <div key={i} className={`${styleElementCSS.styleWrap} ${styles.elementWrap}`}>
                         <div className={`${styleElementCSS.label}  ${styles.elementLabel}`}>{type.label} ({property[type.value]}{property.type})</div>
-                        <div className={`${styleElementCSS.elementWrapp} ${styles.element}`}>
+                        <div className={`${styleElementCSS.elementWrap} ${styles.element}`}>
                             <Slider
                                 min={0}
                                 max={100}
@@ -99,7 +99,7 @@ function DirectionProperty({ propertyType, onChange, value }) {
                 <Divider className={styles.devider} children={<div style={{ fontSize: '10px' }}>Or</div>} />
                 <div className={`${styleElementCSS.styleWrap} ${styles.elementWrap} ${styles.commonElementWrap}`}>
                     <div className={`${styleElementCSS.label} ${styles.elementLabel}`}>Common</div>
-                    <div className={`${styleElementCSS.elementWrapp} ${styles.element}`}>
+                    <div className={`${styleElementCSS.elementWrap} ${styles.element}`}>
                         <Select
                             showSearch
                             value={commonProperty}

@@ -30,7 +30,7 @@ export default function LineHeight({ showLabel = true, value, onChange }) {
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Line Spacing</div>}
-            <div className={styleElementCSS.elementWrapp}>
+            <div className={styleElementCSS.elementWrap}>
                 <Select
                     showSearch
                     defaultValue={optionsList[0].value}

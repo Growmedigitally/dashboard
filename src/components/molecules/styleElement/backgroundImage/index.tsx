@@ -38,7 +38,7 @@ function BackgroundImage({ component = '', label = '', value, onChange }) {
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.backgroundImageWrap}`}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
-            <div className={`${styleElementCSS.elementWrapp} ${styles.imageContentWrap}`}>
+            <div className={`${styleElementCSS.elementWrap} ${styles.imageContentWrap}`}>
                 <div className={styles.uploadedImage} style={{
                     backgroundImage: value.src ? `url(${value.src})` : 'unset', backgroundPosition: "center center",
                     backgroundRepeat: "no-repeat",
@@ -64,7 +64,7 @@ function BackgroundImage({ component = '', label = '', value, onChange }) {
             </div>
             <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`}>
                 <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Image Blur </div>
-                <div className={`${styleElementCSS.elementWrapp} ${styles.imageBlurContent}`}>
+                <div className={`${styleElementCSS.elementWrap} ${styles.imageBlurContent}`}>
                     <Slider
                         min={0}
                         max={1}

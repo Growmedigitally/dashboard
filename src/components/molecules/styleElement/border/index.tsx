@@ -52,10 +52,10 @@ function Border({ onChange, value }) {
         <div className={`${styleElementCSS.styleWrap} ${styles.borderWrap}`}>
             <div className={styleElementCSS.label}>Border</div>
 
-            <div className={`${styleElementCSS.elementWrapp} ${styles.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap} ${styles.elementWrap}`}>
                 <div className={`${styleElementCSS.styleWrap} ${styles.borderItemWrap}`}>
                     <div className={styleElementCSS.label}>Size</div>
-                    <div className={styleElementCSS.elementWrapp}>
+                    <div className={styleElementCSS.elementWrap}>
                         <Select
                             showSearch
                             defaultValue={sizeList[0].value}
@@ -68,7 +68,7 @@ function Border({ onChange, value }) {
                 </div>
                 <div className={`${styleElementCSS.styleWrap} ${styles.borderItemWrap}`}>
                     <div className={styleElementCSS.label}>Type</div>
-                    <div className={styleElementCSS.elementWrapp}>
+                    <div className={styleElementCSS.elementWrap}>
                         <Select
                             defaultValue={typeList[0].value}
                             style={{ width: '100%' }}
@@ -80,13 +80,13 @@ function Border({ onChange, value }) {
                 </div>
                 <div className={`${styleElementCSS.styleWrap} ${styles.borderItemWrap}`}>
                     <div className={styleElementCSS.label}>Color</div>
-                    <div className={styleElementCSS.elementWrapp}>
+                    <div className={styleElementCSS.elementWrap}>
                         {border && <ColorPickerComponent parentStyles={{ margin: 'unset' }} hideColorString hideTransparency value={{ format: 'hex', color: border?.color }} onChange={(value) => onChangeValue('color', value.color)} />}
                     </div>
                 </div>
                 <div className={`${styleElementCSS.styleWrap} ${styles.borderItemWrap} ${styles.resetValuesWrap}`}>
                     <div className={`${styleElementCSS.label} ${styles.label}`}></div>
-                    <div onClick={onReset} className={`${styleElementCSS.elementWrapp}  ${styles.resetValues} ${border?.size == '0px' ? styles.active : ''}`}>
+                    <div onClick={onReset} className={`${styleElementCSS.elementWrap}  ${styles.resetValues} ${border?.size == '0px' ? styles.active : ''}`}>
                         Unset
                     </div>
                 </div>

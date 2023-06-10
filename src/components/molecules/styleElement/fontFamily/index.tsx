@@ -34,7 +34,7 @@ export default function FontFamily({ showLabel = true, value, onChange }) {
     return (
         <div className={`styleElement ${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Font Family</div>}
-            <div className={styleElementCSS.elementWrapp}>
+            <div className={styleElementCSS.elementWrap}>
                 <Select
                     showSearch
                     defaultValue={optionsList[0].value}

@@ -60,7 +60,7 @@ function BackgroundElement({ component = '', onChange, value }) {
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.backgroundElementWrap}`}>
             <div className={styleElementCSS.label}>Background</div>
-            <div className={`${styleElementCSS.elementWrapp}`}>
+            <div className={`${styleElementCSS.elementWrap}`}>
                 <div className={styles.segmentWrap}>
                     <Segmented
                         size="small"
