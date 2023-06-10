@@ -6,11 +6,9 @@ import { VscColorMode } from 'react-icons/vsc';
 import { BsFillImageFill } from 'react-icons/bs';
 import styles from "./backgroundElement.module.scss";
 import GradientColor from '../gradientColor';
-import ImagePicker from '../imagePicker';
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 import { BACKGROUND_TYPES } from '@constant/common';
 import { COLOR_INITIAL_VALUE, GRADIENT_INITIAL_VALUE, IMAGE_INITIAL_VALUE } from 'src/data/backgroundStyleValues';
-import BodyBackgroundImage from '../bodyBackgroundImage';
 import BackgroundImage from '../backgroundImage';
 
 const typeOptions = [
@@ -60,7 +58,7 @@ function BackgroundElement({ component = '', onChange, value }) {
     }
 
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.backgroundElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.backgroundElementWrap}`}>
             <div className={styleElementCSS.label}>Background</div>
             <div className={`${styleElementCSS.elementWrapp}`}>
                 <div className={styles.segmentWrap}>
@@ -76,7 +74,7 @@ function BackgroundElement({ component = '', onChange, value }) {
                 <div className={styles.content}>
                     {value?.type == BACKGROUND_TYPES.COLOR && <BackgroundColor value={value?.colors[0]} onChange={(newColor) => onChangeBgColor(newColor)} />}
                     {value?.type == BACKGROUND_TYPES.GRADIENT && <GradientColor value={value} onChange={onChange} />}
-                    {value?.type == BACKGROUND_TYPES.IMAGE && (component == 'GLOBAL_BG' ? <BodyBackgroundImage value={value} onChange={onChange} /> : <BackgroundImage value={value} onChange={onChange} />)}
+                    {value?.type == BACKGROUND_TYPES.IMAGE && (<BackgroundImage component={component} value={value} onChange={onChange} />)}
                 </div>
             </div>
         </div>

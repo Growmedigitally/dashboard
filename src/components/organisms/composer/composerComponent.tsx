@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from '@organismsCSS/composer/composer.module.scss'
-import { BUILDER_PAGE } from '@constant/common';
+import { BACKGROUND_TYPES, BUILDER_PAGE } from '@constant/common';
 import { isContainerElement } from '@util/utils';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { useAppSelector } from '@hook/useAppSelector';
@@ -19,7 +19,6 @@ function ComposerComponent({ config, currentPage, parentId }: pageProps) {
     const dispatch = useAppDispatch();
     const builderState = useAppSelector(getBuilderState);
     const activeComponent = useAppSelector(getActiveEditorComponent);
-
     const onClickAction = (event: any, action: string) => {
         if ((Boolean(currentPage == BUILDER_PAGE) && !isContainerElement(componentConfig))) {
             switch (action) {
@@ -33,9 +32,28 @@ function ComposerComponent({ config, currentPage, parentId }: pageProps) {
             event.stopPropagation();
         }
     }
-
     const renerComponent = () => {
         return <React.Fragment>
+            {(componentConfig?.background?.type == BACKGROUND_TYPES.IMAGE) && <style dangerouslySetInnerHTML={{
+                __html: `
+                #${componentConfig.uid}{
+                    position:relative;
+                }
+                #${componentConfig.uid}:after {
+                        content: ' ';
+                        display: block;
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        opacity:${componentConfig?.background?.opacity || 1};
+                        background:url(${componentConfig?.background?.src});
+                        background-position: center center;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                    }`
+            }}></style>}
             <ComponentType
                 style={{ ...componentConfig.style, ...getBackground(componentConfig.background) }}
                 id={componentConfig.uid}

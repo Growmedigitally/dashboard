@@ -81,4 +81,15 @@
     .imageWrap {
     }
   }
+  .paginationWrap {
+    width: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    bottom: 2px;
+    padding: 10px 0;
+    right: 200px;
+  }
 }

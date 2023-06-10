@@ -1,9 +1,9 @@
 import { Button, theme, Image, Tooltip } from 'antd';
 import React, { useState } from 'react'
 import { BiCheck, BiShow } from 'react-icons/bi';
-import styles from './bgImageRenderer.module.scss';
+import styles from './bgImageEditor.module.scss';
 
-function BgImageRenderer({ active, imageData, onSelect, styleProps }) {
+function BgImageEditor({ active, imageData, onSelect, styleProps }) {
     const { token } = theme.useToken();
     const [showPreview, setShowPreview] = useState(false);
 
@@ -37,4 +37,4 @@ function BgImageRenderer({ active, imageData, onSelect, styleProps }) {
     )
 }
 
-export default BgImageRenderer
+export default BgImageEditor

@@ -1,19 +1,23 @@
-import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST } from "@constant/common";
+import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST_PEXELS } from "@constant/common";
 import { APIROUTINGS } from "src/utils/apiRoutings/RestClient";
 const SEARCH_API_URL = `https://api.pexels.com/v1/search?`;
 
 export const getPexelsImagesBySearchQuery = (searchQuery, orientation = BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, page = 1) => {
     return new Promise((res, rej) => {
-        APIROUTINGS.GET(`${SEARCH_API_URL}orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST}&query=${searchQuery}`, {
+        APIROUTINGS.GET(`${SEARCH_API_URL}orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST_PEXELS}&query=${searchQuery}`, {
             Accept: "application/json",
             Authorization: process.env.NEXT_PUBLIC_PEXELS_API_CLIENTID,
-        })
-            .then((response) => {
-                res(response.data.photos.map((i) => { return { src: i.src.large } }));
-            }).catch(function (error) {
-                rej(error.response.data);
-                console.log(`Error in api/unsplash/getImages = `, error);
-            });
+        }).then((response) => {
+            const data = {
+                total: response.data.total_results,
+                totalPages: (response.data.total_results / SEARCHED_IMAGES_COUNT_PER_REQUEST_PEXELS).toFixed(),
+                images: response.data.photos.map((i) => { return { src: i.src.large } })
+            }
+            res(data);
+        }).catch(function (error) {
+            rej(error.response.data);
+            console.log(`Error in api/unsplash/getImages = `, error);
+        });
     })
 }
 

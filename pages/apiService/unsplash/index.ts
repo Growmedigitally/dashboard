@@ -1,4 +1,4 @@
-import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST } from "@constant/common";
+import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST_UNSPLASH } from "@constant/common";
 import { APIROUTINGS } from "src/utils/apiRoutings/RestClient";
 const SEARCH_API_URL = `https://api.unsplash.com/search/photos?client_id=${process.env.NEXT_PUBLIC_UNSPLASH_API_CLIENTID}`;
 const TOPICS_API_URL = `https://api.unsplash.com/topics?client_id=${process.env.NEXT_PUBLIC_UNSPLASH_API_CLIENTID}`;
@@ -32,10 +32,14 @@ const TOPICS_API_URL = `https://api.unsplash.com/topics?client_id=${process.env.
 
 export const getUnsplashImagesBySearchQuery = (searchQuery, orientation = BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, page = 1) => {
     return new Promise((res, rej) => {
-        APIROUTINGS.GET(`${SEARCH_API_URL}&orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST}&query=${searchQuery}`)
+        APIROUTINGS.GET(`${SEARCH_API_URL}&orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST_UNSPLASH}&query=${searchQuery}`)
             .then((response) => {
-
-                res(response.data.results.map((i) => { return { src: i.urls.raw } }));
+                const data = {
+                    total: response.data.total,
+                    totalPages: response.data.total_pages,
+                    images: response.data.results.map((i) => { return { src: i.urls.raw } })
+                }
+                res(data);
             }).catch(function (error) {
                 rej(error.response.data);
                 console.log(`Error in api/unsplash/getImages = `, error);

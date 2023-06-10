@@ -13,7 +13,7 @@ function TextElement({ value, onChange, label = '', placeholder, minRows = 1, ma
         setActiveValue(value);
     }
     return (
-        <div className={`${styleElementCSS.styleElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap}`}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
             <div className={`${styleElementCSS.elementWrapp}`}>
                 <TextArea

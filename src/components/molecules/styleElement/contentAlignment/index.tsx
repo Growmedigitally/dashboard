@@ -17,7 +17,7 @@ function ContentAlignment({ value, onChange }) {
     }
 
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.contentWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.contentWrap}`}>
             <div className={styleElementCSS.label}>Content Alighnment</div>
             <div className={`${styleElementCSS.elementWrapp} ${styles.propertyWrapper}`}>
                 {optionsList.map((type, i) => {

@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import styles from './backgroundImage.module.scss';
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
-import { Button, Checkbox, Image, Modal, Switch, theme } from 'antd';
+import { Button, Checkbox, Image, Modal, Slider, Switch, theme } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { removeObjRef } from '@util/utils';
-import bodyBackgroundImages from 'src/data/bodyBackgroundImages';
-import { BiShow, BiCheck } from 'react-icons/bi'
 import ImagePickerModal from '../../../organisms/imagePickerModal';
 
 
-function BackgroundImage({ label = '', value, onChange }) {
+function BackgroundImage({ component = '', label = '', value, onChange }) {
 
     const { token } = theme.useToken();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,11 +29,21 @@ function BackgroundImage({ label = '', value, onChange }) {
         onChange(valueCopy);
     }
 
+    const onChangeImageOpacity = (opacityValue) => {
+        const valueCopy = removeObjRef(value);
+        valueCopy.opacity = opacityValue;
+        onChange(valueCopy);
+    }
+
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.backgroundImageWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.backgroundImageWrap}`}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
             <div className={`${styleElementCSS.elementWrapp} ${styles.imageContentWrap}`}>
-                <div className={styles.uploadedImage} style={{ backgroundImage: value.src ? `url(${value.src})` : 'unset' }}></div>
+                <div className={styles.uploadedImage} style={{
+                    backgroundImage: value.src ? `url(${value.src})` : 'unset', backgroundPosition: "center center",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: component == 'GLOBAL_BG' ? "cover" : 'contain'
+                }}></div>
                 <div className={styles.actionsWrap}>
                     <div className={styles.actions} style={{ background: 'unset', color: 'black' }}>
                         <div className={styles.heading}>
@@ -51,7 +59,24 @@ function BackgroundImage({ label = '', value, onChange }) {
                     <div className={`${styles.actions} ${styles.updateImageBtn}`} style={{ borderColor: token.colorBgBase }} onClick={showModal}>
                         Change Image
                     </div>
-                    {isModalOpen && <ImagePickerModal open={isModalOpen} value={value} onSave={(image) => onChangeImage(image)} onCancel={() => setIsModalOpen(false)} />}
+                    <ImagePickerModal component={component} open={isModalOpen} value={value} onSave={(image) => onChangeImage(image)} onCancel={() => setIsModalOpen(false)} />
+                </div>
+            </div>
+            <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`}>
+                <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Image Blur </div>
+                <div className={`${styleElementCSS.elementWrapp} ${styles.imageBlurContent}`}>
+                    <Slider
+                        min={0}
+                        max={1}
+                        className={styles.siderWrap}
+                        defaultValue={1}
+                        style={{ width: '100%' }}
+                        railStyle={{ background: token.colorBgMask, }}
+                        trackStyle={{ background: `black`, }}
+                        onChange={(value) => onChangeImageOpacity(value)}
+                        value={value.opacity}
+                        step={0.1}
+                    />
                 </div>
             </div>
         </div>

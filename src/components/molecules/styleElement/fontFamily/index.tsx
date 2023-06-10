@@ -32,7 +32,7 @@ export default function FontFamily({ showLabel = true, value, onChange }) {
     }
 
     return (
-        <div className={`styleElement ${styleElementCSS.styleElementWrap} ${styles.fontFamilyElementWrap}`}>
+        <div className={`styleElement ${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Font Family</div>}
             <div className={styleElementCSS.elementWrapp}>
                 <Select

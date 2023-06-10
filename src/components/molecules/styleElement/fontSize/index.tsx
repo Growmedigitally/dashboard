@@ -21,7 +21,7 @@ function FontSize({ showLabel = true, value, onChange }) {
     }
 
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.fontSizeElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.fontSizeElementWrap}`}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Font Size</div>}
             <div className={styleElementCSS.elementWrapp}>
                 <Select

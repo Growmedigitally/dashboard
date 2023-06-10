@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import styles from './searchImage.module.scss'
-import { Input, Result, Segmented, theme } from 'antd';
-import BgImageRenderer from '@molecules/bgImageRenderer';
+import { Input, Pagination, Result, Segmented, theme } from 'antd';
+import BgImageEditor from '@molecules/bgImageEditor';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { getLoaderState, toggleLoader } from '@reduxStore/slices/loader';
 import { getPexelsImagesBySearchQuery } from 'pages/apiService/pexels';
@@ -12,6 +12,9 @@ import { getPixabayImagesBySearchQuery } from 'pages/apiService/pixabay';
 import { FaUnsplash } from 'react-icons/fa';
 import { RiPixelfedLine } from 'react-icons/ri';
 import { SiPixiv } from 'react-icons/si'
+import type { PaginationProps } from 'antd';
+import { removeObjRef } from '@util/utils';
+
 const { Search } = Input;
 
 const SEARCH_SOURCE_TYPES = [
@@ -23,16 +26,17 @@ const SEARCH_SOURCE_TYPES = [
 function SearchImage({ config, setSelectedImage, selectedImage }) {
 
     const { token } = theme.useToken();
-    const dispatch = useAppDispatch()
-    const [fetchedImages, setFetchedImages] = useState([])
+    const dispatch = useAppDispatch();
+    const [fetchedImages, setFetchedImages] = useState({
+        'Unsplash': { total: 0, totalPages: 0, images: [], currentPage: 1 },
+        'Pexels': { total: 0, totalPages: 0, images: [], currentPage: 1 },
+        'Pixabay': { total: 0, totalPages: 0, images: [], currentPage: 1 },
+    })
     const [searchQuery, setSearchQuery] = useState('');
     const [isError, setIsError] = useState(false);
     const isLoading = useAppSelector(getLoaderState)
     const [activeSearchSourceTab, setActiveSearchSourceTab] = useState(SEARCH_SOURCE_TYPES[0]);
-
-    useEffect(() => {
-        onSearchImages(searchQuery);
-    }, [activeSearchSourceTab])
+    const [isNotFound, setIsNotFound] = useState(false);
 
     const getSegmentOptions = () => {
         return SEARCH_SOURCE_TYPES.map((option) => {
@@ -46,13 +50,20 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
         })
     }
 
-    const onSearchImages = (query) => {
+    const onSearchImages = (query, activeSource = activeSearchSourceTab, pageNumber = fetchedImages[activeSearchSourceTab.name].currentPage) => {
         setIsError(false)
         if (query) {
             dispatch(toggleLoader(true));
-            activeSearchSourceTab.apiFunction(query, BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, 1).then((imagesRes: any) => {
+            setIsNotFound(false);
+            activeSource.apiFunction(query, BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, pageNumber).then((imagesRes: any) => {
                 console.log(imagesRes)
-                setFetchedImages(imagesRes)
+                if (imagesRes.images.length) {
+                    const fetchedData = removeObjRef(fetchedImages);
+                    fetchedData[activeSource.name].images = [...fetchedData[activeSource.name].images, ...imagesRes.images];
+                    fetchedData[activeSource.name].total = imagesRes.total;
+                    fetchedData[activeSource.name].totalPages = imagesRes.totalPages;
+                    setFetchedImages(fetchedData);
+                } else setIsNotFound(true);
                 dispatch(toggleLoader(false));
             })
         } else {
@@ -62,11 +73,20 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
 
     const onClickOptionsTab = (tab: any) => {
         setActiveSearchSourceTab(tab);
+        if (fetchedImages[tab.name].images.length == 0) onSearchImages(searchQuery, tab);
     }
+
+    const onChangePageNumber: PaginationProps['onChange'] = (pageNumber) => {
+        console.log('Page: ', pageNumber);
+        const fetchedData = removeObjRef(fetchedImages);
+        fetchedData[activeSearchSourceTab.name].currentPage = pageNumber;
+        setFetchedImages(fetchedData);
+        onSearchImages(searchQuery, activeSearchSourceTab, pageNumber);
+    };
 
     return (
         <div className={styles.serachImagesWrap}>
-            <div className={styles.headerWrap}>
+            <div className={styles.headerWrap} style={{ background: token.colorBgElevated }}>
                 <div className={styles.actionsWrap}>
                     <div className={styles.segmentWrap}>
                         <Segmented
@@ -103,10 +123,10 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
                 </div>
             </div>
             <div className={styles.imagesWrap}>
-                {fetchedImages.length != 0 ? <>
-                    {fetchedImages.map((imageData, i) => {
+                {fetchedImages[activeSearchSourceTab.name].images.length != 0 ? <>
+                    {fetchedImages[activeSearchSourceTab.name].images.map((imageData, i) => {
                         return <Fragment key={i}>
-                            <BgImageRenderer
+                            <BgImageEditor
                                 active={selectedImage?.src == imageData}
                                 imageData={imageData}
                                 onSelect={(image) => setSelectedImage(image)}
@@ -115,15 +135,23 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
                         </Fragment>
                     })}
                 </> : <>
-                    {searchQuery && <>
+                    {isNotFound && <>
                         <Result
                             status="500"
                             title="Images not found"
                             subTitle="Try another search"
-                        // extra={<Button type="primary">Back Home</Button>}
                         /></>}
                 </>}
             </div>
+            {fetchedImages[activeSearchSourceTab.name].totalPages > 1 && <div className={styles.paginationWrap}>
+                <Pagination
+                    defaultCurrent={fetchedImages[activeSearchSourceTab.name].currentPage}
+                    total={fetchedImages[activeSearchSourceTab.name].totalPages}
+                    onChange={onChangePageNumber}
+                    showSizeChanger={false}
+                    simple
+                />
+            </div>}
         </div>
     )
 }

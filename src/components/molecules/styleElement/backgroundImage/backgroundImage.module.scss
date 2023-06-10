@@ -4,16 +4,17 @@
   width: 100%;
   padding: 8px;
   margin-bottom: 0;
+  padding-bottom: 0;
   .imageContentWrap {
     width: 100%;
     @include flexStart;
     gap: 10px;
     .uploadedImage {
       width: 100%;
-      background: white;
+      // background: white;
       padding: 7px;
       border-radius: 4px;
-      height: 154px;
+      height: 130px;
       background-position: center; /* Center the image */
       background-repeat: no-repeat; /* Do not repeat the image */
       background-size: cover; /* Resize the background image to cover the entire container */
@@ -29,7 +30,7 @@
         @include flexStart;
         flex-direction: column;
         gap: 10px;
-        padding: 12px;
+        padding: 0 12px;
         background: white;
         border-radius: 4px;
         .heading {
@@ -53,6 +54,16 @@
           background: inherit;
         }
       }
+    }
+  }
+  .imageBlurWrap {
+    padding: 0;
+    margin: 0;
+    .imageBlurLabel {
+      margin-bottom: 0;
+    }
+    .imageBlurContent {
+      width: 100%;
     }
   }
 }

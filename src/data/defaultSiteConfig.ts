@@ -23,7 +23,7 @@ export default {
         { label: 'Pastel', colors: ['#C4DFDF', '#F5F0BB', '#ACB1D6', '#DDFFBB', '#B9F3E4'], },
     ],
     style: {
-        padding: '10% 10% 10% 10%',
+        padding: '0 0 0 0',
     }
     //site ref https://colorhunt.co/palettes/neon
 };

@@ -1,4 +1,4 @@
-import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST } from "@constant/common";
+import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST_PIXABAY } from "@constant/common";
 import { APIROUTINGS } from "src/utils/apiRoutings/RestClient";
 const SEARCH_API_URL = `https://pixabay.com/api?key=${process.env.NEXT_PUBLIC_PIXABAY_API_CLIENTID}&`;
 
@@ -6,9 +6,14 @@ export const getPixabayImagesBySearchQuery = (searchQuery, orientation = BACKGRO
     if (orientation == BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE || orientation == BACKGROUND_IMAGES_ORIENTATIONS.SQUARE) orientation = 'horizontal';
     if (orientation == BACKGROUND_IMAGES_ORIENTATIONS.PORTRAIT) orientation = 'vertical';
     return new Promise((res, rej) => {
-        APIROUTINGS.GET(`${SEARCH_API_URL}orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST}&q=${searchQuery}`)
+        APIROUTINGS.GET(`${SEARCH_API_URL}orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST_PIXABAY}&q=${searchQuery}`)
             .then((response) => {
-                res(response.data.hits.map((i) => { return { src: i.largeImageURL } }));
+                const data = {
+                    total: response.data.total,
+                    totalPages: (response.data.total / SEARCHED_IMAGES_COUNT_PER_REQUEST_PIXABAY).toFixed(),
+                    images: response.data.hits.map((i) => { return { src: i.largeImageURL } })
+                }
+                res(data);
             }).catch(function (error) {
                 rej(error.response.data);
                 console.log(`Error in api/unsplash/getImages = `, error);

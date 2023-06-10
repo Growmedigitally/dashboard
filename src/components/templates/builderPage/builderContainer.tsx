@@ -4,7 +4,7 @@ import styles from '@templatesCSS/builderPage/builderContainer.module.scss'
 import ComponentRenderer from '@organisms/componentRenderer/index';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
-import { BUILDER_PAGE } from '@constant/common';
+import { BACKGROUND_TYPES, BUILDER_PAGE } from '@constant/common';
 import SiteConfig from '@type/siteConfig';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getSiteConfig } from '@reduxStore/slices/siteConfig';
@@ -21,6 +21,26 @@ function BuilderContainer({ builderState, activeDeviceType }) {
     }
     return (
         <React.Fragment>
+            {(siteConfig?.background?.type == BACKGROUND_TYPES.IMAGE) && <style dangerouslySetInnerHTML={{
+                __html: `
+                #builderBody{
+                    position:relative;
+                }
+                #builderBody:after {
+                        content: ' ';
+                        display: block;
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        opacity:${siteConfig?.background?.opacity || 1};
+                        background:url(${siteConfig?.background?.src});
+                        background-position: center center;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                    }`
+            }}></style>}
             <div className={`${styles.builderDroppableList} ${styles[activeDeviceType]}`} onClick={(e) => onClickComponent(e, null, null)}>
                 {Object.keys(builderState).map((list, i) => {
                     return (
@@ -28,6 +48,7 @@ function BuilderContainer({ builderState, activeDeviceType }) {
                             {(provided, snapshot) => (
                                 <div className={`${styles.bodyFrame} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`}
                                     ref={provided.innerRef}
+                                    id="builderBody"
                                     style={{ ...siteConfig?.style, ...getBackground(siteConfig?.background) }}
                                 >
                                     {builderState[list].length ? builderState[list].map((item, index) => (

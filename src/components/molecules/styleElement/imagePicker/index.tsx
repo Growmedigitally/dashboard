@@ -4,7 +4,7 @@ import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss
 
 function ImagePicker({ label = false }) {
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.imagePickerWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.imagePickerWrap}`}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
             <div className={`${styleElementCSS.elementWrapp}`}>
                 <div className={styles.uploadedImage}>

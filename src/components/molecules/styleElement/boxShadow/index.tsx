@@ -26,7 +26,7 @@ function BoxShadow({ onChange, value }) {
         onChange('boxShadow', value)
     }
     return (
-        <div className={`${styleElementCSS.styleElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap}`}>
             <div className={styleElementCSS.label}>Box Shadow</div>
             <div className={`${styleElementCSS.elementWrapp}`}>
                 <Select

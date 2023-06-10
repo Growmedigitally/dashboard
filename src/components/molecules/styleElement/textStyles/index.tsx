@@ -43,7 +43,7 @@ function TextStyles({ config, onChange }) {
 
     return (
 
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.textStylesWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.textStylesWrap}`}>
             <div className={`${styleElementCSS.label} ${styles.label}`}>Text Styles</div>
             <div className={`${styleElementCSS.elementWrapp}`}>
                 <div className={styles.propertyWrapper}>

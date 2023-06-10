@@ -2,8 +2,8 @@ import { BACKGROUND_TYPES } from "@constant/common";
 
 export const GRADIENT_INITIAL_VALUE = {
     type: BACKGROUND_TYPES.GRADIENT,
-    value: "linear-gradient(to right, #D3CCE3, #E9E4F0)",
-    colors: [{ color: '#D3CCE3', format: 'hex' }, { color: '#E9E4F0', format: 'hex' }],
+    value: "linear-gradient(to right, #9796F0, #FBC7D4)",
+    colors: [{ color: '#9796F0', format: 'hex' }, { color: '#FBC7D4', format: 'hex' }],
     direction: 'to right'
 }
 

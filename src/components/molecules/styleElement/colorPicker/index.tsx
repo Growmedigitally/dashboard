@@ -48,7 +48,7 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
     }, [colorString])
 
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.colorPickerWrap}`} style={{ ...parentStyles }}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.colorPickerWrap}`} style={{ ...parentStyles }}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
             <div className={styles.elementWrap}>
                 <ColorPicker

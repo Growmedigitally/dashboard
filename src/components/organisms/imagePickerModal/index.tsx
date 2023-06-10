@@ -1,7 +1,6 @@
 import styles from './imagePickerModal.module.scss'
 import React, { useEffect, useState } from 'react'
-import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
-import { Button, Checkbox, Image, Drawer, Switch, theme, Space } from 'antd';
+import { Button, Drawer, theme, Space } from 'antd';
 import { BsImages, } from 'react-icons/bs'
 import { MdOutlineImageSearch } from 'react-icons/md'
 import { RiImageAddFill, RiImageEditFill } from 'react-icons/ri'
@@ -12,6 +11,7 @@ import SearchImage from './searchImage';
 import UploadImage from './uploadImage';
 import EditImages from './editImages';
 import { BACKGROUND_IMAGES_TYPES } from '@constant/common';
+import BgGalleryImages from './bgGalleryImages';
 
 const TAB_TYPES = {
     GALLERY: 'Gallery',
@@ -21,7 +21,7 @@ const TAB_TYPES = {
 }
 
 
-function ImagePickerModal({ open = false, value, onSave, onCancel }) {
+function ImagePickerModal({ component, open = false, value, onSave, onCancel }) {
     const [selectedImage, setSelectedImage] = useState({ src: '' });
     const [activeTab, setActiveTab] = useState(TAB_TYPES.GALLERY);
     const { token } = theme.useToken();
@@ -32,7 +32,11 @@ function ImagePickerModal({ open = false, value, onSave, onCancel }) {
     }, [open])
 
     const TAB_ITEMS_LIST = [
-        { key: TAB_TYPES.GALLERY, icon: <BsImages />, children: <GalleryImages selectedImage={selectedImage} setSelectedImage={(imageData) => handleSave(imageData, true)} config={{ type: BACKGROUND_IMAGES_TYPES.SMALL }} /> },
+        {
+            key: TAB_TYPES.GALLERY, icon: <BsImages />,
+            children: component == 'GLOBAL_BG' ? <BgGalleryImages selectedImage={selectedImage} setSelectedImage={(imageData) => handleSave(imageData, true)} /> :
+                <GalleryImages selectedImage={selectedImage} setSelectedImage={(imageData) => handleSave(imageData, true)} config={{ type: BACKGROUND_IMAGES_TYPES.SMALL }} />
+        },
         { key: TAB_TYPES.SEARCH, icon: <MdOutlineImageSearch />, children: <SearchImage selectedImage={selectedImage} setSelectedImage={(imageData) => handleSave(imageData, true)} config={{ type: BACKGROUND_IMAGES_TYPES.SMALL }} /> },
         { key: TAB_TYPES.UPLOAD, icon: <RiImageAddFill />, children: <UploadImage /> },
         { key: TAB_TYPES.EDITOR, icon: <RiImageEditFill />, children: <EditImages /> },
@@ -86,7 +90,7 @@ function ImagePickerModal({ open = false, value, onSave, onCancel }) {
                     background: 'unset'
                 }}
                 bodyStyle={{
-                    padding: '20px'
+                    padding: '10px 15px 0px'
                 }}
                 footer={
                     <Space>

@@ -1,21 +1,18 @@
 import BgImageEditor from '@molecules/bgImageEditor';
 import { theme } from 'antd';
 import React, { Fragment, useState } from 'react'
-import { imagesList, imagesTypes } from 'src/data/backgroundImages'
+import { imagesList, imagesTypes } from 'src/data/bodyBackgroundImages';
 import styles from './galleryImages.module.scss'
 
-const configSample = {
-    type: 'small'
-}
-function GalleryImages({ config, setSelectedImage, selectedImage }) {
+function BgGalleryImages({ setSelectedImage, selectedImage }) {
 
     const { token } = theme.useToken();
-    const [activeCategory, setActiveCategory] = useState(imagesTypes[config.type][0]);
+    const [activeCategory, setActiveCategory] = useState(imagesTypes[0]);
 
     return (
         <div className={styles.galleryImagesWrap}>
             <div className={styles.categoriesWrap} style={{ background: token.colorBgBase }}>
-                {imagesTypes[config.type].map((category, i) => {
+                {imagesTypes.map((category, i) => {
                     return <div className={styles.categoryName} key={i}
                         onClick={() => setActiveCategory(category)}
                         style={{ color: activeCategory == category ? token.colorPrimary : token.colorText }}>
@@ -24,13 +21,13 @@ function GalleryImages({ config, setSelectedImage, selectedImage }) {
                 })}
             </div>
             <div className={styles.imagesWrap}>
-                {imagesList[config.type][activeCategory].map((imageData, i) => {
+                {imagesList[activeCategory].map((imageData, i) => {
                     return <Fragment key={i}>
                         <BgImageEditor
                             active={selectedImage?.src == imageData}
                             imageData={{ src: imageData }}
                             onSelect={(image) => setSelectedImage(image)}
-                            styleProps={{ height: '100px', column: 3 }}
+                            styleProps={{ height: '200px', column: 3 }}
                         />
                     </Fragment>
                 })}
@@ -39,4 +36,4 @@ function GalleryImages({ config, setSelectedImage, selectedImage }) {
     )
 }
 
-export default GalleryImages
+export default BgGalleryImages

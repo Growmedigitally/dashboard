@@ -30,7 +30,7 @@ export default function LetterSpacing({ showLabel = true, value, onChange }) {
     }
 
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.fontFamilyElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Letter Spacing</div>}
             <div className={styleElementCSS.elementWrapp}>
                 <Select

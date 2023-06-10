@@ -99,7 +99,7 @@ function GradientColor({ value, onChange }) {
 
 
     return (
-        <div className={`${styleElementCSS.styleElementWrap} ${styles.gradientColorWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.gradientColorWrap}`}>
             {/* {showLabel && <div className={styleElementCSS.label}>Gradient Color</div>} */}
             <div className={styles.elementWrapp}>
                 <div className={styles.colorWrap} style={{ ...getBackground(value) }}></div>
