@@ -15,7 +15,7 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
 
 
     const { token } = theme.useToken();
-    const [activeColor, setActiveColor] = useState<Color | string>(value.color);
+    const [activeColor, setActiveColor] = useState<Color | string | any>(value.color);
     const [activeColorFormat, setActiveColorFormat] = useState<ColorPickerProps['format']>(value.format);
     const siteConfig = useAppSelector(getSiteConfig);
     const [colorPresets, setColorPresets] = useState([])
@@ -36,7 +36,10 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
     }
 
     const colorString = useMemo(
-        () => (typeof activeColor === 'string' ? activeColor : activeColor.toHexString()),
+        () => {
+            // console.log(!(typeof activeColor === 'string' || activeColor instanceof String), activeColor)
+            return !activeColor ? '' : (typeof activeColor === 'string' ? activeColor : activeColor.toHexString())
+        },
         [activeColor],
     );
 

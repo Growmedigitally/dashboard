@@ -7,7 +7,6 @@ const imageToBase64 = (image) => {
         ctx.drawImage(image, 0, 0);
         return canvas.toDataURL();
     }
-
     return '';
 };
 

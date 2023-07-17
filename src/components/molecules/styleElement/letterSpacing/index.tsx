@@ -1,11 +1,11 @@
 import { Select } from 'antd'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './letterSpacing.module.scss'
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 
-export default function LetterSpacing({ showLabel = true, value, onChange }) {
+export default function LetterSpacing({ optionsList = null, showLabel = true, value, onChange, style = {} }) {
 
-    const optionsList = [
+    const defaultOptions = [
         { label: '0', value: '0px' },
         { label: '0.5', value: '0.5px' },
         { label: '1', value: '1px' },
@@ -24,21 +24,23 @@ export default function LetterSpacing({ showLabel = true, value, onChange }) {
         { label: '7.5', value: '7.5px' },
         { label: '8', value: '8px' },
     ]
+    const [options, setOptions] = useState(optionsList || defaultOptions)
 
     const onChangeValue = (value) => {
         onChange('letterSpacing', value)
     }
 
     return (
-        <div className={`${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`} style={style}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Letter Spacing</div>}
             <div className={styleElementCSS.elementWrap}>
                 <Select
                     showSearch
-                    defaultValue={optionsList[0].value}
+                    defaultValue={options[0].value}
+                    value={value}
                     style={{ width: '100%' }}
                     onChange={(value) => onChangeValue(value)}
-                    options={optionsList}
+                    options={options}
                 />
             </div>
         </div>

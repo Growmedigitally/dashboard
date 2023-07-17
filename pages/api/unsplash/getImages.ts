@@ -13,6 +13,14 @@ const API_URL = `https://api.unsplash.com/search/photos?page=1&per_page=3&client
 //     },
 // };
 
+export const IMAGE_SIZES = {
+    RAW: 'raw',//28mb
+    FULL: 'full',//6mb
+    REGULAR: 'regular',//125kb
+    SMALL: 'small',//31kb
+    THUMB: 'thumb',//11kb
+    "small_s3": ''
+}
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     const { searchQuery } = req.body;

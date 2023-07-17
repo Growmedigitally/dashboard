@@ -30,6 +30,15 @@ const TOPICS_API_URL = `https://api.unsplash.com/topics?client_id=${process.env.
 //             ]
 // }
 
+export const UNPLASH_IMAGE_SIZES = {
+    RAW: 'raw',//28mb
+    FULL: 'full',//6mb
+    REGULAR: 'regular',//125kb
+    SMALL: 'small',//31kb
+    THUMB: 'thumb',//11kb
+    SRC: 'full'
+}
+
 export const getUnsplashImagesBySearchQuery = (searchQuery, orientation = BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, page = 1) => {
     return new Promise((res, rej) => {
         APIROUTINGS.GET(`${SEARCH_API_URL}&orientation=${orientation}&page=${page}&per_page=${SEARCHED_IMAGES_COUNT_PER_REQUEST_UNSPLASH}&query=${searchQuery}`)
@@ -37,7 +46,7 @@ export const getUnsplashImagesBySearchQuery = (searchQuery, orientation = BACKGR
                 const data = {
                     total: response.data.total,
                     totalPages: response.data.total_pages,
-                    images: response.data.results.map((i) => { return { src: i.urls.raw } })
+                    images: response.data.results.map((i) => { return { src: i.urls.full, thumb: i.urls.thumb } })
                 }
                 res(data);
             }).catch(function (error) {

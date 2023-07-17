@@ -30,7 +30,7 @@
     .draggComponentWrap {
       display: flex;
       user-select: none;
-      @include transition;
+      // @include transition;
       cursor: pointer;
       &:hover {
         @include transition;

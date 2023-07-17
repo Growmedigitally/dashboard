@@ -14,27 +14,28 @@ import instagram from "./instagram.svg";
 import backNavigation from "./backNavigation.svg";
 import next from "./next.svg";
 import home from "./home.svg";
-import dashboard from "@assets/Icons/sidebar/dashboard.svg";
-import builder from "@assets/Icons/sidebar/builder.svg";
-import analytics from "@assets/Icons/sidebar/analytics.svg";
-import CRM from "@assets/Icons/sidebar/CRM.svg";
-import ecommerce from "@assets/Icons/sidebar/ecommerce.svg";
-import settings from "@assets/Icons/sidebar/settings.svg";
-import reports from "@assets/Icons/sidebar/reports.svg";
-import profile from "@assets/Icons/sidebar/profile.svg";
-import notifications from "@assets/Icons/sidebar/notifications.svg";
-import theme from "@assets/Icons/sidebar/theme.svg";
-import collapsedMenu from "@assets/Icons/sidebar/collapsedMenu.svg";
-import logout from "@assets/Icons/sidebar/logout.svg";
-import light from "@assets/Icons/sidebar/light.svg";
-import dark from "@assets/Icons/sidebar/dark.svg";
-import help from "@assets/Icons/sidebar/help.svg";
-import expandedMenu from "@assets/Icons/sidebar/expandedMenu.svg";
-import query from "@assets/Icons/sidebar/query.svg";
-import promotion from "@assets/Icons/sidebar/promotion.svg";
-import note from "@assets/Icons/sidebar/note.svg";
-import chat from "@assets/Icons/sidebar/chat.svg";
-import PWA from "@assets/Icons/sidebar/PWA.svg";
+import star2 from "./star2.svg";
+import dashboard from "@assets/Icons/sidebar/dashboard";
+import analytics from "@assets/Icons/sidebar/analytics";
+import builder from "@assets/Icons/sidebar/builder";
+import chat from "@assets/Icons/sidebar/chat";
+import collapsedMenu from "@assets/Icons/sidebar/collapsedMenu";
+import CRM from "@assets/Icons/sidebar/CRM";
+import dark from "@assets/Icons/sidebar/dark";
+import ecommerce from "@assets/Icons/sidebar/ecommerce";
+import expandedMenu from "@assets/Icons/sidebar/expandedMenu";
+import help from "@assets/Icons/sidebar/help";
+import light from "@assets/Icons/sidebar/light";
+import note from "@assets/Icons/sidebar/note";
+import notifications from "@assets/Icons/sidebar/notifications";
+import promotion from "@assets/Icons/sidebar/promotion";
+import PWA from "@assets/Icons/sidebar/PWA";
+import query from "@assets/Icons/sidebar/query";
+import reports from "@assets/Icons/sidebar/reports";
+import settings from "@assets/Icons/sidebar/settings";
+import profile from "@assets/Icons/sidebar/profile";
+import theme from "@assets/Icons/sidebar/theme";
+import logout from "@assets/Icons/sidebar/logout";
 
 const icons: any = {
     cart: cart,
@@ -50,6 +51,7 @@ const icons: any = {
     share: share,
     closeLarge: closeLarge,
     home: home,
+    star2: star2,
     dashboard: dashboard,
     builder: builder,
     analytics: analytics,

@@ -21,7 +21,11 @@
       "@store/*": ["src/redux/stateProvider/*"],
       "@util/*": ["src/utils/*"],
       "@apiService/*": ["pages/apiService/*"],
-      "@assets/*": ["public/assets/*"]
+      "@assets/*": ["public/assets/*"],
+      "@objectPropertiesEditor/*": [
+        "src/components/templates/imageEditor/objectPropertiesEditor/*"
+      ],
+      "@imageEditor/*": ["src/components/templates/imageEditor/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

@@ -53,9 +53,21 @@
   @include transition;
   cursor: pointer;
   &:hover {
-    box-shadow: 0 2px 10px #dee1ec;
+    box-shadow: 0 2px 10px #363738;
     @include transition;
     transform: scale(1.07);
+    padding: 8px;
+  }
+}
+
+@mixin iconHover {
+  @include transition;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 2px 10px #dee1ecc6;
+    @include transition;
+    transform: scale(1.07);
+    padding: 4px;
   }
 }
 
@@ -67,7 +79,7 @@
   align-items: center;
   color: var(--dark-navy);
   padding: 8px;
-
+  cursor: pointer;
   img,
   svg {
     width: 100%;

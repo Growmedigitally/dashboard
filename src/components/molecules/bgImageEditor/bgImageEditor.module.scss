@@ -5,7 +5,7 @@
   background: white;
   // padding: 4px;
   border-radius: 4px;
-  outline: 2px solid var(--secondary-color-beta);
+  outline: 2px solid transparent;
   width: calc(100% / 4 - 8px);
   overflow: hidden;
   position: relative;
@@ -16,7 +16,7 @@
     @include flexCenterCol;
 
     .imageActionsWrap {
-      @include hover;
+      // @include hover;
       position: absolute;
       // bottom: 0;
       // left: 0;
@@ -27,25 +27,39 @@
       justify-content: center;
       align-items: center;
       padding: 0px;
-      width: 100%;
       overflow: hidden;
       z-index: 1;
       gap: 10px;
       background: #dee1ec;
       border-radius: 4px;
       @include transition;
+
       button {
         @include flexCenter;
         font-size: 12px;
+        width: 0;
+        height: 0;
       }
     }
     &:hover {
       .imageActionsWrap {
-        top: 0;
-        padding: 10px;
-        height: fit-content;
+        bottom: 5px;
+        right: 5px;
         overflow: auto;
+        width: auto;
+        height: fit-content;
         @include transition;
+        button {
+          width: auto;
+          height: fit-content;
+          padding: 6px;
+          @include transition;
+          svg {
+            width: 20px;
+            height: 20px;
+            @include transition;
+          }
+        }
       }
     }
   }

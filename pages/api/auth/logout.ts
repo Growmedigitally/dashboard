@@ -5,7 +5,7 @@ import { USER_COOKIE_KEY } from 'src/constants/user';
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     const { cookies } = req;
 
-    const jwt = cookies[USER_COOKIE_KEY || ''];
+    const jwt = cookies ? cookies[USER_COOKIE_KEY || ''] : '';
     if (!jwt) {
         return res.json({ message: "Bro you are already not logged in..." });
     } else {

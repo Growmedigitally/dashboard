@@ -2,6 +2,12 @@ import { BACKGROUND_IMAGES_ORIENTATIONS, SEARCHED_IMAGES_COUNT_PER_REQUEST_PIXAB
 import { APIROUTINGS } from "src/utils/apiRoutings/RestClient";
 const SEARCH_API_URL = `https://pixabay.com/api?key=${process.env.NEXT_PUBLIC_PIXABAY_API_CLIENTID}&`;
 
+export const PIXABAY_IMAGE_SIZES = {
+    "largeImageURL": 'largeImageURL',//56kb
+    "previewURL": 'previewURL',//3kb
+    "webformatURL": 'webformatURL',//19kb webp
+}
+
 export const getPixabayImagesBySearchQuery = (searchQuery, orientation = BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, page = 1) => {
     if (orientation == BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE || orientation == BACKGROUND_IMAGES_ORIENTATIONS.SQUARE) orientation = 'horizontal';
     if (orientation == BACKGROUND_IMAGES_ORIENTATIONS.PORTRAIT) orientation = 'vertical';
@@ -11,11 +17,11 @@ export const getPixabayImagesBySearchQuery = (searchQuery, orientation = BACKGRO
                 const data = {
                     total: response.data.total,
                     totalPages: (response.data.total / SEARCHED_IMAGES_COUNT_PER_REQUEST_PIXABAY).toFixed(),
-                    images: response.data.hits.map((i) => { return { src: i.largeImageURL } })
+                    images: response.data.hits.map((i) => { return { src: i.largeImageURL, thumb: i.previewURL } })
                 }
                 res(data);
             }).catch(function (error) {
-                rej(error.response.data);
+                rej(error?.response?.data || 'Error while fetching images');
                 console.log(`Error in api/unsplash/getImages = `, error);
             });
     })

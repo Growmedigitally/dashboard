@@ -4,7 +4,7 @@ import styles from './fontSize.module.scss'
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 import { Empty } from 'antd';
 
-function FontSize({ showLabel = true, value, onChange }) {
+function FontSize({ showLabel = true, value, onChange, style = {} }) {
 
     const [optionsList, setOptionsList] = useState([])
 
@@ -21,13 +21,14 @@ function FontSize({ showLabel = true, value, onChange }) {
     }
 
     return (
-        <div className={`${styleElementCSS.styleWrap} ${styles.fontSizeElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.fontSizeElementWrap}`} style={style}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Font Size</div>}
             <div className={styleElementCSS.elementWrap}>
                 <Select
                     // notFoundContent={<Empty description=""/>}
                     showSearch
-                    defaultValue={12}
+                    defaultValue={value}
+                    value={value}
                     style={{ width: '100%' }}
                     onChange={(value) => onChangeValue(value)}
                     options={optionsList}

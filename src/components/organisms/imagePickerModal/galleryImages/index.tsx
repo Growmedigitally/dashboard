@@ -1,3 +1,4 @@
+import { PATTERN_PAGE } from '@constant/common';
 import BgImageEditor from '@molecules/bgImageEditor';
 import { theme } from 'antd';
 import React, { Fragment, useState } from 'react'
@@ -7,10 +8,11 @@ import styles from './galleryImages.module.scss'
 const configSample = {
     type: 'small'
 }
-function GalleryImages({ config, setSelectedImage, selectedImage }) {
+function GalleryImages({ currentPage = "", config, setSelectedImage, selectedImage }) {
 
     const { token } = theme.useToken();
     const [activeCategory, setActiveCategory] = useState(imagesTypes[config.type][0]);
+    const [hoverId, setHoverId] = useState(null)
 
     return (
         <div className={styles.galleryImagesWrap}>
@@ -18,7 +20,15 @@ function GalleryImages({ config, setSelectedImage, selectedImage }) {
                 {imagesTypes[config.type].map((category, i) => {
                     return <div className={styles.categoryName} key={i}
                         onClick={() => setActiveCategory(category)}
-                        style={{ color: activeCategory == category ? token.colorPrimary : token.colorText }}>
+                        onMouseEnter={() => setHoverId(category)}
+                        onMouseLeave={() => setHoverId('')}
+                        style={{
+                            zIndex: activeCategory == category ? 2 : 1,
+                            position: activeCategory == category ? 'sticky' : 'relative',
+                            background: token.colorBgBase,
+                            borderColor: (hoverId == category || activeCategory == category) ? token.colorPrimary : token.colorBorder,
+                            color: (activeCategory == category || hoverId == category) ? token.colorPrimary : token.colorText
+                        }}>
                         {category}
                     </div>
                 })}
@@ -27,10 +37,11 @@ function GalleryImages({ config, setSelectedImage, selectedImage }) {
                 {imagesList[config.type][activeCategory].map((imageData, i) => {
                     return <Fragment key={i}>
                         <BgImageEditor
+                            currentPage={currentPage}
                             active={selectedImage?.src == imageData}
                             imageData={{ src: imageData }}
                             onSelect={(image) => setSelectedImage(image)}
-                            styleProps={{ height: '100px', column: 3 }}
+                            styleProps={{ height: 'auto', column: 3 }}
                         />
                     </Fragment>
                 })}

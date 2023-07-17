@@ -1,11 +1,11 @@
 import { Select } from 'antd'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './lineHeight.module.scss'
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 
-export default function LineHeight({ showLabel = true, value, onChange }) {
+export default function LineHeight({ optionsList = null, showLabel = true, value, onChange, style = {} }) {
 
-    const optionsList = [
+    const defaultOptions = [
         { label: '1', value: '1px' },
         { label: '3', value: '3px' },
         { label: '5', value: '5px' },
@@ -23,20 +23,23 @@ export default function LineHeight({ showLabel = true, value, onChange }) {
         { label: '50', value: '50px' },
     ]
 
+    const [options, setOptions] = useState(optionsList || defaultOptions)
+
     const onChangeValue = (value) => {
         onChange('lineHeight', value)
     }
 
     return (
-        <div className={`${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`}>
+        <div className={`${styleElementCSS.styleWrap} ${styles.fontFamilyElementWrap}`} style={style}>
             {showLabel && <div className={`${styleElementCSS.label} ${styles.label}`}>Line Spacing</div>}
             <div className={styleElementCSS.elementWrap}>
                 <Select
                     showSearch
-                    defaultValue={optionsList[0].value}
+                    defaultValue={options[0].value}
+                    value={value}
                     style={{ width: '100%' }}
                     onChange={(value) => onChangeValue(value)}
-                    options={optionsList}
+                    options={options}
                 />
             </div>
         </div>

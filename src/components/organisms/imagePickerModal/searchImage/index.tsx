@@ -1,13 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import styles from './searchImage.module.scss'
-import { Input, Pagination, Result, Segmented, theme } from 'antd';
+import { Input, Pagination, Result, Segmented, theme, Tooltip } from 'antd';
 import BgImageEditor from '@molecules/bgImageEditor';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { getLoaderState, toggleLoader } from '@reduxStore/slices/loader';
 import { getPexelsImagesBySearchQuery } from 'pages/apiService/pexels';
 import { getUnsplashImagesBySearchQuery } from 'pages/apiService/unsplash';
 import { useAppSelector } from '@hook/useAppSelector';
-import { BACKGROUND_IMAGES_ORIENTATIONS } from '@constant/common';
+import { BACKGROUND_IMAGES_ORIENTATIONS, IMAGE_EDITOR_PAGE } from '@constant/common';
 import { getPixabayImagesBySearchQuery } from 'pages/apiService/pixabay';
 import { FaUnsplash } from 'react-icons/fa';
 import { RiPixelfedLine } from 'react-icons/ri';
@@ -23,14 +23,14 @@ const SEARCH_SOURCE_TYPES = [
     { name: 'Pixabay', icon: <SiPixiv />, themeColor: '#0abe6e', apiFunction: getPixabayImagesBySearchQuery },
 ]
 
-function SearchImage({ config, setSelectedImage, selectedImage }) {
+function SearchImage({ currentPage = '', config, setSelectedImage, selectedImage, actionWrapStyle = {}, segmentWrapStyle = {} }) {
 
     const { token } = theme.useToken();
     const dispatch = useAppDispatch();
     const [fetchedImages, setFetchedImages] = useState({
-        'Unsplash': { total: 0, totalPages: 0, images: [], currentPage: 1 },
-        'Pexels': { total: 0, totalPages: 0, images: [], currentPage: 1 },
-        'Pixabay': { total: 0, totalPages: 0, images: [], currentPage: 1 },
+        'Unsplash': { total: 0, totalPages: 0, images: [], currentPage: 1, error: '' },
+        'Pexels': { total: 0, totalPages: 0, images: [], currentPage: 1, error: '' },
+        'Pixabay': { total: 0, totalPages: 0, images: [], currentPage: 1, error: '' },
     })
     const [searchQuery, setSearchQuery] = useState('');
     const [isError, setIsError] = useState(false);
@@ -41,10 +41,12 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
     const getSegmentOptions = () => {
         return SEARCH_SOURCE_TYPES.map((option) => {
             return {
-                label: <div style={{ color: activeSearchSourceTab.name == option.name ? token.colorPrimary : 'inherit' }}
-                    className={`${styles.segmentItem} ${activeSearchSourceTab.name == option.name ? styles.active : ''}`}>
-                    <div className={styles.name}>{option.name}</div>
-                </div>,
+                label: <Tooltip title={`Search free images using ${option.name} `}>
+                    <div style={{ color: activeSearchSourceTab.name == option.name ? token.colorPrimary : 'inherit' }}
+                        className={`${styles.segmentItem} ${activeSearchSourceTab.name == option.name ? styles.active : ''}`}>
+                        <div className={styles.name}>{option.name}</div>
+                    </div>
+                </Tooltip>,
                 value: option.name
             }
         })
@@ -55,16 +57,22 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
         if (query) {
             dispatch(toggleLoader(true));
             setIsNotFound(false);
+            const fetchedData = removeObjRef(fetchedImages);
             activeSource.apiFunction(query, BACKGROUND_IMAGES_ORIENTATIONS.LANDSCAPE, pageNumber).then((imagesRes: any) => {
                 console.log(imagesRes)
+                setIsNotFound(false);
                 if (imagesRes.images.length) {
-                    const fetchedData = removeObjRef(fetchedImages);
                     fetchedData[activeSource.name].images = [...fetchedData[activeSource.name].images, ...imagesRes.images];
                     fetchedData[activeSource.name].total = imagesRes.total;
                     fetchedData[activeSource.name].totalPages = imagesRes.totalPages;
                     setFetchedImages(fetchedData);
                 } else setIsNotFound(true);
                 dispatch(toggleLoader(false));
+            }).catch((error) => {
+                dispatch(toggleLoader(false));
+                setIsNotFound(true);
+                fetchedData[activeSource.name].error = 'Cannot load images 🙁'
+                console.log(`Error : ${activeSource.apiFunction.toString()}:`, error)
             })
         } else {
             setIsError(true);
@@ -86,9 +94,9 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
 
     return (
         <div className={styles.serachImagesWrap}>
-            <div className={styles.headerWrap} style={{ background: token.colorBgElevated }}>
-                <div className={styles.actionsWrap}>
-                    <div className={styles.segmentWrap}>
+            <div className={styles.headerWrap} >
+                <div className={styles.actionsWrap} style={actionWrapStyle}>
+                    <div className={styles.segmentWrap} style={segmentWrapStyle}>
                         <Segmented
                             size="small"
                             block={true}
@@ -113,7 +121,7 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
                     </div>
                 </div>
                 <div className={styles.headingWrap}>
-                    Search free images using
+                    Search Free images by
                     <span style={{ color: SEARCH_SOURCE_TYPES.find(i => i.name == activeSearchSourceTab.name).themeColor }}>
                         <div className={styles.iconWrap}>
                             {SEARCH_SOURCE_TYPES.find(i => i.name == activeSearchSourceTab.name).icon}
@@ -123,7 +131,7 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
                 </div>
             </div>
             <div className={styles.imagesWrap}>
-                {fetchedImages[activeSearchSourceTab.name].images.length != 0 ? <>
+                {fetchedImages[activeSearchSourceTab.name].images.length != 0 && <>
                     {fetchedImages[activeSearchSourceTab.name].images.map((imageData, i) => {
                         return <Fragment key={i}>
                             <BgImageEditor
@@ -134,16 +142,15 @@ function SearchImage({ config, setSelectedImage, selectedImage }) {
                             />
                         </Fragment>
                     })}
-                </> : <>
-                    {isNotFound && <>
-                        <Result
-                            status="500"
-                            title="Images not found"
-                            subTitle="Try another search"
-                        /></>}
                 </>}
+                {isNotFound && <>
+                    <Result
+                        status="500"
+                        title="Cannot load letest images 🙁"
+                        subTitle="Try another search"
+                    /></>}
             </div>
-            {fetchedImages[activeSearchSourceTab.name].totalPages > 1 && <div className={styles.paginationWrap}>
+            {fetchedImages[activeSearchSourceTab.name].totalPages > 1 && <div className={styles.paginationWrap} style={{ position: currentPage == IMAGE_EDITOR_PAGE ? 'unset' : 'fixed' }}>
                 <Pagination
                     defaultCurrent={fetchedImages[activeSearchSourceTab.name].currentPage}
                     total={fetchedImages[activeSearchSourceTab.name].totalPages}

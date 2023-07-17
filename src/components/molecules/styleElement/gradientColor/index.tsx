@@ -1,4 +1,4 @@
-import { Button, Drawer, Popover, Select, Space } from 'antd';
+import { Button, Drawer, Select, Space } from 'antd';
 import React, { useEffect, useState } from 'react'
 import ColorPickerComponent from '../colorPicker';
 import styles from './gradientColor.module.scss';

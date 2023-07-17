@@ -1,0 +1,29 @@
+.headerWrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
+  .actionsWrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.previewImageWrap {
+  padding: 10px;
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}

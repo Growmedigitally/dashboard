@@ -1,33 +1,41 @@
+import { PATTERN_PAGE } from '@constant/common';
 import { Button, theme, Image, Tooltip } from 'antd';
 import React, { useState } from 'react'
 import { BiCheck, BiShow } from 'react-icons/bi';
 import styles from './bgImageEditor.module.scss';
 
-function BgImageEditor({ active, imageData, onSelect, styleProps }) {
+function BgImageEditor({ currentPage = '', active, imageData, onSelect, styleProps }) {
     const { token } = theme.useToken();
     const [showPreview, setShowPreview] = useState(false);
 
     return (
         <div className={`${styles.imageWrap} ${active ? styles.active : ''}`}
-            style={{ outlineColor: active ? token.colorPrimary : '#d1d5e8', height: styleProps.height, width: `calc(100% / ${styleProps.column} - 10px)` }}
+            style={{
+                outlineColor: active ? token.colorPrimary : token.colorBorder,
+                height: styleProps.height, width: styleProps.width || `calc(100% / ${styleProps.column} - 10px)`,
+            }}
+            onClick={() => onSelect(imageData)}
         >
             <div className={styles.imageContent} >
                 <div className={styles.imageActionsWrap}>
                     <Tooltip title="Click to see large view of image">
-                        <Button onClick={() => setShowPreview(true)} type="primary" size="middle" icon={<BiShow />} />
+                        <Button onClick={(e) => {
+                            setShowPreview(true);
+                            e.stopPropagation()
+                        }} type="primary" size="middle" icon={<BiShow />} />
                     </Tooltip>
-                    <Tooltip title="Select image to view in builder">
+                    {/* <Tooltip title="Select image to view in builder">
                         <Button onClick={() => onSelect(imageData)} type="primary" size="middle" icon={<BiCheck />}>Select</Button>
-                    </Tooltip>
+                    </Tooltip> */}
                 </div>
-                <Image src={imageData.src} preview={false} />
+                {<Image src={imageData.thumb || imageData.src} preview={false} />}
                 {showPreview && <Image
                     style={{ display: 'none' }}
-                    src={imageData.src}
+                    src={imageData.thumb || imageData.src}
                     preview={{
                         visible: showPreview,
                         scaleStep: 1,
-                        src: imageData.src,
+                        src: imageData.thumb || imageData.src,
                         style: { background: token.colorBgLayout },
                         onVisibleChange: (value) => setShowPreview(value),
                     }} />}
