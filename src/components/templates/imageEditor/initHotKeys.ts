@@ -5,6 +5,7 @@ import { zoomInCanvas, zoomOutCanvas } from './canvasControls/canvasControls';
 import { CUSTOME_ATTRIBUTES, HOTKEYS_MOVE_PIXELS, OBJECT_TYPES } from '@constant/imageEditor';
 import { getIsGroup } from './handleSelctionEvent';
 import { group, unGroup } from './tabsComposer/operations/grouping';
+import { checkNonRestrictedObject } from '@util/imageEditorUtils';
 
 const keyNames = {
   lrdu: 'left,right,down,up',
@@ -73,7 +74,7 @@ function initHotkeys(canvas: fabric.Canvas) {
   hotkeys(`${keyNames.cmda},${keyNames.ctrla}`, () => {
     canvas.discardActiveObject();
     if (canvas.getObjects().length) {
-      const Objects = canvas.getObjects().filter((obj) => obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace);
+      const Objects = canvas.getObjects().filter((obj) => checkNonRestrictedObject(obj));
       if (Objects.length) {
         var sel = new fabric.ActiveSelection(Objects, {
           canvas: canvas,

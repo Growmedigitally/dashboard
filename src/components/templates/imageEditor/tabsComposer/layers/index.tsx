@@ -45,7 +45,7 @@ function Layers({ canvas, rerenderCanvas, activeObjectsState }: pageProps) {
         // setLayersList(canvas.getObjects())
         const layers: any[] = [];
         objects.map((obj) => {
-            if ((obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace)) {
+            if ((obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace) && (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.watermark)) {
                 layers.push({
                     type: getObjectType(obj),
                     src: obj.toDataURL(),
@@ -314,7 +314,9 @@ function Layers({ canvas, rerenderCanvas, activeObjectsState }: pageProps) {
         return <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable key={layersList} droppableId={'layersList'} >
                 {(provided, snapshot) => (
-                    <div ref={provided.innerRef} className={`${styles.layersList} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`}>
+                    <div ref={provided.innerRef} className={`${styles.layersList} ${snapshot.isDraggingOver ? styles.isDraggingOver : ''}`}
+                        style={{ background: snapshot.isDragging ? token.colorBgTextActive : 'unset' }}
+                    >
                         {layersList.map((layerDetails, layerIndex) => {
                             return (
                                 <Draggable key={layerDetails?.uid} draggableId={layerDetails?.uid} index={layerIndex}>

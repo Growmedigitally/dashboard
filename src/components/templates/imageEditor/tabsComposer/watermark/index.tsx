@@ -16,6 +16,8 @@ import Styles from './styles';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { showErrorToast } from '@reduxStore/slices/toast';
 import { WATERMARKS, WATERMARK_TYPES } from '@constant/watermarks';
+import defaultCraftBuilderConfig from 'src/data/defaultCraftBuilderConfig';
+import ProIcon from '@atoms/proIcon';
 
 const TAB_TYPES = {
     TYPE: 'Type',
@@ -119,23 +121,27 @@ function Watermark({ canvas, rerenderCanvas, workspace, activeObjectsState }: pa
     }
 
     const onClickEnableWatermark = (status) => {
-        setWatermarkProps({ ...watermarkProps, active: status })
-        const objects = canvas.getObjects();
-        const atermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
-        if (status) {
-            if (atermarkObjectIndex != -1) {
-                objects[atermarkObjectIndex].set('visible', true);
+        if (defaultCraftBuilderConfig.isPro) {
+            setWatermarkProps({ ...watermarkProps, active: status })
+            const objects = canvas.getObjects();
+            const atermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+            if (status) {
+                if (atermarkObjectIndex != -1) {
+                    objects[atermarkObjectIndex].set('visible', true);
+                } else {
+                    // const watermarkPropsCopy = { ...watermarkProps };
+                    // watermarkPropsCopy.type = WATERMARK_TYPES.LOGO_AND_TEXT;
+                    // watermarkPropsCopy.active = true;
+                    // updateImageTextWatermark(canvas, watermarkPropsCopy, workspace)
+                    // setWatermarkProps({ ...watermarkPropsCopy })
+                }
             } else {
-                // const watermarkPropsCopy = { ...watermarkProps };
-                // watermarkPropsCopy.type = WATERMARK_TYPES.LOGO_AND_TEXT;
-                // watermarkPropsCopy.active = true;
-                // updateImageTextWatermark(canvas, watermarkPropsCopy, workspace)
-                // setWatermarkProps({ ...watermarkPropsCopy })
+                (atermarkObjectIndex != -1) && objects[atermarkObjectIndex].set('visible', false);
             }
+            rerenderCanvas(canvas)
         } else {
-            (atermarkObjectIndex != -1) && objects[atermarkObjectIndex].set('visible', false);
+            dispatch(showErrorToast('To disable watermark you need to be on pro version'))
         }
-        rerenderCanvas(canvas)
     }
 
     const onSwitchTab = (tab) => {
@@ -148,15 +154,17 @@ function Watermark({ canvas, rerenderCanvas, workspace, activeObjectsState }: pa
 
     return (
         <div className={styles.watermarkWrap}>
-            <div className={styles.toggleWrap}>
+            <div className={`${styles.toggleWrap}`}>
                 <Checkbox
+                    disabled={!defaultCraftBuilderConfig.isPro}
                     className={styles.checkboxElement}
-                    defaultChecked={watermarkProps.active}
+                    defaultChecked={!watermarkProps.active}
                     style={{ color: token.colorTextBase }}
-                    checked={watermarkProps.active}
+                    checked={!watermarkProps.active}
                     onChange={(value) => onClickEnableWatermark(!watermarkProps.active)}>
-                    Enable watermark
+                    Hide watermark
                 </Checkbox>
+                <ProIcon />
             </div>
             <Saperator />
             <div className={`${GlobalCss.segmentWrap} ${styles.segmentWrap} ${!watermarkProps.active ? 'disabled' : ''}`} >
@@ -179,7 +187,7 @@ function Watermark({ canvas, rerenderCanvas, workspace, activeObjectsState }: pa
                             <div className={`${styles.typeDetails} ${styles[watermarkProps.type]}`}
                                 onClick={() => onClickType(type)}
                                 style={{
-                                    borderColor: (watermarkProps.type == type.id || hoverId == type.id) ? token.colorPrimary : token.colorBgSpotlight,
+                                    borderColor: (watermarkProps.type == type.id || hoverId == type.id) ? token.colorPrimary : token.colorBorder,
                                     background: (watermarkProps.type == type.id || hoverId == type.id) ? token.colorPrimaryBgHover : token.colorBgTextHover
                                 }}
                                 onMouseEnter={() => setHoverId(type.id)}
@@ -199,7 +207,13 @@ function Watermark({ canvas, rerenderCanvas, workspace, activeObjectsState }: pa
                         </React.Fragment>
                     })}
                 </> : <>
-                    <Styles setWatermarkProps={setWatermarkProps} watermarkProps={watermarkProps} canvas={canvas} rerenderCanvas={rerenderCanvas} />
+                    <div className={`${styles.stylesWrap} ${defaultCraftBuilderConfig.isPro ? '' : 'disabled'}`}>
+                        <Styles setWatermarkProps={setWatermarkProps} watermarkProps={watermarkProps} canvas={canvas} rerenderCanvas={rerenderCanvas} />
+                    </div>
+                    {!defaultCraftBuilderConfig.isPro && <div className={styles.styllesProCheck}>
+                        Acailable For Pro
+                        <ProIcon />
+                    </div>}
                 </>}
             </div>
             <Saperator />

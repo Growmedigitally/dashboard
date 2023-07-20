@@ -15,13 +15,19 @@ import ObjectPropertiesEditor from "./objectPropertiesEditor";
 import { activeObjectsState } from "./types";
 import TabsComposer from "./tabsComposer";
 import { initGridLines } from "./initGridLines";
-import { getObjectType } from "@util/imageEditorUtils";
+import { checkNonRestrictedObject, getObjectType } from "@util/imageEditorUtils";
 import { removeObjRef } from "@util/utils";
 import Layers from "./tabsComposer/layers";
-import { BsLayers, BsChevronBarRight } from "react-icons/bs";
+import { BsLayers, BsChevronBarRight, BsStack } from "react-icons/bs";
 import { IoCloseSharp } from 'react-icons/io5'
 import QuickActionsMenu from "./quickActionsMenu";
 import Header from "./header";
+import { WATERMARKS, WATERMARK_TYPES } from "@constant/watermarks";
+import { updateImageTextWatermark } from "./tabsComposer/watermark/utils";
+import { LOGO } from "@constant/common";
+import defaultCraftBuilderConfig from "src/data/defaultCraftBuilderConfig";
+import { TiChevronRightOutline } from "react-icons/ti";
+
 const initialState = {
     id: 1,
     data: {
@@ -98,6 +104,9 @@ export default function ImageEditor() {
                     setAutoSizing(true)
                     INITIAL_BG_SQUARE && loadBackgroundImage(INITIAL_BG_SQUARE);//INITIAL_BG_SQUARE, INITIAL_BG_LARGE
                     initWorkspace()
+                    if (!defaultCraftBuilderConfig.isPro) {
+                        initWatermark();
+                    }
                     // initGridLines(canvasInstance.current, token.colorPrimary);
                 })
         } else {
@@ -167,14 +176,37 @@ export default function ImageEditor() {
     }
 
     //on template click
-    const setSize = (width: number, height: number) => {
+    const updateWorkspaceSize = (width: number, height: number) => {
         initCanvas();
+        const widthScaleFactor = width / initialFrame.width;
+        const heightScaleFactor = height / initialFrame.height;
         initialFrame.width = width;
         initialFrame.height = height;
+
+        // Scale all other objects
+        canvasInstance.current.getObjects().forEach((object) => {
+            if (object[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace) { // Skip scaling the rectangle object
+                const scaleX = object.scaleX * widthScaleFactor;
+                const scaleY = object.scaleY * heightScaleFactor;
+
+                // Apply the scaling
+                // object.scaleX = scaleX;
+                // object.scaleY = scaleY;
+
+                // Update the object's dimensions and position
+                // object.width *= scaleX;
+                // object.height *= scaleY;
+                object.left *= scaleX;
+                object.top *= scaleY;
+                object.setCoords();
+            }
+        });
+
         workspace = canvasInstance.current.getObjects().find((item) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] === OBJECT_TYPES.workspace) as fabric.Rect;
         workspace.set('width', width);
         workspace.set('height', height);
-        setAutoSizing();
+        // Calculate the scale factors
+        setAutoSizing(null);
     }
 
     const setCenterFromObject = () => {
@@ -192,7 +224,9 @@ export default function ImageEditor() {
 
     // auto scaling
     const setAutoSizing = (initialScale = false) => {
-        setZoomAuto(initialScale ? 1 : (getScale() - 0.08));
+        let scale = getScale() - 0.08;
+        if (initialScale) scale = 1;
+        setZoomAuto(scale);
     }
 
     const setZoomAuto = (scale: number, cb?: (left?: number, top?: number) => void) => {
@@ -219,7 +253,9 @@ export default function ImageEditor() {
     }
 
     const initCanvas = () => {
-        // canvasRef.backgroundImage = 'https://image-editor-ten.vercel.app/Backgrounds/Large_Banner/Salon/Frame%20164.png';
+        canvasInstance.current.fireRightClick = true;  // <-- enable firing of right click events
+        canvasInstance.current.fireMiddleClick = true; // <-- enable firing of middle click events
+        canvasInstance.current.stopContextMenu = true; // <--  prevent context menu from showing
         canvasInstance.current.setWidth(canvasWrapperRef?.current?.offsetWidth);
         canvasInstance.current.setHeight(canvasWrapperRef?.current?.offsetHeight);
         // Event listeners
@@ -228,8 +264,27 @@ export default function ImageEditor() {
         canvasInstance.current.on('selection:created', handleCanvasEvents);
         canvasInstance.current.on('selection:updated', handleCanvasEvents);
         canvasInstance.current.on('selection:cleared', handleCanvasEvents);
-        canvasInstance.current.on('object:contextmenu', () => {
-            updateActiveObjectCords(true);
+        canvasInstance.current.on('mouse:down', function (event) {
+            if (event.button === 1) {
+                console.log("left click");
+            }
+            if (event.button === 2) {
+                console.log("middle click");
+            }
+            if (event.button === 3) {
+                console.log("right click");
+                const activeObject = canvasInstance.current.getActiveObject();
+                if (activeObject) updateActiveObjectCords(true)
+                else {
+                    const clickedObject = canvasInstance.current.findTarget(event, false);
+                    if (clickedObject) {
+                        if (checkNonRestrictedObject(clickedObject)) {
+                            canvasInstance.current.setActiveObject(clickedObject);
+                            updateActiveObjectCords(true);
+                        }
+                    }
+                }
+            }
         });
         canvasInstance.current.on('object:added', (e) => {
             setTimeout(() => updateActiveObjectCords(), 500);
@@ -256,6 +311,12 @@ export default function ImageEditor() {
         canvasInstance.current.add(workspaceWrap);
         canvasInstance.current.renderAll();
         workspace = workspaceWrap;
+    }
+
+    const initWatermark = () => {
+        const watermarkPropsCopy = { active: true, type: '', src: LOGO, text: 'EcomAi', isInline: false };
+        watermarkPropsCopy.type = WATERMARK_TYPES.LOGO_AND_TEXT;
+        updateImageTextWatermark(canvasInstance.current, watermarkPropsCopy, workspace, 'default');
     }
 
     const initResizeObserve = () => {
@@ -358,6 +419,7 @@ export default function ImageEditor() {
                         <div className={styles.editorCanvasContent} style={{ width: `calc(100% - ${Boolean(activeEditorTab) ? 300 : 0}px)`, background: token.colorBgTextHover, color: token.colorTextBase }}>
                             <div className={styles.headerWrap} >
                                 <Header
+                                    updateWorkspaceSize={updateWorkspaceSize}
                                     setAutoSizing={setAutoSizing}
                                     rerenderCanvas={rerenderCanvas}
                                     canvas={canvasInstance.current}
@@ -387,11 +449,14 @@ export default function ImageEditor() {
                                 />
                                 {/* //layers wrap */}
                                 <div className={`${styles.layersWrapper} ${showLayers ? styles.showLayers : ''}`}
-                                    style={{ background: token.colorBgBase, color: token.colorTextBase }}>
-                                    <div style={{ background: showLayers ? token.colorBgBase : '', color: token.colorTextBase }}
+                                    style={{ background: token.colorBgBase, color: token.colorTextBase, borderRadius: showLayers ? '0 10px 10px' : '10px' }}>
+                                    <div style={{
+                                        background: showLayers ? token.colorBgBase : '',
+                                        color: token.colorTextBase
+                                    }}
                                         className={`${styles.showLayerAction}`} onClick={() => setShowLayers(!showLayers)}>
                                         {/* <Tooltip title={`${showLayers ? 'Hide' : 'Show'} Layers`}> */}
-                                        {showLayers ? <IoCloseSharp /> : <BsLayers />}
+                                        {showLayers ? <TiChevronRightOutline /> : <BsStack />}
                                         {/* </Tooltip> */}
                                     </div>
                                     {showLayers && <>

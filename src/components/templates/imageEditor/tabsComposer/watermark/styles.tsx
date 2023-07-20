@@ -7,6 +7,7 @@ import { getObjectType, insertImgFile } from '@util/imageEditorUtils';
 import { Button, Input } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { LuImagePlus } from 'react-icons/lu';
+import defaultCraftBuilderConfig from 'src/data/defaultCraftBuilderConfig';
 import styles from './watermark.module.scss'
 const { Search } = Input;
 
@@ -29,7 +30,11 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, rerenderCanvas }) {
     }, [watermarkProps])
 
     const onClickReplace = () => {
-        fileInputRef.current.click();
+        if (defaultCraftBuilderConfig.isPro) {
+            fileInputRef.current.click();
+        } else {
+            dispatch(showErrorToast('To replace image you need to be on pro version'))
+        }
     }
 
     const handleImageAdded = async (imageData: any) => {
@@ -74,7 +79,11 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, rerenderCanvas }) {
     };
 
     const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setText(event.target.value);
+        if (defaultCraftBuilderConfig.isPro) {
+            setText(event.target.value);
+        } else {
+            dispatch(showErrorToast('To replace text you need to be on pro version'))
+        }
     };
 
     const handleKeyDown = (event: { key: string; }) => {

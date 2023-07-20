@@ -15,7 +15,7 @@ const useInViewport = (elementRef) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         setIsVisible(true);
-                        observer.unobserve(elementRef.current);
+                        observer?.unobserve(elementRef.current);
                     }
                 });
             }, OPTIONS);

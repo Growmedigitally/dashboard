@@ -1,4 +1,5 @@
-import { OBJECT_TYPES } from "@constant/imageEditor";
+import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from "@constant/imageEditor";
+import defaultCraftBuilderConfig from "src/data/defaultCraftBuilderConfig";
 
 export const getObjectType = (canvasObject) => {
     return canvasObject ? (canvasObject?.get('type').includes('text') ? OBJECT_TYPES.text : canvasObject.get('type')) : '';
@@ -33,4 +34,13 @@ export function convertDataUrlToSvg(dataUrl) {
         };
         image.src = dataUrl;
     });
+}
+
+export const checkNonRestrictedObject = (obj) => {
+    // used in src/components/templates/imageEditor/initDragging.ts & src/components/templates/imageEditor/initHotKeys.ts
+    if (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.workspace) {
+        return false
+    } else if (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.watermark && !defaultCraftBuilderConfig.isPro) {
+        return false
+    } return true;
 }

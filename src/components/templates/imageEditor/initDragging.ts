@@ -1,4 +1,5 @@
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from "@constant/imageEditor";
+import { checkNonRestrictedObject } from "@util/imageEditorUtils";
 import { fabric } from "fabric";
 let dragMode = false;
 
@@ -61,7 +62,7 @@ const initDrraging = (canvas) => {
         canvas.isDragging = false;
         canvas.selection = true;
         canvas.getObjects().forEach((obj) => {
-            if (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace && obj.hasControls) {
+            if (checkNonRestrictedObject(obj) && obj.hasControls) {
                 obj.selectable = true;
             }
         });

@@ -213,6 +213,7 @@ function Shapes({ canvas, rerenderCanvas }) {
             fill: shapeType[type].fill,
             uid: uuid(),
             id: uuid(),
+            angle: 343,
             name: 'star2',
             objectCaching: false
         });

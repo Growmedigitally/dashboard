@@ -189,7 +189,7 @@ export const updateTextWatermark = (canvas, watermarkProps, workspace) => {
     }
 }
 
-export const updateImageTextWatermark = (canvas, watermarkProps, workspace) => {
+export const updateImageTextWatermark = (canvas, watermarkProps, workspace, from = '') => {
     const objects = canvas.getObjects();
     const addedWatermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
 
@@ -224,6 +224,11 @@ export const updateImageTextWatermark = (canvas, watermarkProps, workspace) => {
             groupObject[CUSTOME_ATTRIBUTES.OBJECT_TYPE] = `${OBJECT_TYPES.watermark}`
             groupObject.top = workspace.get('height') - groupObject.getScaledHeight() - 10;
             groupObject.left = workspace.get('width') - groupObject.getScaledWidth() - 10;
+            if (from == 'default') {
+                groupObject.set('selectable', false);
+                groupObject.set('hasControls', false);
+                groupObject.hoverCursor = 'default';
+            }
             updateCanvas(groupObject, canvas);
         })
     }

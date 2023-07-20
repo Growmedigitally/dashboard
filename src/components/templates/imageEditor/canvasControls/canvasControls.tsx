@@ -95,7 +95,7 @@ function CanvasControls({ updateCanvas, canvasHistory, canvasState, updateHistor
                         <Button className={styles.buttonElement} size='middle' type="primary" onClick={() => zoomOutCanvas(canvas)} icon={<FiZoomOut />} />
                     </Tooltip>
                     <Tooltip title="Fit">
-                        <Button className={styles.buttonElement} size='middle' type="primary" onClick={() => setAutoSizing(canvas)} icon={<FiMaximize />} />
+                        <Button className={styles.buttonElement} size='middle' type="primary" onClick={() => setAutoSizing()} icon={<FiMaximize />} />
                     </Tooltip>
                     <div className={styles.segmentWrap}>
                         <Segmented
