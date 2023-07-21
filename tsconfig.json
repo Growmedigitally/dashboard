@@ -23,9 +23,9 @@
       "@apiService/*": ["pages/apiService/*"],
       "@assets/*": ["public/assets/*"],
       "@objectPropertiesEditor/*": [
-        "src/components/templates/imageEditor/objectPropertiesEditor/*"
+        "src/components/templates/craftBuilder/objectPropertiesEditor/*"
       ],
-      "@imageEditor/*": ["src/components/templates/imageEditor/*"]
+      "@craftBuilder/*": ["src/components/templates/craftBuilder/*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
