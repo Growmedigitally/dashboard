@@ -5,12 +5,11 @@ import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss
 import { activeObjectsState } from '@template/craftBuilder/types';
 
 type pageProps = {
-    updateLocalCanvas: any,
     canvas: fabric.canvas,
     activeObjectsState: activeObjectsState
 }
 
-function CharactersProps({ updateLocalCanvas, canvas, activeObjectsState }: pageProps) {
+function CharactersProps({ canvas, activeObjectsState }: pageProps) {
 
     const [activeObjectId, setActiveObjectId] = useState(null);
 

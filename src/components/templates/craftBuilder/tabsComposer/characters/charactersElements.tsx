@@ -39,8 +39,7 @@ function CharactersElements({ canvas, updateLocalCanvas, activeTab }) {
             svgObject.scale(0.4)
             canvas.add(svgObject);
             canvas.setActiveObject(svgObject);
-            canvas.renderAll();
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, 'CharactersElements')
         });
     }
 

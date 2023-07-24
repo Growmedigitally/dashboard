@@ -38,7 +38,7 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
     const colorString = useMemo(
         () => {
             // console.log(!(typeof activeColor === 'string' || activeColor instanceof String), activeColor)
-            return !activeColor ? '' : (typeof activeColor === 'string' ? activeColor : activeColor.toHexString())
+            return activeColor ? (typeof activeColor === 'string' ? activeColor : activeColor.toHexString()) : ''
         },
         [activeColor],
     );

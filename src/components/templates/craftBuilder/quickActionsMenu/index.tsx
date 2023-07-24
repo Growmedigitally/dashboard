@@ -90,18 +90,20 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
                 activeObjectsState.selectedObject.map((object) => lockObject(object))
                 lockObject(canvas.getActiveObject());
                 // updateLocalCanvas(canvas)
+                updateLocalCanvas(canvas, 'context menu action :LOCK')
                 break;
             case 'UNLOCK':
                 activeObjectsState.selectedObject.map((object) => unlockObject(object))
                 unlockObject(canvas.getActiveObject());
                 // updateLocalCanvas(canvas)
+                updateLocalCanvas(canvas, 'context menu action :UNLOCK')
                 break;
             case 'DELETE':
                 const activeObject = canvas.getActiveObjects();
                 if (activeObject) {
                     activeObject.map((item) => canvas.remove(item));
                     canvas.discardActiveObject();
-                    canvas.renderAll();
+                    updateLocalCanvas(canvas, 'context menu action :DELETE')
                 }
                 break;
             case 'CLONE':
@@ -110,8 +112,6 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
             default:
                 break;
         }
-        canvas.renderAll();
-        updateLocalCanvas(canvas)
         event.stopPropagation();
     }
 
@@ -121,26 +121,10 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
                 updateActiveObjectCords(true)
                 break;
             case 'DELETE':
-                var activeObject = canvas.getActiveObjects();
-                if (activeObject) {
-                    activeObject.map((item) => canvas.remove(item));
-                    canvas.discardActiveObject();
-                    canvas.renderAll();
-                }
+                onClickContextMenuAction(event, action)
                 break;
             case 'CLONE':
-                const selectedObject = canvas.getActiveObject();
-                if (selectedObject) {
-                    selectedObject.clone(function (cloned) {
-                        canvas.add(cloned.set({
-                            left: cloned.left + 10,
-                            top: cloned.top + 10,
-                            uid: uuid()
-                        }));
-                        canvas.setActiveObject(cloned);
-                        canvas.renderAll();
-                    }, [CUSTOME_ATTRIBUTES.PATTERN_DATA, CUSTOME_ATTRIBUTES.OBJECT_TYPE]);
-                }
+                onClickContextMenuAction(event, action)
                 break;
             default:
                 break;

@@ -57,7 +57,7 @@ function StylesProps({ updateLocalCanvas, canvas, activeObjectsState }: pageProp
         const activeObject = canvas.getActiveObject();
         activeObject.set(property, value)
         setAttributes({ ...textAttribute, [property]: value })
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, `StylesProps: ${property}`);
     }
 
     const onClickAction = (style) => {

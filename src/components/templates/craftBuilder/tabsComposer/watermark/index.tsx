@@ -117,7 +117,7 @@ function Watermark({ canvas, updateLocalCanvas, workspace, activeObjectsState }:
             default:
                 break;
         }
-        setTimeout(() => updateLocalCanvas(canvas), 100);
+        setTimeout(() => updateLocalCanvas(canvas, 'Watermark'), 100);
     }
 
     const onClickEnableWatermark = (status) => {
@@ -138,7 +138,7 @@ function Watermark({ canvas, updateLocalCanvas, workspace, activeObjectsState }:
             } else {
                 (atermarkObjectIndex != -1) && objects[atermarkObjectIndex].set('visible', false);
             }
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, 'Watermark')
         } else {
             dispatch(showErrorToast('To disable watermark you need to be on pro version'))
         }

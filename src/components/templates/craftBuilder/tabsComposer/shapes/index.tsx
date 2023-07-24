@@ -85,7 +85,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         //     triangle.center();
         // }
         canvas.setActiveObject(triangle);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const addCircle = (option = null) => {
@@ -102,7 +102,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(circle);
         circle.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(circle);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const addHexagon = (option = null) => {
@@ -121,7 +121,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(polygon);
         polygon.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(polygon);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
     const addPentagon = (option = null) => {
         const center = canvas.getCenter();
@@ -140,7 +140,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(polygon);
         polygon.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(polygon);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
     const addEllipse = (type) => {
         const center = canvas.getCenter();
@@ -158,7 +158,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(oval);
         oval.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(oval);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const addRect = (type) => {
@@ -180,7 +180,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(rect);
         rect.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(rect);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const addEgg = () => {
@@ -194,7 +194,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         path.set({ left: center.left, top: center.top })
         canvas.add(path);
         canvas.setActiveObject(path);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const addStarShape = (type: any) => {
@@ -220,7 +220,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(polygon);
         polygon.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(polygon);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const addStarSHape = (option = null) => {
@@ -249,7 +249,7 @@ function Shapes({ canvas, updateLocalCanvas }) {
         canvas.add(polygon);
         polygon.set({ left: center.left / 2, top: center.top / 2 })
         canvas.setActiveObject(polygon);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'shapes');
     }
 
     const COMMON_SHAPES = [

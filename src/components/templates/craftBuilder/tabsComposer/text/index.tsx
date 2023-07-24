@@ -12,6 +12,8 @@ import { useAppDispatch } from '@hook/useAppDispatch';
 import { showErrorToast } from '@reduxStore/slices/toast';
 import { Input, Space } from 'antd';
 import Patterns from '@template/craftBuilder/objectPropertiesEditor/patterns';
+import useDebounce from '@hook/useDebounce';
+import { workspace } from '@template/craftBuilder';
 const { Search } = Input;
 
 const TEXT_TYPES = [
@@ -40,7 +42,6 @@ const Text = ({ canvas, updateLocalCanvas }: any) => {
     }, [])
 
     const addTextArea = (text: string, options = {}) => {
-        var path = 'http://fabricjs.com/assets/honey_im_subtle.png';
         const newTextObject = new fabric.Textbox(text, {
             left: 100,
             top: 100,
@@ -54,8 +55,10 @@ const Text = ({ canvas, updateLocalCanvas }: any) => {
             ...options
         });
         canvas.add(newTextObject);
+        const center = workspace.getCenterPoint();
+        canvas._centerObject(newTextObject, new fabric.Point(workspace.getCenterPoint().x, newTextObject.getCenterPoint().y))
         canvas.setActiveObject(newTextObject)
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'Text');
     };
 
 
@@ -73,8 +76,9 @@ const Text = ({ canvas, updateLocalCanvas }: any) => {
             ...options
         });
         canvas.add(newTextObject);
+        canvas._centerObject(newTextObject, new fabric.Point(workspace.getCenterPoint().x, newTextObject.getCenterPoint().y))
         canvas.setActiveObject(newTextObject)
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'Text');
     };
 
     const addText = (text: string, options = {}) => {
@@ -92,7 +96,7 @@ const Text = ({ canvas, updateLocalCanvas }: any) => {
         });
         canvas.add(newTextObject);
         canvas.setActiveObject(newTextObject)
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'Text');
     };
 
 
@@ -103,16 +107,11 @@ const Text = ({ canvas, updateLocalCanvas }: any) => {
     const handleKeyDown = (event: { key: string; }) => {
         if (event.key === 'Enter') {
             if (text) {
-                addTextArea(text);
+                addIText(text);
                 setText('');
             } else dispatch(showErrorToast("Please Enter text"))
         }
     };
-
-    const onTextTypeClick = (type) => {
-        if (type.title == 'Text') addIText('Add your text')
-        else addTextArea('Add your text')
-    }
 
     const onBodyTypeClick = (type) => {
         const center = canvas.getCenter();
@@ -126,12 +125,10 @@ const Text = ({ canvas, updateLocalCanvas }: any) => {
                     addIText('Your header text', { left, top, textAlign: 'center', fontSize: 30 })
                     break;
                 case 'Body':
-                    var left = (center.left / 2) - (canvas.width / 6);
                     var top = center.top / 2;
-                    addIText('Your description text', { left, top, textAlign: 'left', fontSize: 22 })
+                    addTextArea('Your description text', { left, top, textAlign: 'center', fontSize: 22 })
                     break;
                 case 'Caption':
-                    var left = (center.left / 2) - (canvas.width / 6);
                     var top = Number(center.top);
                     addTextArea('Your caption text', { left, top, textAlign: 'center', fontSize: 15 })
                     break;

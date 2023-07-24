@@ -7,30 +7,30 @@ const getWorkspace = (canvas) => {
 
 export const moveLayerUp = (canvas, activeObject, updateLocalCanvas) => {
     activeObject && activeObject.bringForward();
-    canvas.renderAll();
+    // canvas.renderAll();
     getWorkspace(canvas).sendToBack();
-    updateLocalCanvas(canvas)
+    updateLocalCanvas(canvas, 'moveLayerUp')
 }
 
 export const moveLayerUpTop = (canvas, activeObject, updateLocalCanvas) => {
     activeObject && activeObject.bringToFront();
-    canvas.renderAll();
+    // canvas.renderAll();
     getWorkspace(canvas).sendToBack();
-    updateLocalCanvas(canvas)
+    updateLocalCanvas(canvas, 'moveLayerUpTop')
 }
 
 export const moveLayerDown = (canvas, activeObject, updateLocalCanvas) => {
     activeObject && activeObject.sendBackwards();
-    canvas.renderAll();
+    // canvas.renderAll();
     getWorkspace(canvas).sendToBack();
-    updateLocalCanvas(canvas)
+    updateLocalCanvas(canvas, 'moveLayerDown')
 }
 
 export const moveLayerDownTop = (canvas, activeObject, updateLocalCanvas) => {
     activeObject && activeObject.sendToBack();
-    canvas.renderAll();
+    // canvas.renderAll();
     getWorkspace(canvas).sendToBack();
-    updateLocalCanvas(canvas)
+    updateLocalCanvas(canvas, 'moveLayerDownTop')
 }
 
 // export const moveLayerUp = (canvas, layerId) => {

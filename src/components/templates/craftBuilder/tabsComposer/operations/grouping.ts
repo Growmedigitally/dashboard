@@ -13,7 +13,6 @@ export const unGroup = (canvas) => {
         item.set('dirty', true);
         canvas.add(item);
     })
-    canvas.renderAll();
 }
 
 export const group = (canvas) => {

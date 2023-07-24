@@ -102,8 +102,7 @@ function Background({ canvas, updateLocalCanvas, workspace }) {
             })
         }
         setBgProps(bgPropsCopy)
-        canvas.renderAll();
-        updateLocalCanvas(canvas)
+        updateLocalCanvas(canvas, 'Background')
     }
 
     const onSwitchTab = (tab) => {

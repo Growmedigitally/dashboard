@@ -27,6 +27,7 @@ import defaultCraftBuilderConfig from "src/data/defaultCraftBuilderConfig";
 import { TiChevronRightOutline } from "react-icons/ti";
 import { checkNonRestrictedObject, getObjectType } from "@util/craftBuilderUtils";
 import TabsWrapper from "./craftBuilderTabs";
+import useDebounce, { debounce } from "@hook/useDebounce";
 
 const initialState = {
     id: 1,
@@ -65,6 +66,7 @@ export default function CraftBuilder() {
     })
 
     const onObjectModified = useCallback((e: any) => {
+        console.log("object:modified", "CraftBuilder")
         updatedHistoryStack(e.target.canvas);
         updateActiveObjectCords()
     }, [setCanvasState, setCanvasHistory]);
@@ -96,9 +98,8 @@ export default function CraftBuilder() {
                     initResizeObserve();
                     initDrraging(canvasInstance.current);
                     loadCanvasFromJson(initialState.data);
-                    initControls(canvasInstance.current, token);
                     // initControlsRotate(canvasInstance.current);
-                    initHotkeys(canvasInstance.current);
+                    initHotkeys(canvasInstance.current, updateLocalCanvas);
                     initAligningGuidelines(canvasInstance.current, token);
                     setCanvas(canvasInstance.current);
                     setAutoSizing(true)
@@ -107,6 +108,7 @@ export default function CraftBuilder() {
                     if (!defaultCraftBuilderConfig.isPro) {
                         initWatermark();
                     }
+                    initControls(canvasInstance.current, token);
                     // initGridLines(canvasInstance.current, token.colorPrimary);
                 })
         } else {
@@ -142,12 +144,14 @@ export default function CraftBuilder() {
 
     //handle object selection events
     const handleCanvasEvents = useCallback((e) => {
+        console.log("selection:***", "CraftBuilder")
         handleSelctionEvent(e, canvasInstance.current, setActiveObjectsState)
         updateActiveObjectCords()
     }, [setCanvas]);
 
     const handleCanvasZoom = useCallback(
         (event: any) => {
+            console.log("mouse:wheel", "CraftBuilder")
             if (event?.target?.canvas) {
                 const canvasRef = event.target.canvas;
                 var delta = event.e.deltaY;
@@ -244,11 +248,11 @@ export default function CraftBuilder() {
         if (!status) {
             workspace.clone((cloned: fabric.Rect) => {
                 canvasInstance.current.clipPath = cloned;
-                canvasInstance.current.requestRenderAll();
+                canvasInstance.current.renderAll();
             });
         } else {
             canvasInstance.current.clipPath = null;
-            canvasInstance.current.requestRenderAll();
+            canvasInstance.current.renderAll();
         }
     }
 
@@ -265,6 +269,7 @@ export default function CraftBuilder() {
         canvasInstance.current.on('selection:updated', handleCanvasEvents);
         canvasInstance.current.on('selection:cleared', handleCanvasEvents);
         canvasInstance.current.on('mouse:down', function (event) {
+            console.log("mouse:down", "CraftBuilder")
             if (event.button === 1) {
                 console.log("left click");
             }
@@ -287,13 +292,16 @@ export default function CraftBuilder() {
             }
         });
         canvasInstance.current.on('object:added', (e) => {
+            console.log("object:added", "CraftBuilder")
             setTimeout(() => updateActiveObjectCords(), 500);
         });
         //in case of patteres scalling pattern image also gelts scalled
         canvasInstance.current.on("object:scaling", function (e) {
+
             var shape = e.target;
             //apply scaling only for  shapes from scalling
             if (getObjectType(shape) == OBJECT_TYPES.triangle || getObjectType(shape) == OBJECT_TYPES.rect) {
+                console.log("object:scaling", "CraftBuilder")
                 shape.width = shape.scaleX * shape.width;
                 shape.height = shape.scaleY * shape.height;
                 shape.scaleX = 1;
@@ -383,13 +391,16 @@ export default function CraftBuilder() {
         canvas?.discardActiveObject().renderAll();
     }
 
-    const updateLocalCanvas = (updatedCanvas) => {
-        // canvas.renderAll();
-        canvasInstance.current.requestRenderAll();
-        canvas.requestRenderAll();
-        console.log("updateLocalCanvas")
-        // canvas.discardActiveObject().renderAll();
-        updateCanvas(updatedCanvas)
+
+    const debouncedUpdateCanvas = useDebounce(() => {
+        console.log(`\x1b[32m debouncedUpdateCanvas: canvas updated`);
+        canvasInstance.current.renderAll();
+        updateCanvas(canvasInstance.current)
+    });
+
+    const updateLocalCanvas = (updatedCanvas, from) => {
+        console.log("update canvas req from: ", from)
+        debouncedUpdateCanvas();
     }
 
     return (
@@ -411,7 +422,7 @@ export default function CraftBuilder() {
                                 <TabsComposer
                                     activeObjectsState={activeObjectsState}
                                     canvas={canvasInstance.current}
-                                    updateLocalCanvas={(updatedCanvas: any) => updateLocalCanvas(updatedCanvas)}
+                                    updateLocalCanvas={updateLocalCanvas}
                                     activeTab={activeEditorTab}
                                     workspace={workspace}
                                     setActiveEditorTab={setActiveEditorTab} />

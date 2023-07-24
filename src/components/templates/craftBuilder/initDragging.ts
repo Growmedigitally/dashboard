@@ -9,8 +9,8 @@ const setDragging = (canvas) => {
     canvas.getObjects().forEach((obj) => {
         obj.selectable = false;
     });
-    canvas.renderAll();
-    canvas.requestRenderAll();
+    // canvas.renderAll();
+    // canvas.requestRenderAll();
 }
 
 
@@ -30,14 +30,14 @@ const initDrraging = (canvas) => {
     canvas.on('mouse:down', function (opt) {
         const evt = opt.e;
         if (evt.altKey || dragMode) {
-            canvas.defaultCursor = 'grabbing';
             canvas.discardActiveObject();
-            setDragging(canvas);
+            canvas.defaultCursor = 'grab';
+            canvas.getObjects().forEach((obj) => obj.selectable = false);
             canvas.selection = false;
             canvas.isDragging = true;
             canvas.lastPosX = evt.clientX;
             canvas.lastPosY = evt.clientY;
-            canvas.requestRenderAll();
+            //canvas.requestRenderAll();
         }
     });
 
@@ -52,7 +52,6 @@ const initDrraging = (canvas) => {
             vpt[5] += e.clientY - canvas.lastPosY;
             canvas.lastPosX = e.clientX;
             canvas.lastPosY = e.clientY;
-            canvas.requestRenderAll();
         }
     });
 
@@ -66,7 +65,7 @@ const initDrraging = (canvas) => {
                 obj.selectable = true;
             }
         });
-        canvas.requestRenderAll();
+        //canvas.requestRenderAll();
         canvas.defaultCursor = 'default';
     });
 

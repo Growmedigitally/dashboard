@@ -58,8 +58,7 @@ function GraphicsElements({ onSelect = null, canvas, updateLocalCanvas }) {
                     svgObject.scale(0.2)
                     canvas.add(svgObject);
                     canvas.setActiveObject(svgObject);
-                    canvas.renderAll();
-                    updateLocalCanvas(canvas)
+                    updateLocalCanvas(canvas, 'GraphicsElements')
                 });
             } else {
                 fabric.Image.fromURL(icon, function (img: any) {
@@ -72,7 +71,7 @@ function GraphicsElements({ onSelect = null, canvas, updateLocalCanvas }) {
                         canvas.add(img);
                         canvas.viewportCenterObject(img)
                         canvas.setActiveObject(img)
-                        updateLocalCanvas(canvas);
+                        updateLocalCanvas(canvas, 'GraphicsElements');
                     }
                 }, { crossOrigin: 'anonymous' });
             }

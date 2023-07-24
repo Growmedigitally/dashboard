@@ -113,7 +113,7 @@ export const updateLogoWatermark = (canvas, updateLocalCanvas, watermarkProps, w
             activeObject.setSrc(watermarkProps.src, () => {
                 activeObject.scaleX = (width * scaleX) / activeObject.width
                 activeObject.scaleY = (height * scaleY) / activeObject.height
-                updateLocalCanvas(canvas)
+                updateLocalCanvas(canvas, 'updateLogoWatermark')
             });
         } else {
             //existing watermark as group/text

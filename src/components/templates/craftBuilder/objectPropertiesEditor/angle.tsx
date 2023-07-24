@@ -24,7 +24,7 @@ function Angle({ updateLocalCanvas, canvas }: pageProps) {
         const activeObject = canvas.getActiveObject();
         activeObject.rotate(newValue);
         setValue(newValue);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'Angle');
     }
 
     return (

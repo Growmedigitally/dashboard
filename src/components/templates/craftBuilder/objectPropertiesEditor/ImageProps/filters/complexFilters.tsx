@@ -52,7 +52,7 @@ function ComplexFilters({ createFilter, updateLocalCanvas, canvas, activeObjects
             }
         }
         activeObject.applyFilters();
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'complex filter update');
     }
 
     const removeFilter = (index) => {
@@ -63,7 +63,7 @@ function ComplexFilters({ createFilter, updateLocalCanvas, canvas, activeObjects
         const fabricType = getFabricFilterType(availableFiltersCopy[index].type);
         activeObject.filters = activeObject.filters.filter((value) => value.type !== fabricType);
         activeObject.applyFilters();
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'complex filter remove');
     }
 
     const activateFilter = (index, status) => {

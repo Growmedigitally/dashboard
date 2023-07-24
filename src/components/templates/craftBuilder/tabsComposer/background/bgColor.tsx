@@ -73,8 +73,7 @@ function BGColor({ workspace, canvas, updateLocalCanvas }) {
         if (initialPropsGets) {
             setFillColor(color);
             workspace.set('fill', color);
-            canvas.renderAll();
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, 'BGColor')
         }
     }
 

@@ -42,7 +42,7 @@ function ShapesProps({ updateLocalCanvas, canvas, activeObjectsState }: pageProp
             activeObject.set(property, value);
             if (property == 'rx') activeObject.set('ry', value);
             setAttributes({ ...attribute, [property]: value })
-            updateLocalCanvas(canvas);
+            updateLocalCanvas(canvas, `ShapesProps ${property}`);
         }
     }
 
@@ -55,7 +55,7 @@ function ShapesProps({ updateLocalCanvas, canvas, activeObjectsState }: pageProp
                 activeObject.set('points', getStarPolygonPoints(5, value, 25));
             }
             setAttributes({ ...attribute, points: value })
-            updateLocalCanvas(canvas);
+            updateLocalCanvas(canvas, "ShapesProps");
         }
     }
 

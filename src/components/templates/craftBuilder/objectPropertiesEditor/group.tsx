@@ -19,8 +19,7 @@ function Group({ updateLocalCanvas, canvas, activeObjectsState }) {
             item.set('dirty', true);
             canvas.add(item);
         })
-        canvas.renderAll();
-        updateLocalCanvas(canvas)
+        updateLocalCanvas(canvas, 'group')
     }
 
     const group = () => {
@@ -38,7 +37,7 @@ function Group({ updateLocalCanvas, canvas, activeObjectsState }) {
             objectsInGroup.forEach((object) => canvas.remove(object));//remove old objects
             canvas.add(newgroup);
             canvas.setActiveObject(newgroup);
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, 'group')
         });
     }
     return (

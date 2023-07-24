@@ -39,7 +39,7 @@ function Shadow({ updateLocalCanvas, canvas }) {
         if (propertyValue.offsetY || propertyValue.offsetX || from == 'type') {
             var newShadow = new fabric.Shadow({ ...propertyValue });
             activeObject.set('shadow', newShadow)
-            updateLocalCanvas(canvas);
+            updateLocalCanvas(canvas, 'Shadow');
         }
         setShadow({ ...propertyValue });
     }

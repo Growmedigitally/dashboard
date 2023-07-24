@@ -70,7 +70,7 @@ function BGGradient({ updateLocalCanvas, workspace, canvas }) {
             });
             workspace.set('fill', gradientObject)
             canvas.renderAll();
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, 'BGGradient:updateGradient')
         }
     }
 
@@ -117,8 +117,7 @@ function BGGradient({ updateLocalCanvas, workspace, canvas }) {
                 colorStops: currentColors,
             });
             workspace.set('fill', gradientObject)
-            canvas.renderAll();
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, 'BGGradient,onChangeDirection')
         }
     }
 

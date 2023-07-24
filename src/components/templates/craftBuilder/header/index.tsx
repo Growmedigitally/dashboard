@@ -26,6 +26,7 @@ import { ImDownload } from 'react-icons/im';
 const { Search } = Input;
 import { DownOutlined } from '@ant-design/icons';
 import { showSuccessAlert } from '@reduxStore/slices/alert';
+import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
 
 type pageProps = {
     updateWorkspaceSize: any,
@@ -100,7 +101,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
     }
 
     const getImgUrl = (type = 'png') => {
-        const workspace = canvas.getObjects().find((item: fabric.Object) => item.id === 'workspace');
+        const workspace = canvas.getObjects().find((item: fabric.Object) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.workspace);
         const { left, top, width, height } = workspace as fabric.Object;
         const option = {
             name: 'New Image',
@@ -112,6 +113,8 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
             top,
         };
         canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+        const watermark = canvas.getObjects().find((item: fabric.Object) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.watermark);
+        watermark.bringToFront()
         canvas.renderAll();
         const dataUrl = canvas.toDataURL(option);
         setAutoSizing();
@@ -153,7 +156,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                 const dataUrl = getImgUrl(downloadOptions.type);
                 downloadFile(dataUrl, downloadOptions.type);
             } else {
-                const workspace = canvas.getObjects().find((item: fabric.Object) => item.id === 'workspace');
+                const workspace = canvas.getObjects().find((item: fabric.Object) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.workspace);
                 const { left, top, width, height } = workspace as fabric.Object;
                 const dataUrl = canvas.toSVG({
                     width,
@@ -187,7 +190,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
             if (checkNonRestrictedObject(obj)) canvas.remove(obj)
         });
         canvas.discardActiveObject();
-        canvas.renderAll();
+        updateLocalCanvas(canvas, "onClickClear canvas")
     }
 
     const onClickResize = () => {
@@ -254,6 +257,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
 
             {/* Final image preview */}
             <Modal
+                destroyOnClose
                 title="Final image preview"
                 open={Boolean(previewUrl)}
                 onCancel={() => setPreviewUrl('')}
@@ -269,6 +273,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
             </Modal>
             {/* Sizes Options: */}
             <Modal
+                destroyOnClose
                 title="Sizes Options:"
                 open={Boolean(openSizeModal)}
                 onCancel={() => setOpenSizeModal(false)}
@@ -337,6 +342,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
             </Modal>
             {/* Download Options */}
             <Modal
+                destroyOnClose
                 title="Download Options:"
                 open={Boolean(openDownloadModal)}
                 onCancel={() => setOpenDownloadModal('')}
@@ -382,17 +388,16 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                                     onMouseEnter={() => setHoverId(option)}
                                     onMouseLeave={() => setHoverId('')}
                                     style={{
-                                        backgroundColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimaryBgHover : token.colorBgBase,
+                                        // backgroundColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimaryBgHover : token.colorBgBase,
                                         border: '1px solid #dee1ec',
                                         borderColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorBorder,
-                                        color: (downloadOptions.type == option.name || hoverId == option) ? token.colorTextBase : token.colorTextLabel
+                                        color: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorTextLabel
                                     }}>
                                     <div className={styles.iconWrap}
                                         style={{
                                             // backgroundColor: (downloadOptions.type == option.name|| hoverId == option) ? token.colorPrimary : token.colorBgBase,
                                             // border: '1px solid #dee1ec',
-                                            borderColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorBorder,
-                                            color: (downloadOptions.type == option.name || hoverId == option) ? token.colorTextBase : token.colorTextLabel
+                                            // borderColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorBorder,
                                         }}
                                     >{option.icon}</div>
                                     {option.name} File
@@ -411,6 +416,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                                 // disabled={!defaultCraftBuilderConfig.isPro}
                                 placement="bottom"
                                 arrow
+                                trigger={['click']}
                                 destroyPopupOnHide={true}
                                 menu={{ items: TEMPLATE_ACTIONS, onClick: onSaveActionClick }}
                                 overlayClassName={styles.templateSaveActionsWrap}

@@ -54,8 +54,7 @@ function IconsElements({ onSelect = null, canvas, updateLocalCanvas }) {
                 // Add the SVG object to the canvas
                 canvas.add(svgObject);
                 canvas.setActiveObject(svgObject);
-                canvas.renderAll();
-                updateLocalCanvas(canvas)
+                updateLocalCanvas(canvas, 'IconsElements')
             });
         }
 

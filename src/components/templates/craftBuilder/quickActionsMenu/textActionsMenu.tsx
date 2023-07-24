@@ -47,7 +47,7 @@ function TextActionsMenu({ updateActiveObjectCords, styles, updateLocalCanvas, c
             const activeObject = canvas.getActiveObject();
             activeObject.set(property, value)
             setAttributes({ ...textAttribute, [property]: value })
-            updateLocalCanvas(canvas);
+            updateLocalCanvas(canvas, 'TextActionsMenu');
         }
     }
 

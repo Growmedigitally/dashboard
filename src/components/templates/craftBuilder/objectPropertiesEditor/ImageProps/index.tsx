@@ -41,7 +41,7 @@ function ImageObjectProps({ updateLocalCanvas, workspace, canvas, activeObjectsS
         activeObject.setSrc(imgEl.src, () => {
             activeObject.set('scaleX', (width * scaleX) / imgEl.width);
             activeObject.set('scaleY', (height * scaleY) / imgEl.height);
-            updateLocalCanvas(canvas)
+            updateLocalCanvas(canvas, "ImageObjectProps: handleImageAdded")
         });
         imgEl.remove();
     };

@@ -19,6 +19,9 @@ import { TbIcons } from 'react-icons/tb';
 import IconsElements from '@template/craftBuilder/tabsComposer/graphics/iconsElements';
 import GraphicsElements from '@template/craftBuilder/tabsComposer/graphics/graphicsElements';
 import GraphicsCss from '@template/craftBuilder/tabsComposer/graphics/graphics.module.scss'
+import { RiImageAddFill } from 'react-icons/ri';
+import UploadImage from '@organisms/imagePickerModal/uploadImage';
+import PatternGallery from './patternGallery';
 
 type pageProps = {
     activeObject: any,
@@ -47,85 +50,86 @@ const FILL_TYPE = {
 
 const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState }: pageProps) => {
 
+    const { token } = theme.useToken();
+    const dispatch = useAppDispatch();
     const [selectedImage, setSelectedImage] = useState({ src: '' });
     const [activeTab, setActiveTab] = useState(TAB_TYPES.GALLERY);
-    const { token } = theme.useToken();
-    const [currentFill, setCurrentFill] = useState<any>({ repeat: FILL_PEPEAT_TYPE.REPEAT, opacity: 1 })
+    const [currentColor, setCurrentColor] = useState('')
     const [isFillColor, setIsFillColor] = useState(false)
-    const [initialPropsGets, setInitialPropsGets] = useState(false);
-    const [patternDimentions, setPatternDimentions] = useState({ width: 0, height: 0, padding: 0 });//added pattern image dimensions
     const [objectDimenstions, setObjectDimenstions] = useState({ width: 0, height: 0 })//active object dimensions
-    const dispatch = useAppDispatch();
-    const [initialLoading, setInitialLoading] = useState(true);
-    const [currentObjectType, setCurrentObjectType] = useState(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE))
+    const [initialPropsGets, setInitialPropsGets] = useState(false);
+
+    const [currentPaternData, setCurrentPaternData] = useState({
+        patternSourceCanvas: null,
+        img: null,
+        repeat: FILL_PEPEAT_TYPE.REPEAT,
+        src: '',
+        fill: '',
+        opacity: 1,
+        width: 0,
+        height: 0,
+        padding: 0,
+        forceUpdateImage: false,
+        forceUpdate: true
+    })
+
+    const updateCanvasPatternData = (paternData) => {
+        activeObject.set('patternData', {
+            ...paternData,
+            [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.workspace ? OBJECT_TYPES.workspace + '-' + OBJECT_TYPES.pattern : OBJECT_TYPES.pattern}`
+        })
+        updateLocalCanvas(canvas, "Patterns: updateCanvasPatternData")
+        setCurrentPaternData({ ...paternData, forceUpdate: true })
+    }
 
     useEffect(() => {
-        if (activeObject && !initialLoading) updateCanvasPatternData(currentFill, patternDimentions);
-    }, [currentFill, patternDimentions])
+        if (currentPaternData.forceUpdate) {
+            if (activeObjectsState.isSelected && canvas) {
+                setIsFillColor(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) ? false : true);
+                //if fill is set to pattern
+                const patternData = activeObject.get('patternData');
+                if (activeObject.get('fill') instanceof fabric.Pattern || currentPaternData.forceUpdateImage) {
+                    if (activeObject && patternData && patternData.src && patternData[CUSTOME_ATTRIBUTES.OBJECT_TYPE].includes(OBJECT_TYPES.pattern)) {
+                        setIsFillColor(false);
+                        fabric.Image.fromURL(patternData.src, function (img) {
 
-    useEffect(() => {
-        // setCurrentObjectType(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE))
-        if (activeObjectsState.isSelected && canvas) {
-            setIsFillColor(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) ? false : true);
+                            const repeat = patternData.repeat || 'repeat';
+                            const padding = patternData.padding || 0;
+                            img.scaleToWidth((patternData.width) || 0);
 
-            //if fill is set to pattern
-            const patternData = activeObject.get('patternData');
-            if (activeObject.get('fill') instanceof fabric.Pattern) {
-                if (activeObject && patternData && patternData.src && patternData[CUSTOME_ATTRIBUTES.OBJECT_TYPE].includes(OBJECT_TYPES.pattern)) {
-                    setIsFillColor(false);
-                    fabric.Image.fromURL(patternData.src, function (img) {
+                            img.set('opacity', patternData.opacity)
+                            //set selected pattern image dimenstions - which is used for image widht adjustment at edit time
+                            const imgDimenstions = { width: patternData.width, height: patternData.height, padding: padding }
 
-                        const repeat = patternData.repeat || 'repeat';
-                        const padding = patternData.patternDimentions.padding || 0;
-                        img.scaleToWidth((patternData.patternDimentions.width) || 0);
-                        // img.scaleToHeight((patternData.patternDimentions.height) || 0);
-
-                        img.set('opacity', patternData.opacity)
-                        //set selected pattern image dimenstions - which is used for image widht adjustment at edit time
-                        const imgDimenstions = { width: patternData.patternDimentions.width, height: patternData.patternDimentions.height, padding: padding }
-                        setPatternDimentions(imgDimenstions)
-
-                        //add image to canvas and set this canvas as pattern
-                        var patternSourceCanvas = new fabric.StaticCanvas();
-                        patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + padding, height: img.getScaledHeight() + padding });
-                        patternSourceCanvas.add(img);
-                        patternSourceCanvas.backgroundColor = patternData.fill;
-                        patternSourceCanvas.opacity = patternData.opacity;
-                        const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: repeat })
-                        activeObject?.set('fill', pattern);
-                        activeObject?.set('patternData', { ...patternData, patternSourceCanvas, img })
-
-                        setCurrentFill({ repeat: repeat, src: patternData.src, fill: patternData.fill, opacity: patternData.opacity });
-                        setSelectedImage({ src: patternData.src })
-                        setInitialLoading(false);
-                        canvas.requestRenderAll()
-                        setTimeout(() => {
-                            // //rerender pattern with existing padding because in first render padding of right side is zero
-                            // patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + padding, height: img.getScaledHeight() + padding });
-                            // const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: currentFill.repeat })
-                            // activeObject.set('fill', pattern);
+                            //add image to canvas and set this canvas as pattern
+                            var patternSourceCanvas = new fabric.StaticCanvas();
+                            patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + padding, height: img.getScaledHeight() + padding });
+                            patternSourceCanvas.add(img);
+                            patternSourceCanvas.backgroundColor = patternData.fill;
+                            patternSourceCanvas.opacity = patternData.opacity;
+                            const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: repeat })
+                            activeObject?.set('fill', pattern);
+                            setCurrentPaternData({ forceUpdate: false, forceUpdateImage: false, patternSourceCanvas, img, repeat: repeat, src: patternData.src, fill: patternData.fill, opacity: patternData.opacity, ...imgDimenstions })
+                            setSelectedImage({ src: patternData.src })
                             canvas.requestRenderAll()
-                        }, 1000);
-                    }, { crossOrigin: 'anonymous' });
+                            console.log("currentPaternData.forceUpdate pattern rerender")
+                            // setTimeout(() => {
+                            //     // //rerender pattern with existing padding because in first render padding of right side is zero
+                            //     // patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + padding, height: img.getScaledHeight() + padding });
+                            //     // const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: currentFill.repeat })
+                            //     // activeObject.set('fill', pattern);
+                            //     canvas.requestRenderAll()
+                            // }, 1000);
+                        }, { crossOrigin: 'anonymous' });
+                    }
+                } else if (typeof activeObject.get('fill') === 'string') {
+                    setCurrentColor(activeObject.get('fill'))
                 }
-                //  else {
-                //     //if fill is set to color
-                //     setInitialLoading(false);
-                //     setCurrentFill(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) ? {src:patternData.src, repeat: FILL_PEPEAT_TYPE.REPEAT } : activeObject.get('fill'))
-                // }
-            } else if (typeof activeObject.get('fill') === 'string') {
-                setCurrentFill(activeObject.get('fill'))
             }
-            //  else {
-            //     //if fill is set to color
-            //     setInitialLoading(false);
-            // setCurrentFill(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) ? {src:patternData.src, repeat: FILL_PEPEAT_TYPE.REPEAT } : activeObject.get('fill'))
-            // }
+            setInitialPropsGets(true);
+            setObjectDimenstions({ width: activeObject.get('width'), height: activeObject.get('height') })
         }
-        setInitialPropsGets(true);
-        setInitialLoading(false);
-        setObjectDimenstions({ width: activeObject.get('width'), height: activeObject.get('height') })
-    }, [canvas, activeObjectsState])
+    }, [canvas, currentPaternData])
 
     const FILL_TYPE_ITEMS_LIST = [
         { key: FILL_TYPE.FILL_COLOR, icon: <IoColorFill /> },
@@ -157,13 +161,8 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
     const TAB_ITEMS_LIST = [
         {
             key: TAB_TYPES.GALLERY,
-            icon: <BsImages />,
-            children: <GalleryImages currentPage={PATTERN_PAGE} selectedImage={selectedImage} setSelectedImage={(imageData) => addPatternImage(imageData)} config={{ type: BACKGROUND_IMAGES_TYPES.SQUARE }} />
-        },
-        {
-            key: TAB_TYPES.ICONS,
             icon: <TbIcons />,
-            children: <IconsElements onSelect={(imageData) => addPatternImage(imageData)} canvas={canvas} updateLocalCanvas={updateLocalCanvas} />
+            children: <PatternGallery onSelect={(imageData) => addPatternImage(imageData)} />
         },
         {
             key: TAB_TYPES.GRAPHICS,
@@ -198,64 +197,28 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
     const onChangeFill = (value) => {
         if (initialPropsGets) {
             activeObject.set('fill', value)
-            const patternData = activeObject.get("patternData");
-            activeObject.set('patternData', patternData ? { ...patternData, fill: value } : { fill: value })
-            setCurrentFill(value)
-            updateLocalCanvas(canvas);
+            updateCanvasPatternData({ ...currentPaternData, fill: value })
+            setCurrentColor(value)
         }
     }
 
     const onChangePatternFill = (value) => {
-        const patternData = activeObject.get("patternData");
-        if (initialPropsGets && value != patternData.fill) {
+        let patternData = activeObject.get("patternData");
+        if (!patternData) patternData = {};
+        if (patternData.fill && initialPropsGets && value != patternData.fill) {
             patternData.fill = value;
-            fabric.Image.fromURL(patternData.src, function (img) {
-                img.set('opacity', patternData.opacity)
-                img.scaleToWidth((patternData.patternDimentions.width) || 0);
-                // img.scaleToHeight((patternData.patternDimentions.height) || 0);
-
-                //set selected pattern image dimenstions - which is used for image widht adjustment at edit time
-                const imgDimenstions = { width: patternData.patternDimentions.width, height: patternData.patternDimentions.height, padding: patternData.patternDimentions.padding }
-                setPatternDimentions(imgDimenstions)
-
-                //add image to canvas and set this canvas as pattern
-                var patternSourceCanvas = new fabric.StaticCanvas();
-                patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + patternData.patternDimentions.padding, height: img.getScaledHeight() + patternData.patternDimentions.padding });
-                patternSourceCanvas.add(img);
-
-                patternSourceCanvas.backgroundColor = patternData.fill;
-
-                const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: patternData.repeat })
-                activeObject?.set('fill', pattern);
-                activeObject?.set('patternData', { ...patternData, patternSourceCanvas, img })
-
-                setCurrentFill({ ...currentFill, repeat: patternData.repeat, src: patternData.src, fill: patternData.fill });
-                canvas.requestRenderAll()
-            }, { crossOrigin: 'anonymous' });
+            updateCanvasPatternData({ ...currentPaternData, fill: patternData.fill });
         }
     }
 
-    const onChange = (key: string) => {
+    const onChangePatternImageTab = (key: string) => {
         setActiveTab(key)
     };
-
-    const updateCanvasPatternData = (currentFill, patternDimentions) => {
-        const patternData = activeObject.get("patternData");
-        activeObject.set('patternData', {
-            ...patternData,
-            src: currentFill.src,
-            repeat: currentFill.repeat,
-            padding: patternDimentions?.padding || 0,
-            patternDimentions,
-            [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.workspace ? OBJECT_TYPES.workspace + '-' + OBJECT_TYPES.pattern : OBJECT_TYPES.pattern}`
-        })
-        // console.log("updateCanvasPatternData", activeObject.get("patternData"))
-    }
 
     const addPatternImage = (image) => {
         // console.log(image)
         setSelectedImage(image)
-        const repeatType = typeof currentFill == 'string' ? FILL_PEPEAT_TYPE.REPEAT : currentFill.repeat;
+        const repeatType = currentColor ? FILL_PEPEAT_TYPE.REPEAT : currentPaternData.repeat;
         if (activeObject) {
             fabric.Image.fromURL(image.src, function (img) {
 
@@ -271,15 +234,13 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
 
                 const opacity = patternData.opacity || activeObject.get('opacity') || 1;
                 img.set('opacity', opacity)
-                img.scaleToWidth(patternDimentions.width || img.width || ((activeObject?.getScaledWidth() || 1) / 2));
+                img.scaleToWidth(patternData.width || img.width || ((activeObject?.getScaledWidth() || 1) / 2));
 
                 //set selected pattern image dimenstions - which is used for image widht adjustment at edit time
                 const imgDimenstions = { width: img.get('width') - 10, height: img.get('height') - 10, padding: 0 }
-                setPatternDimentions(imgDimenstions)
-
                 //add image to canvas and set this canvas as pattern
                 var patternSourceCanvas = new fabric.StaticCanvas();
-                patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + patternDimentions.padding, height: img.getScaledHeight() + patternDimentions.padding });
+                patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + patternData.padding, height: img.getScaledHeight() + patternData.padding });
                 patternSourceCanvas.add(img);
                 //set previous color as background color
 
@@ -287,81 +248,59 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
 
                 patternSourceCanvas.backgroundColor = patternData.fill;
                 patternData.src = image.src;
-                activeObject.set('patternData', { ...patternData, patternSourceCanvas, img, opacity })
-                // activeObject.patternData = { patternSourceCanvas, img };
                 const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: repeatType })
-                activeObject.set('fill', pattern);
-
-                setCurrentFill({ ...image, repeat: repeatType, fill: patternData.fill, opacity })
-                setPatternDimentions({ width: img.getScaledWidth(), height: img.getScaledHeight(), padding: patternDimentions.padding })
-
+                // activeObject.set('fill', pattern);
+                updateCanvasPatternData({
+                    patternSourceCanvas,
+                    img,
+                    src: image.src,
+                    repeat: repeatType,
+                    fill: patternData.fill,
+                    opacity, ...imgDimenstions,
+                    width: img.getScaledWidth(),
+                    height: img.getScaledHeight(),
+                    padding: patternData.padding,
+                    forceUpdateImage: true
+                });
             }, { crossOrigin: 'anonymous' });
-            canvas.requestRenderAll();
-            setTimeout(() => updateLocalCanvas(canvas), 1000);
         }
     }
 
-    const onFillTypeChange = (type) => {
-        if (type) setCurrentFill("#000")
+    const onFillTypeTabChange = (type) => {
+        if (type) setCurrentColor("#000")
         setIsFillColor(type);
     }
 
     const onChangeFillRepeat = (value) => {
-        var { patternSourceCanvas, img } = activeObject.get('patternData');
-        const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: value })
-        activeObject.set('fill', pattern);
-        canvas.requestRenderAll();
-        setTimeout(() => updateLocalCanvas(canvas), 1000);
-        setCurrentFill({ ...currentFill, repeat: value })
-        setPatternDimentions({ width: img.getScaledWidth(), height: img.getScaledHeight(), padding: patternDimentions.padding })
+        updateCanvasPatternData({ ...currentPaternData, repeat: value })
     }
 
     const getPatternDiamensionDiff = (patternValue) => {
-        return ((activeObject?.getScaledWidth() / 2) - patternValue) > 0 && ((activeObject?.getScaledWidth() / 2) - patternValue) < 1;
+        return ((activeObject?.getScaledWidth() / 2) - patternValue) >= 0 && ((activeObject?.getScaledWidth() / 2) - patternValue) <= 1;
     }
 
     const fitPatternToElement = () => {
         const fittedValue = ((activeObject?.getScaledWidth() || 1) / 2)
-        if (getPatternDiamensionDiff(patternDimentions.width)) {
+        if (getPatternDiamensionDiff(currentPaternData.width)) {
             dispatch(showToast('Image already fits with element'))
         } else onChangePatternWidth(fittedValue);
     }
 
     const onChangePatternWidth = (widthValue) => {
-        const { patternSourceCanvas, img } = activeObject.get('patternData');
-        img.scaleToWidth(parseInt(widthValue, 10));
-        patternSourceCanvas.setDimensions({ width: (img.getScaledWidth() + patternDimentions.padding), height: (img.getScaledHeight() + patternDimentions.padding) });
-        const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: currentFill.repeat })
-        activeObject.set('fill', pattern);
-        setPatternDimentions({ width: img.getScaledWidth(), height: img.getScaledHeight(), padding: patternDimentions.padding })
-        canvas.requestRenderAll();
-        setTimeout(() => updateLocalCanvas(canvas), 1000);
+        updateCanvasPatternData({ ...currentPaternData, width: widthValue })
     }
 
     const onChangePatternOpacity = (opacityValue) => {
-        const { patternSourceCanvas, img } = activeObject.get('patternData');
-        const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: currentFill.repeat })
-        // Modify the opacity of the source image
-        activeObject.set('fill', pattern);
-        activeObject.set('patternData', { ...activeObject.get('patternData'), opacity: opacityValue });
-        setCurrentFill({ ...currentFill, opacity: opacityValue })
-        canvas.requestRenderAll();
-        setTimeout(() => updateLocalCanvas(canvas), 1000);
+        updateCanvasPatternData({ ...currentPaternData, opacity: opacityValue })
     }
 
     const onChangePatternPadding = (paddingValue) => {
-        const { patternSourceCanvas, img } = activeObject.get('patternData');
-        patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + paddingValue, height: img.getScaledHeight() + paddingValue });
-        const pattern = new fabric.Pattern({ source: patternSourceCanvas.getElement(), repeat: currentFill.repeat })
-        activeObject.set('fill', pattern);
-        setPatternDimentions({ width: img.getScaledWidth(), height: img.getScaledHeight(), padding: paddingValue })
-        canvas.requestRenderAll();
-        setTimeout(() => updateLocalCanvas(canvas), 1000);
+        updateCanvasPatternData({ ...currentPaternData, padding: paddingValue })
     }
 
     return (
         <div className={`${styles.patternsWrap}`}>
-            {activeObjectsState.isSelected && currentObjectType != OBJECT_TYPES.workspace &&
+            {Boolean(activeObjectsState.isSelected && activeObject?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) != OBJECT_TYPES.workspace) &&
                 <div className={`${GlobalCss.segmentWrap} ${styles.fillTypes}`} >
                     <Segmented
                         style={{ background: token.colorBgTextActive }}
@@ -369,57 +308,57 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                         block={true}
                         value={getCurrentFillTypeSTring(isFillColor)}
                         defaultValue={FILL_TYPE.FILL_COLOR}
-                        onChange={(tab: any) => tab == FILL_TYPE.FILL_COLOR ? onFillTypeChange(true) : onFillTypeChange(false)}
+                        onChange={(tab: any) => tab == FILL_TYPE.FILL_COLOR ? onFillTypeTabChange(true) : onFillTypeTabChange(false)}
                         options={getFillTypesSegmentOptions()}
                     />
                 </div>}
-            {!initialLoading && <>
+            {initialPropsGets && <>
                 {isFillColor ? <>
                     <ColorPickerComponent
                         parentStyles={{ background: 'unset', color: token.colorTextBase }}
                         hideTransparency
-                        value={{ format: 'hex', color: currentFill }}
+                        value={{ format: 'hex', color: currentColor }}
                         onChange={(value) => onChangeFill(value.color)}
                         label="Text Color" />
                 </> : <>
-                    {currentFill?.src && <>
-                        {currentFill?.fill && <div className={styles.fillReapeatType}>
+                    {currentPaternData?.src && <>
+                        {currentPaternData?.fill && <div className={styles.fillReapeatType}>
                             <ColorPickerComponent
                                 parentStyles={{ background: 'unset', color: token.colorTextBase }}
                                 hideTransparency
-                                value={{ format: 'hex', color: currentFill?.fill || '#0000' }}
+                                value={{ format: 'hex', color: currentPaternData?.fill || '#0000' }}
                                 onChange={(value) => onChangePatternFill(value.color)}
                                 label="Pattern background color" />
                         </div>}
                         <div className={styles.fillReapeatType}>
                             <Checkbox
                                 className={styles.checkboxElement}
-                                defaultChecked={getPatternDiamensionDiff(patternDimentions.width)}
+                                defaultChecked={getPatternDiamensionDiff(currentPaternData.width)}
                                 style={{ color: token.colorTextBase }}
-                                checked={getPatternDiamensionDiff(patternDimentions.width)}
+                                checked={getPatternDiamensionDiff(currentPaternData.width)}
                                 onChange={fitPatternToElement}>
                                 Fit background to element
                             </Checkbox>
                         </div>
                         <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`} style={{ color: token.colorTextBase }}>
-                            <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Background Image Width</div>
+                            <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Size</div>
                             <div className={`${styleElementCSS.elementWrap} ${styles.imageBlurContent}`}>
                                 <Slider
                                     min={10 || objectDimenstions.width}
-                                    max={activeObject.patternData?.img?.width || patternDimentions.width}
+                                    max={100}
                                     className={styles.siderWrap}
                                     defaultValue={objectDimenstions.width}
                                     style={{ width: '100%' }}
                                     railStyle={{ background: token.colorBgSpotlight }}
                                     trackStyle={{ background: token.colorBgSpotlight }}
                                     onChange={(value) => onChangePatternWidth(value)}
-                                    value={patternDimentions.width}
-                                    step={20}
+                                    value={currentPaternData.width}
+                                    step={10}
                                 />
                             </div>
                         </div>
                         {!(activeObject && getObjectType(activeObject)?.includes(OBJECT_TYPES.text)) && <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`} style={{ color: token.colorTextBase }}>
-                            <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Background Image Padding</div>
+                            <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Spacing</div>
                             <div className={`${styleElementCSS.elementWrap} ${styles.imageBlurContent}`}>
                                 <Slider
                                     min={0}
@@ -430,7 +369,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                                     railStyle={{ background: token.colorBgSpotlight }}
                                     trackStyle={{ background: token.colorBgSpotlight }}
                                     onChange={(value) => onChangePatternPadding(value)}
-                                    value={patternDimentions.padding}
+                                    value={currentPaternData.padding}
                                     step={1}
                                 />
                             </div>
@@ -442,18 +381,18 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                                     min={0}
                                     max={1}
                                     className={styles.siderWrap}
-                                    defaultValue={currentFill.opacity}
+                                    defaultValue={currentPaternData.opacity}
                                     style={{ width: '100%' }}
                                     railStyle={{ background: token.colorBgSpotlight }}
                                     trackStyle={{ background: token.colorBgSpotlight }}
                                     onChange={(value) => onChangePatternOpacity(value)}
-                                    value={currentFill.opacity}
+                                    value={currentPaternData.opacity}
                                     step={0.1}
                                 />
                             </div>
                         </div>
                         <div className={styles.currentFill} style={{ background: token.colorBgSpotlight }}>
-                            <img src={currentFill?.src} />
+                            <img src={currentPaternData?.src} />
                         </div>
                     </>}
 
@@ -464,7 +403,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                             block={true}
                             value={activeTab}
                             defaultValue={TAB_TYPES.GALLERY}
-                            onChange={(tab: any) => onChange(tab)}
+                            onChange={(tab: any) => onChangePatternImageTab(tab)}
                             options={getSegmentOptions()}
                         />
                     </div>

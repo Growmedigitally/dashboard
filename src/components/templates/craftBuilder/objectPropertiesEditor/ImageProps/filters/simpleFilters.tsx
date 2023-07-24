@@ -41,7 +41,7 @@ function SimpleFilters({ createFilter, updateLocalCanvas, canvas, activeObjectsS
         const fabricType = getFabricFilterType(type);
         activeObject.filters = activeObject.filters.filter((value) => value.type !== fabricType);
         activeObject.applyFilters();
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'SimpleFilters:remove');
     }
 
     const setSelectedFilter = (type, isApplied) => {
@@ -56,7 +56,7 @@ function SimpleFilters({ createFilter, updateLocalCanvas, canvas, activeObjectsS
                     if (filterObj) {
                         activeObject.filters.push(filterObj);
                         activeObject.applyFilters();
-                        updateLocalCanvas(canvas);
+                        updateLocalCanvas(canvas, "SimpleFilters selectedfilter");
                         setAvailableFilters({ ...availableFilters, [type]: true })
                     }
                 }

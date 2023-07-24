@@ -35,7 +35,7 @@ const Images = ({ canvas, updateLocalCanvas }: any) => {
                 canvas.add(img);
                 canvas.viewportCenterObject(img)
                 canvas.setActiveObject(img)
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'Images');
             }
         }, { crossOrigin: 'anonymous' });
     };
@@ -59,12 +59,12 @@ const Images = ({ canvas, updateLocalCanvas }: any) => {
                 setSelectedImage={(imageData) => handleSave(imageData)}
                 config={{ type: BACKGROUND_IMAGES_TYPES.SQUARE }} />
         },
-        {
-            key: TAB_TYPES.UPLOAD,
-            icon: <RiImageAddFill />,
-            children: <UploadImage onUpload={handleImageAdded} />
-            // children: <UploadImage />
-        },
+        // {
+        //     key: TAB_TYPES.UPLOAD,
+        //     icon: <RiImageAddFill />,
+        //     children: <UploadImage onUpload={handleImageAdded} />
+        //     // children: <UploadImage />
+        // },
     ]
 
     const getSegmentOptions = () => {
@@ -97,10 +97,11 @@ const Images = ({ canvas, updateLocalCanvas }: any) => {
 
     return (
         <div className={styles.imagesWrap}>
+            <UploadImage onUpload={handleImageAdded} />
             <div className={GlobalCss.segmentWrap} >
                 <Segmented
                     style={{ background: token.colorBgTextActive }}
-                    size="large"
+                    size="middle"
                     block={true}
                     value={activeTab}
                     defaultValue={TAB_TYPES.GALLERY}

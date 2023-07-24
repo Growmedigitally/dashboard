@@ -15,7 +15,6 @@ export const zoomInCanvas = (canvas) => {
     const center = canvas.getCenter();
     canvas.zoomToPoint(new fabric.Point(center.left, center.top), zoomRatio);
     canvas.renderAll();
-    canvas.renderAll();
 }
 
 // zoom out
@@ -24,7 +23,6 @@ export const zoomOutCanvas = (canvas) => {
     zoomRatio -= 0.05;
     const center = canvas.getCenter();
     canvas.zoomToPoint(new fabric.Point(center.left, center.top), zoomRatio < 0 ? 0.01 : zoomRatio);
-    canvas.renderAll();
     canvas.renderAll();
 }
 

@@ -92,7 +92,7 @@ function CenterAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSt
                     case groupAlignments.top: top(activeObject); break;
                     case groupAlignments.bottom: bottom(activeObject); break;
                 }
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'CenterAlignment');
             }
         } else {
             dispatch(showErrorToast('Element is locked 🔒'))

@@ -82,13 +82,13 @@ function Lock({ updateLocalCanvas, canvas, activeObjectsState }: pageProps) {
         activeObjectsState.selectedObject.map((object) => lockObject(object))
         setIsLock(true);
         lockObject(canvas.getActiveObject());
-        updateLocalCanvas(canvas)
+        updateLocalCanvas(canvas, 'Lock')
     }
     const unLock = () => {
         activeObjectsState.selectedObject.map((object) => unlockObject(object))
         setIsLock(false);
         unlockObject(canvas.getActiveObject());
-        updateLocalCanvas(canvas)
+        updateLocalCanvas(canvas, 'Lock')
     }
 
     return (

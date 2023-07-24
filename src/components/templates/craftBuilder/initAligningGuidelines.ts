@@ -58,12 +58,13 @@ function initAligningGuidelines(canvas, token) {
         horizontalLines = [];
 
     canvas.on('mouse:down', function () {
+        console.log("mouse:down", "initAligningGuidelines")
         viewportTransform = canvas.viewportTransform;
         zoom = canvas.getZoom();
     });
 
     canvas.on('object:moving', function (e) {
-
+        console.log("object:moving", "initAligningGuidelines")
         var activeObject = e.target,
             canvasObjects = canvas.getObjects(),
             activeObjectCenter = activeObject.getCenterPoint(),
@@ -213,9 +214,10 @@ function initAligningGuidelines(canvas, token) {
     });
 
     canvas.on('mouse:up', function () {
+        console.log("mouse:up", "initAligningGuidelines")
         verticalLines.length = 0;
         horizontalLines.length = 0;
-        canvas.renderAll();
+        // canvas.renderAll();
     });
 }
 export default initAligningGuidelines;

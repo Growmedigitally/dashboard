@@ -29,7 +29,7 @@ function Flip({ updateLocalCanvas, canvas }: pageProps) {
         if (!activeObject.locked) {
             // canvas.getActiveObjects().map((object) => updateFlipProperty(object, type))
             updateFlipProperty(activeObject, type)
-            updateLocalCanvas(canvas);
+            updateLocalCanvas(canvas, 'flip');
         } else {
             dispatch(showErrorToast('Element is locked 🔒'))
         }

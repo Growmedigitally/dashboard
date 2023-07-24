@@ -24,7 +24,7 @@ function Opacity({ updateLocalCanvas, canvas }: pageProps) {
         const activeObject = canvas.getActiveObject();
         activeObject.set('opacity', opacityValue / 100);
         setValue(opacityValue);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'Opacity');
     }
 
     return (

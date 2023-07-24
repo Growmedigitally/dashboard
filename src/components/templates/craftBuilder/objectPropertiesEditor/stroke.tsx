@@ -40,7 +40,7 @@ function Stroke({ updateLocalCanvas, canvas }) {
             propertyValue[from] = value;
         }
         setStroke(propertyValue);
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, `stroke: ${from}`);
     }
 
     const onReset = () => {
@@ -57,7 +57,7 @@ function Stroke({ updateLocalCanvas, canvas }) {
         activeObject.set('stroke', '#0000');
         activeObject.set('strokeWidth', 0);
         setStroke(propertyValues)
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'stroke');
     }
 
     return (

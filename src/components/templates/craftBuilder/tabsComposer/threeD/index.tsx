@@ -36,7 +36,7 @@ function ThreeD({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
         const activeObject = canvas.getActiveObject();
         activeObject.set(property, value)
         setEffects({ ...effects, [property]: value, label: '' })
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'ThreeD');
     }
 
     const updateSkew = (style) => {
@@ -48,7 +48,7 @@ function ThreeD({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
             'skewY': skewY
         })
         setEffects({ skewX, skewY, src: effects.src, label })
-        updateLocalCanvas(canvas);
+        updateLocalCanvas(canvas, 'ThreeD');
     }
 
     function skewToRotation(skewX, skewY) {

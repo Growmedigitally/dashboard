@@ -52,7 +52,7 @@ function GroupAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSta
                     left: activeObjectLeft,
                 });
                 item.setCoords();
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'GroupAlignment');
             });
         }
     };
@@ -67,7 +67,7 @@ function GroupAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSta
                     left: activeObjectLeft - item.width * item.scaleX,
                 });
                 item.setCoords();
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'GroupAlignment');
             });
         }
     };
@@ -81,7 +81,7 @@ function GroupAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSta
                     left: 0 - (item.width * item.scaleX) / 2,
                 });
                 item.setCoords();
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'GroupAlignment');
             });
         }
     };
@@ -97,7 +97,7 @@ function GroupAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSta
                     top: activeObjectTop,
                 });
                 item.setCoords();
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'GroupAlignment');
             });
         }
     };
@@ -112,7 +112,7 @@ function GroupAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSta
                     top: activeObjectTop - item.height * item.scaleY,
                 });
                 item.setCoords();
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'GroupAlignment');
             });
         }
     };
@@ -126,7 +126,7 @@ function GroupAlignment({ updateLocalCanvas, workspace, canvas, activeObjectsSta
                     top: 0 - (item.height * item.scaleY) / 2,
                 });
                 item.setCoords();
-                updateLocalCanvas(canvas);
+                updateLocalCanvas(canvas, 'GroupAlignment');
             });
         }
     };

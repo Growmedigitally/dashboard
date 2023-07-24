@@ -53,7 +53,7 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
                     obj.setSrc(imgEl.src, () => {
                         obj.set('scaleX', (width * scaleX) / imgEl.width);
                         obj.set('scaleY', (height * scaleY) / imgEl.height);
-                        updateLocalCanvas(canvas)
+                        updateLocalCanvas(canvas, 'watermark/styles.tsx')
                     });
                 }
             })
@@ -61,7 +61,7 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
             watermarkobject.setSrc(imgEl.src, () => {
                 watermarkobject.set('scaleX', (width * scaleX) / imgEl.width);
                 watermarkobject.set('scaleY', (height * scaleY) / imgEl.height);
-                updateLocalCanvas(canvas)
+                updateLocalCanvas(canvas, 'watermark/styles.tsx')
             });
         }
         imgEl.remove();
@@ -99,14 +99,14 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
                         if (obj.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.text}`) {
                             if (obj.get('text') != text) {
                                 obj.set('text', text)
-                                updateLocalCanvas(canvas)
+                                updateLocalCanvas(canvas, 'watermark/styles.tsx')
                             }
                         }
                     })
                 } else {
                     if (watermarkobject.get('text') != text) {
                         watermarkobject.set('text', text)
-                        updateLocalCanvas(canvas)
+                        updateLocalCanvas(canvas, 'watermark/styles.tsx')
                     }
                 }
             } else dispatch(showErrorToast("Please Enter text"))

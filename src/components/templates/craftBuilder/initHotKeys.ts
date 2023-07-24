@@ -1,8 +1,6 @@
 import hotkeys from 'hotkeys-js';
-// import type { fabric } from 'fabric';
 import { fabric } from "fabric";
-import { zoomInCanvas, zoomOutCanvas } from './canvasControls/canvasControls';
-import { CUSTOME_ATTRIBUTES, HOTKEYS_MOVE_PIXELS, OBJECT_TYPES } from '@constant/craftBuilder';
+import { HOTKEYS_MOVE_PIXELS } from '@constant/craftBuilder';
 import { getIsGroup } from './handleSelctionEvent';
 import { group, unGroup } from './tabsComposer/operations/grouping';
 import { checkNonRestrictedObject } from '@util/craftBuilderUtils';
@@ -16,10 +14,6 @@ const keyNames = {
   cmda: 'cmd+a',
   ctrlg: 'ctrl+g',
   cmdg: 'cmd+g',
-  ctrlzoomOut: 'ctrl++',
-  cmdzoomOut: 'ctrl++',
-  cmdzoomIn: 'cmd+-',
-  ctrlzoomIn: 'cmd+-',
   ctrlundo: 'ctrl+z',
   cmdzundo: 'cmd+z',
   ctrlredo: 'cmd+Shift+Z',
@@ -29,39 +23,18 @@ const keyNames = {
 function copyElement(canvas: fabric.Canvas) {
   let copyEl: fabric.ActiveSelection | fabric.Object | null;
 
-  // copy
-  hotkeys(keyNames.ctrlc, () => {
-    const activeObject = canvas.getActiveObject();
-    copyEl = activeObject;
-  });
-  // paste
-  // hotkeys(keyNames.ctrlv, () => {
-  //   if (copyEl) {
-  //     canvas.clone(copyEl);
-  //   }
-  // });
 }
 
-function initHotkeys(canvas: fabric.Canvas) {
+function initHotkeys(canvas: fabric.Canvas, updateLocalCanvas: any) {
   // delete shortcut
   hotkeys(keyNames.backspace, () => {
     const activeObject = canvas.getActiveObjects();
     if (activeObject) {
       activeObject.map((item) => canvas.remove(item));
-      canvas.requestRenderAll();
       canvas.discardActiveObject();
+      updateLocalCanvas(canvas, 'initHotkeys')
     }
   });
-
-  // hotkeys(`${keyNames.cmdzoomIn},${keyNames.ctrlzoomIn}`, (e) => {
-  //   e.preventDefault();
-  //   zoomInCanvas(canvas)
-  // });
-
-  // hotkeys(`${keyNames.ctrlzoomOut},${keyNames.cmdzoomOut}`, (e) => {
-  //   e.preventDefault();
-  //   zoomOutCanvas(canvas)
-  // });
 
   // hotkeys(`${keyNames.ctrlundo},${keyNames.cmdzundo}`, (e) => {
   //   console.log("keyNames.ctrlundo")
@@ -80,7 +53,8 @@ function initHotkeys(canvas: fabric.Canvas) {
           canvas: canvas,
         });
         canvas.setActiveObject(sel);
-        canvas.requestRenderAll();
+        updateLocalCanvas(canvas, 'initHotkeys')
+
       }
     }
   });
@@ -94,7 +68,7 @@ function initHotkeys(canvas: fabric.Canvas) {
       } else {
         group(canvas)
       }
-      canvas.requestRenderAll();
+      updateLocalCanvas(canvas, 'initHotkeys')
     }
   });
 
@@ -121,11 +95,24 @@ function initHotkeys(canvas: fabric.Canvas) {
         break;
       default:
     }
-    canvas.renderAll();
+    updateLocalCanvas(canvas, 'initHotkeys')
   });
 
   // copy and paste
-  copyElement(canvas);
+
+  let copyEl: fabric.ActiveSelection | fabric.Object | null;
+  hotkeys(keyNames.ctrlc, () => {
+    const activeObject = canvas.getActiveObject();
+    copyEl = activeObject;
+  });
+
+  // paste
+  hotkeys(keyNames.ctrlv, () => {
+    if (copyEl) {
+      canvas.clone(copyEl);
+      updateLocalCanvas(canvas, 'initHotkeys')
+    }
+  });
 }
 
 export default initHotkeys;

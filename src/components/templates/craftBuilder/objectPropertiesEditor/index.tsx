@@ -82,7 +82,7 @@ function ObjectPropertiesEditor({ updateLocalCanvas, workspace, canvas, activeOb
                             getObjectType(activeObjectsState.selectedObject[0]) == OBJECT_TYPES.path) &&
                             <ShapesProps updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />}
 
-                        {(activeObjectsState?.selectedObject[0]?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.CharactersProps) && <CharactersProps updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />}
+                        {(activeObjectsState?.selectedObject[0]?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.CharactersProps) && <CharactersProps canvas={canvas} activeObjectsState={activeObjectsState} />}
                         <Opacity updateLocalCanvas={updateLocalCanvas} canvas={canvas} />
                         <Saperator />
                         <Angle updateLocalCanvas={updateLocalCanvas} canvas={canvas} />

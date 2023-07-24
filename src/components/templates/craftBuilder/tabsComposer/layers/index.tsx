@@ -141,7 +141,7 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
         const layerId = result.draggableId;
         moveObjects(layerId, newPosition)
         setTimeout(() => {
-            canvas.renderAll()
+            updateLocalCanvas(canvas, `layers:${'handleOnDragEnd'}`)
             prepareLayersData()
         }, 100);
     }
@@ -171,7 +171,6 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
                 let objectToReposition = groupObjects.find((item) => item.uid === layerId);
                 canvas.getActiveObjects()[0].remove(objectToReposition);
                 canvas.getActiveObjects()[0].insertAt(objectToReposition, (groupObjects.length - 1) - newPosition);
-                canvas.renderAll();
             }
 
         } else if (selectedObjectTypes == SELECTED_OBJECTS_TYPES.MULTIPLE) {
@@ -180,7 +179,6 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
             // const objects = canvas.getObjects();
             canvas.getActiveObject().remove(objectToReposition);
             canvas.getActiveObject().insertAt(objectToReposition, (activeObjects.length - 1) - newPosition);
-            canvas.renderAll();
 
         } else {
             //  else if (selectedObjectTypes == SELECTED_OBJECTS_TYPES.SINGLE) {
@@ -188,7 +186,6 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
             const objects = canvas.getObjects();
             canvas.remove(objectToReposition);
             canvas.insertAt(objectToReposition, (objects.length - 1) - newPosition);
-            canvas.renderAll();
         }
     }
 
@@ -227,7 +224,6 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
                     if (activeObject) {
                         activeObject.map((item) => canvas.remove(item));
                         canvas.discardActiveObject();
-                        canvas.renderAll();
                     }
                 }
                 break;
@@ -237,8 +233,7 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
             default:
                 break;
         }
-        canvas.renderAll();
-        updateLocalCanvas(canvas)
+        updateLocalCanvas(canvas, `layers:${action}`)
         prepareLayersData()
         event.stopPropagation();
     }

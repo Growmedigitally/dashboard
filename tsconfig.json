@@ -25,7 +25,8 @@
       "@objectPropertiesEditor/*": [
         "src/components/templates/craftBuilder/objectPropertiesEditor/*"
       ],
-      "@craftBuilder/*": ["src/components/templates/craftBuilder/*"]
+      "@craftBuilder/*": ["src/components/templates/craftBuilder/*"],
+      "@tabsComposer/*": ["src/components/templates/craftBuilder/tabsComposer*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
