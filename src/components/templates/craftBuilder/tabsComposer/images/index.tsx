@@ -97,7 +97,7 @@ const Images = ({ canvas, updateLocalCanvas }: any) => {
 
     return (
         <div className={styles.imagesWrap}>
-            <UploadImage onUpload={handleImageAdded} />
+            <UploadImage onUpload={handleImageAdded} label="Upload from your computer" />
             <div className={GlobalCss.segmentWrap} >
                 <Segmented
                     style={{ background: token.colorBgTextActive }}

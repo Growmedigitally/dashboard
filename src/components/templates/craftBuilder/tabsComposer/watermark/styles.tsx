@@ -2,6 +2,7 @@ import Saperator from '@atoms/Saperator';
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
 import { WATERMARKS } from '@constant/watermarks';
 import { useAppDispatch } from '@hook/useAppDispatch';
+import UploadImage from '@organisms/imagePickerModal/uploadImage';
 import { showErrorToast } from '@reduxStore/slices/toast';
 import { getObjectType, insertImgFile } from '@util/craftBuilderUtils';
 import { Button, Input } from 'antd'
@@ -119,8 +120,9 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
                 <div className={styles.currentImage}>
                     {watermarkProps.src && <img src={watermarkProps.src} />}
                 </div>
-                <Button className={styles.buttonElement} size='middle' onClick={onClickReplace} icon={<LuImagePlus />} >Replace Image</Button>
-                <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} />
+                <UploadImage onUpload={handleImageAdded} label='Replace Image' />
+                {/* <Button className={styles.buttonElement} size='middle' onClick={onClickReplace} icon={<LuImagePlus />} >Replace Image</Button> */}
+                {/* <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} /> */}
             </>}
             <Saperator />
             {activeType.showText && <>

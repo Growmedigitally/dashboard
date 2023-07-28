@@ -1,5 +1,5 @@
 import { BUILDER_DEFAULT_COLORS } from '@constant/builder';
-import { ColorPicker, theme } from 'antd';
+import { Button, ColorPicker, theme } from 'antd';
 import type { Color, ColorPickerProps } from 'antd/es/color-picker';
 import React, { useEffect, useMemo, useState } from 'react';
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
@@ -20,12 +20,23 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
     const siteConfig = useAppSelector(getSiteConfig);
     const [colorPresets, setColorPresets] = useState([])
 
+    const colorString = useMemo(
+        () => {
+            // console.log(!(typeof activeColor === 'string' || activeColor instanceof String), activeColor)
+            return activeColor ? (typeof activeColor === 'string' ? activeColor : activeColor.toHexString()) : ''
+        },
+        [activeColor],
+    );
+
+    const btnStyle: React.CSSProperties = {
+        backgroundColor: colorString,
+    };
+
     useEffect(() => {
         if (page == BACKGROUND_TYPES.GRADIENT) {
             setActiveColor(value.color);
         }
     }, [value])
-
 
     useEffect(() => {
         siteConfig && setColorPresets(removeObjRef(siteConfig.colors))
@@ -35,21 +46,21 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
         onChange({ color: NO_COLOR_VALUE, format: 'hex' })
     }
 
-    const colorString = useMemo(
-        () => {
-            // console.log(!(typeof activeColor === 'string' || activeColor instanceof String), activeColor)
-            return activeColor ? (typeof activeColor === 'string' ? activeColor : activeColor.toHexString()) : ''
-        },
-        [activeColor],
-    );
+    // useEffect(() => {
+    //     console.log("colorString", colorString)
+    // onChange({
+    //     color: colorString,
+    //     format: activeColorFormat
+    // })
+    // }, [colorString])
 
-    useEffect(() => {
+    const onChangeColor = (color) => {
+        setActiveColor(color.toHexString())
         onChange({
-            color: colorString,
+            color: color.toHexString(),
             format: activeColorFormat
         })
-    }, [colorString])
-
+    }
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.colorPickerWrap}`} style={{ ...parentStyles }}>
             {label && <div className={styleElementCSS.label}>{label}</div>}
@@ -58,10 +69,9 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
                     trigger="hover"
                     presets={!hidePresets ? [...colorPresets] : []}
                     format={activeColorFormat}
-                    value={activeColor}
-                    onChange={setActiveColor}
+                    onChange={onChangeColor}
                     onFormatChange={setActiveColorFormat}
-                />
+                ><Button type="primary" style={btnStyle}></Button></ColorPicker>
                 {!hideColorString && <div className={styles.colorValue}>
                     {colorString}
                 </div>}

@@ -89,10 +89,9 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                 //if fill is set to pattern
                 const patternData = activeObject.get('patternData');
                 if (activeObject.get('fill') instanceof fabric.Pattern || currentPaternData.forceUpdateImage) {
+                    setIsFillColor(false);
                     if (activeObject && patternData && patternData.src && patternData[CUSTOME_ATTRIBUTES.OBJECT_TYPE].includes(OBJECT_TYPES.pattern)) {
-                        setIsFillColor(false);
                         fabric.Image.fromURL(patternData.src, function (img) {
-
                             const repeat = patternData.repeat || 'repeat';
                             const padding = patternData.padding || 0;
                             img.scaleToWidth((patternData.width) || 0);
@@ -112,7 +111,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                             setCurrentPaternData({ forceUpdate: false, forceUpdateImage: false, patternSourceCanvas, img, repeat: repeat, src: patternData.src, fill: patternData.fill, opacity: patternData.opacity, ...imgDimenstions })
                             setSelectedImage({ src: patternData.src })
                             canvas.requestRenderAll()
-                            console.log("currentPaternData.forceUpdate pattern rerender")
+                            // console.log("currentPaternData.forceUpdate pattern rerender")
                             // setTimeout(() => {
                             //     // //rerender pattern with existing padding because in first render padding of right side is zero
                             //     // patternSourceCanvas.setDimensions({ width: img.getScaledWidth() + padding, height: img.getScaledHeight() + padding });
@@ -195,7 +194,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
     }
 
     const onChangeFill = (value) => {
-        if (initialPropsGets) {
+        if (initialPropsGets && isFillColor) {
             activeObject.set('fill', value)
             updateCanvasPatternData({ ...currentPaternData, fill: value })
             setCurrentColor(value)
@@ -207,7 +206,8 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
         if (!patternData) patternData = {};
         if (patternData.fill && initialPropsGets && value != patternData.fill) {
             patternData.fill = value;
-            updateCanvasPatternData({ ...currentPaternData, fill: patternData.fill });
+            const forceUpdateImage = !(activeObject.get('fill') instanceof fabric.Pattern) || currentPaternData.forceUpdateImage
+            updateCanvasPatternData({ ...currentPaternData, fill: patternData.fill, forceUpdateImage });
         }
     }
 
@@ -322,7 +322,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
                         label="Text Color" />
                 </> : <>
                     {currentPaternData?.src && <>
-                        {currentPaternData?.fill && <div className={styles.fillReapeatType}>
+                        {currentPaternData?.fill && <div className={styles.patternFillColor}>
                             <ColorPickerComponent
                                 parentStyles={{ background: 'unset', color: token.colorTextBase }}
                                 hideTransparency

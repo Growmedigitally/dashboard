@@ -9,6 +9,7 @@ import { showErrorToast } from '@reduxStore/slices/toast';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import Filters from './filters';
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
+import UploadImage from '@organisms/imagePickerModal/uploadImage';
 
 type pageProps = {
     updateLocalCanvas: any,
@@ -64,7 +65,12 @@ function ImageObjectProps({ updateLocalCanvas, workspace, canvas, activeObjectsS
             <div className={styles.currentImage}>
                 {canvas?.getActiveObject()?._originalElement?.currentSrc && <img src={canvas.getActiveObject()._originalElement.currentSrc} />}
             </div>
-            {!Boolean(canvas?.getActiveObject()?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE)?.includes(OBJECT_TYPES.watermark)) && <Button className={styles.buttonElement} size='middle' onClick={onClickReplace} icon={<LuImagePlus />} >Replace Image</Button>}
+            {!Boolean(canvas?.getActiveObject()?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE)?.includes(OBJECT_TYPES.watermark)) &&
+                <>
+                    <UploadImage onUpload={handleImageAdded} label='Replace Image' />
+                    <UploadImage isResize={true} src={canvas.getActiveObject()._originalElement.currentSrc} onUpload={handleImageAdded} label='Resize Image' />
+                </>
+            }
             <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} />
             <Filters updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />
         </React.Fragment>

@@ -12,7 +12,6 @@ import { useAppDispatch } from '@hook/useAppDispatch';
 import { showErrorToast } from '@reduxStore/slices/toast';
 import { Input, Space } from 'antd';
 import Patterns from '@template/craftBuilder/objectPropertiesEditor/patterns';
-import useDebounce from '@hook/useDebounce';
 import { workspace } from '@template/craftBuilder';
 const { Search } = Input;
 

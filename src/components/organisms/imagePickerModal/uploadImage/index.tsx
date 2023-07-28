@@ -4,8 +4,9 @@ import { Button, Modal } from 'antd';
 import { LuImagePlus, LuUpload } from 'react-icons/lu';
 import { AiOutlineClose } from 'react-icons/ai';
 import ImageCropper from '@organisms/imageCropper';
+import { TbResize } from 'react-icons/tb';
 
-function UploadImage({ onUpload }) {
+function UploadImage({ src = "", isResize = false, onUpload, label = "Replace Image" }) {
     const fileInputRef = useRef(null);
 
     const [showCropperModal, setShowCropperModal] = useState({ active: false, src: null })
@@ -21,11 +22,16 @@ function UploadImage({ onUpload }) {
         }
     };
 
+    const onClickUpload = () => {
+        if (isResize) setShowCropperModal({ active: true, src: src });
+        else fileInputRef.current.click()
+    }
+
     return (
         <div className={styles.uploadImageWrap}>
-            <Button size='middle' onClick={() => fileInputRef.current.click()} icon={<LuUpload />} >Upload from your computer</Button>
+            <Button size='middle' onClick={onClickUpload} icon={isResize ? <TbResize /> : <LuUpload />} >{label}</Button>
             <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} />
-            <ImageCropper onCancel={() => setShowCropperModal({ active: false, src: null })} modalData={showCropperModal} onSave={onUpload} />
+            <ImageCropper onReplaceImage={onClickUpload} onCancel={() => setShowCropperModal({ active: false, src: null })} modalData={showCropperModal} onSave={onUpload} />
         </div>
     )
 }

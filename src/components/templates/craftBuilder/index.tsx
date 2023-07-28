@@ -405,6 +405,12 @@ export default function CraftBuilder() {
 
     return (
         <React.Fragment>
+            {<style dangerouslySetInnerHTML={{
+                __html: `
+                button{
+                    box-shadow: 1px 1px 5px 0px ${token.colorPrimaryBg} !important;
+                }`
+            }}></style>}
             <div className={styles.editorWrap}>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
                 <div className={styles.editorContainer} style={{ background: token.colorBgContainer, color: token.colorTextBase }}>
