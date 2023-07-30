@@ -67,9 +67,6 @@ function ShapesProps({ updateLocalCanvas, canvas, activeObjectsState }: pageProp
                 {getObjectType(canvas?.getActiveObject()) == OBJECT_TYPES.rect && <div className={styles.propertyWrapper}>
                     <Corner max={attribute.width / 2} value={attribute.rx} onChange={(value) => onChange('rx', value)} />
                 </div>}
-                {/* {getObjectType(canvas?.getActiveObject()) == OBJECT_TYPES.polygon && <div className={styles.propertyWrapper}>
-                    <Corner max={attribute.width / 2} value={attribute.rx} onChange={(value) => onChangePolygon(value)} />
-                </div>} */}
             </div>}
         </div>
     )

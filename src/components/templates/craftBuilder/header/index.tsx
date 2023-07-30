@@ -222,7 +222,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
     };
     return (
         <div className={styles.headerWrap}>
-            <Button className={styles.navToHome} icon={<BiSolidHomeSmile />} onClick={switchTheme} />
+            <Button type='dashed' className={styles.navToHome} icon={<BiSolidHomeSmile />} onClick={switchTheme} />
             <div className={styles.drawingTitle}>
                 <Input type='dashed' size="middle" prefix={<TbEdit />} placeholder="Your drawing title" value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
             </div>

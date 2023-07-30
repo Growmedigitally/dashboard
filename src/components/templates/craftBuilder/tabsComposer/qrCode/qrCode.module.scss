@@ -1,0 +1,134 @@
+@import "/styles/abstracts/mixins";
+.qrCodeWrap {
+  width: 100%;
+  overflow: auto;
+  height: calc(100vh - 80px);
+
+  .qrListsWrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 5px;
+    .qrWrap {
+      width: calc(100% / 2 - 5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 7px;
+      cursor: pointer;
+      @include transition;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      position: relative;
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      background: #dee1ec;
+      overflow: hidden;
+      &:hover {
+        box-shadow: 0 2px 10px #dee1ec;
+        @include transition;
+        transform: scale(1.01);
+      }
+      .selected {
+        position: absolute;
+        height: 24px;
+        width: 24px;
+        z-index: 2;
+        top: 0px;
+        right: 0px;
+        border-radius: 14px;
+        color: white;
+        @include transition;
+        @include flexCenter;
+      }
+    }
+    &.displayImages {
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .styleWrap {
+    width: 100%;
+    // background: unset;
+  }
+  .logoWrap {
+    width: 100%;
+    padding: 0px;
+    .qrLogo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      img {
+        width: 100px;
+        height: auto;
+        max-width: 100%;
+        border-radius: 4px;
+      }
+    }
+  }
+  .colorsWrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .valueWrap {
+    .whatsappLinkWrap {
+      .generateLinkBtn {
+        gap: 8px;
+        margin-top: 20px;
+        width: 100%;
+        @include flexCenter;
+      }
+    }
+  }
+}
+
+.previewImageWrap {
+  height: 500px;
+  width: 250px;
+  .frameWrap {
+    background-repeat: no-repeat !important;
+    background-position: top !important;
+    background-size: contain !important;
+    position: relative;
+    width: auto;
+    height: 100%;
+    .imgWrap {
+      img {
+        width: 100%;
+        max-height: 500px;
+        border-radius: 4px;
+      }
+    }
+    .numberWrap {
+      position: absolute;
+      top: 34px;
+      left: 45px;
+      color: black;
+      font-size: 10px;
+      z-index: 2;
+    }
+    .messageWrap {
+      position: absolute;
+      bottom: 54px;
+      right: 8px;
+      color: black;
+      background-color: #dcf8c6;
+      font-size: 10px;
+      padding: 10px;
+      border-radius: 7px 7px 0 7px;
+      width: calc(100% - 40px);
+      max-height: 385px;
+      overflow: auto;
+      z-index: 1;
+    }
+  }
+}

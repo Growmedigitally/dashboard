@@ -7,12 +7,13 @@ export const DEFAULT_NO_BG_OPACITY = 0.4;
 
 export const CUSTOME_ATTRIBUTES = {
     PATTERN_DATA: 'patternData',
+    QR_CODE_CONFIG: 'qrConfig',
     OBJECT_TYPE: 'objectType',
     UID: 'uid',
     IS_INLINE_WATERMARK: 'isInline'
 }
 
-export const CUSTOME_ATTRIBUTES_LIST = [CUSTOME_ATTRIBUTES.PATTERN_DATA, CUSTOME_ATTRIBUTES.OBJECT_TYPE, CUSTOME_ATTRIBUTES.UID, CUSTOME_ATTRIBUTES.IS_INLINE_WATERMARK];
+export const CUSTOME_ATTRIBUTES_LIST = [CUSTOME_ATTRIBUTES.PATTERN_DATA, CUSTOME_ATTRIBUTES.OBJECT_TYPE, CUSTOME_ATTRIBUTES.UID, CUSTOME_ATTRIBUTES.IS_INLINE_WATERMARK, CUSTOME_ATTRIBUTES.QR_CODE_CONFIG];
 export const HOTKEYS_MOVE_PIXELS = 3;
 export const IMAGE_TYPES = {
     SVG: 'svg',
@@ -28,6 +29,7 @@ export const EDITOR_TABS = {
     PARSONAS: 'Characters',
     SHAPES: 'Shapes',
     WATERMARK: 'Watermark',
+    QRCODE: 'QRCode',
     HELP: 'Help',
 }
 
@@ -40,6 +42,7 @@ export const EDITOR_SIDEBAR = [
     { label: EDITOR_TABS.PARSONAS, key: 'Characters', icon: 'CRM' },
     { label: EDITOR_TABS.SHAPES, key: 'Shapes', icon: 'PWA' },
     { label: EDITOR_TABS.WATERMARK, key: 'Watermark', icon: 'query' },
+    { label: EDITOR_TABS.QRCODE, key: 'QRCode', icon: 'query' },
     { label: EDITOR_TABS.HELP, key: 'Help', icon: 'note' },
 ]
 
@@ -90,7 +93,8 @@ export const OBJECT_TYPES = {
     'graphics': 'graphics',
     'watermark': 'watermark',
     'workspace': 'workspace',
-    'pattern': 'pattern'
+    'pattern': 'pattern',
+    'qrCode': 'qrCode'
 }
 
 export const SOLID_COLORS_LIST = [

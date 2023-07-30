@@ -13,9 +13,7 @@ type pageProps = {
 function Corner({ onChange, value, max }: pageProps) {
     const { token } = theme.useToken();
     return (
-        <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`}
-            style={{ color: token.colorTextBase }}
-        >
+        <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`} style={{ color: token.colorTextBase }}>
             <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Corner</div>
             <div className={`${styleElementCSS.elementWrap} ${styles.imageBlurContent}`}>
                 <Slider

@@ -407,8 +407,16 @@ export default function CraftBuilder() {
         <React.Fragment>
             {<style dangerouslySetInnerHTML={{
                 __html: `
-                button{
+                button.ant-btn-primary,
+                button.ant-btn-default,
+                button.ant-btn-dashed{
                     box-shadow: 1px 1px 5px 0px ${token.colorPrimaryBg} !important;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .ant-modal-footer button{
+                    display:inline-block;
                 }`
             }}></style>}
             <div className={styles.editorWrap}>

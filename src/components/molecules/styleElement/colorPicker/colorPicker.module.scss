@@ -10,19 +10,13 @@
       min-width: auto;
       height: 32px;
       padding: 0;
-      border: 1px solid #ffffff;
-      border-radius: 4px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 10px 20px;
       font-size: 12px;
+      letter-spacing: 1.2px;
     }
     .transparentWrap {
       min-width: auto;
       height: 32px;
       padding: 0;
-      border: 1px solid #ffffff;
       border-radius: 4px;
       cursor: pointer;
       display: flex;
@@ -34,7 +28,6 @@
         width: 100%;
         height: 100%;
       }
-      border-color: var(--secondary-color);
       letter-spacing: 0.4px;
       @include transition;
       &.noColor {

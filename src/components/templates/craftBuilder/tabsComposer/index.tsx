@@ -10,9 +10,9 @@ import Text from './text';
 import Graphics from './graphics';
 import Shapes from './shapes';
 import Watermark from './watermark';
-import Layers from './layers';
 import Help from './help';
 import Characters from './characters';
+import QrCode from './qrCode';
 
 const TABS_COMPONENT = {
     [EDITOR_TABS.TEMPLATES]: Templates,
@@ -23,6 +23,7 @@ const TABS_COMPONENT = {
     [EDITOR_TABS.PARSONAS]: Characters,
     [EDITOR_TABS.SHAPES]: Shapes,
     [EDITOR_TABS.WATERMARK]: Watermark,
+    [EDITOR_TABS.QRCODE]: QrCode,
     [EDITOR_TABS.HELP]: Help,
 }
 

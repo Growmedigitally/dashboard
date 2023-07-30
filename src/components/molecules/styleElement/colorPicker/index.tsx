@@ -1,5 +1,5 @@
 import { BUILDER_DEFAULT_COLORS } from '@constant/builder';
-import { Button, ColorPicker, theme } from 'antd';
+import { Button, ColorPicker, theme, Tooltip } from 'antd';
 import type { Color, ColorPickerProps } from 'antd/es/color-picker';
 import React, { useEffect, useMemo, useState } from 'react';
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
@@ -8,6 +8,7 @@ import { BACKGROUND_TYPES, NO_COLOR_VALUE } from '@constant/common';
 import { getSiteConfig } from '@reduxStore/slices/siteConfig';
 import { useAppSelector } from '@hook/useAppSelector';
 import { removeObjRef } from '@util/utils';
+import { RxTransparencyGrid } from 'react-icons/rx';
 
 const valueSample = [{ color: '#000', format: 'hex' }];
 
@@ -30,6 +31,7 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
 
     const btnStyle: React.CSSProperties = {
         backgroundColor: colorString,
+        borderColor: token.colorBorder
     };
 
     useEffect(() => {
@@ -70,14 +72,28 @@ function ColorPickerComponent({ page = '', hideColorString = false, hidePresets 
                     presets={!hidePresets ? [...colorPresets] : []}
                     format={activeColorFormat}
                     onChange={onChangeColor}
+                    placement="bottom"
                     onFormatChange={setActiveColorFormat}
-                ><Button type="primary" style={btnStyle}></Button></ColorPicker>
-                {!hideColorString && <div className={styles.colorValue}>
-                    {colorString}
-                </div>}
-                {!hideTransparency && <div className={`${styles.transparentWrap} ${value.color == NO_COLOR_VALUE ? styles.noColor : ''}`} onClick={onClickTransparency}>
-                    Unset
-                </div>}
+                >
+                    <Button type="primary" style={btnStyle}></Button>
+                </ColorPicker>
+
+                {!hideTransparency && <>
+                    <Tooltip title="Remove Color">
+                        <Button
+                            type='text'
+                            style={{
+                                borderColor: value.color == NO_COLOR_VALUE ? token.colorPrimary : token.colorBorder
+                            }}
+                            icon={<RxTransparencyGrid />}
+                            //    className={`${value.color == NO_COLOR_VALUE ? styles.noColor : ''}`}
+                            onClick={onClickTransparency}></Button>
+                    </Tooltip>
+                </>}
+
+                {!hideColorString &&
+                    <Button type='text' className={`${styles.colorValue}`} >{value.color == NO_COLOR_VALUE ? 'Transperant' : colorString}</Button>
+                }
             </div>
         </div>
     )
