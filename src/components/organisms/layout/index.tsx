@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import styles from "@organismsCSS/layout/layout.module.scss";
-import { getUserByToken } from "pages/apis/user";
+import { getUserByToken } from "pages/apiService/user";
 import Router from "next/router";
 import { useAppSelector } from "src/hooks/useAppSelector";
 import { useSelector } from 'react-redux';
@@ -34,15 +34,11 @@ export default function LayoutComponent({ children }: LayoutProps) {
   });
 
   useEffect(() => {
-    console.log('redux state', state)
-  }, [state])
-
-  useEffect(() => {
     if (!userDetails) {
       getUserByToken().then((user) => {
         dispatch(setAuthUser(user));
       }).catch(() => {
-        Router.push("/401");
+        Router.push("/403");
       })
     }
   }, []);

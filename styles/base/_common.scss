@@ -92,11 +92,17 @@
 }
 .subHeading {
   font-size: 13px;
-  font-family: var(--primary-font);
+  font-family: var(--f-SemiBold);
   color: black;
   padding-bottom: 5px;
-  letter-spacing: 0.3px;
-  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+.label {
+  font-size: 11px;
+  font-family: var(--f-Regular);
+  color: black;
+  padding-bottom: 5px;
+  letter-spacing: 0.2px;
 }
 
 .card {
@@ -233,9 +239,17 @@
   transition: all 0.3s ease-in;
   cursor: pointer;
   &:hover {
-    box-shadow: 0 2px 10px #dee1ec;
+    box-shadow: 0px 0px 0.9px rgba(46, 45, 45, 0.314),
+      0px 0px 2.9px rgba(235, 225, 225, 0.871),
+      0px 0px 13px rgba(175, 164, 164, 0.501);
     transition: all 0.3s ease-in;
     transform: scale(1.07);
+  }
+}
+
+.outline {
+  &:hover {
+    outline: 1px solid red;
   }
 }
 @media (min-width: 320px) {

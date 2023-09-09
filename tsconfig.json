@@ -6,6 +6,7 @@
       "@molecules/*": ["src/components/molecules/*"],
       "@atoms/*": ["src/components/atoms/*"],
       "@organisms/*": ["src/components/organisms/*"],
+      "@sections/*": ["src/components/organisms/sections/*"],
       "@template/*": ["src/components/templates/*"],
       "@svgs/*": ["src/components/molecules/svgElements/*"],
       "@styles/*": ["styles/*"],
@@ -19,8 +20,13 @@
       "@hook/*": ["src/hooks/*"],
       "@store/*": ["src/redux/stateProvider/*"],
       "@util/*": ["src/utils/*"],
-      "@apiService/*": ["pages/apis/*"],
-      "@assets/*": ["public/assets/*"]
+      "@apiService/*": ["pages/apiService/*"],
+      "@assets/*": ["public/assets/*"],
+      "@objectPropertiesEditor/*": [
+        "src/components/templates/craftBuilder/objectPropertiesEditor/*"
+      ],
+      "@craftBuilder/*": ["src/components/templates/craftBuilder/*"],
+      "@tabsComposer/*": ["src/components/templates/craftBuilder/tabsComposer*"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

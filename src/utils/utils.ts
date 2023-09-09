@@ -38,17 +38,17 @@ export function timeDiffCalc(dateFuture, dateNow, status) {
   // calculate days
   const days = Math.floor(diffInMilliSeconds / 86400);
   diffInMilliSeconds -= days * 86400;
-  console.log('calculated days', days);
+  // console.log('calculated days', days);
 
   // calculate hours
   const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
   diffInMilliSeconds -= hours * 3600;
-  console.log('calculated hours', hours);
+  // console.log('calculated hours', hours);
 
   // calculate minutes
   const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
   diffInMilliSeconds -= minutes * 60;
-  console.log('minutes', minutes);
+  // console.log('minutes', minutes);
 
   let difference: any = '';
   switch (status) {
@@ -360,7 +360,7 @@ export function updateManifestFile(storeData: any) {
       ]
     },
   });
-  console.log(manifestString)
+  // console.log(manifestString)
   const manifestElement = document.getElementById("manifest");
   manifestElement?.setAttribute("href", "data:application/json;charset=utf-8," + encodeURIComponent(manifestString));
 }
@@ -393,3 +393,82 @@ export function initialThemeHandler() {
   }
   return isDark
 }
+
+export function convertRGBtoOBJ(colorString) {
+  const rgbKeys = ['r', 'g', 'b', 'a'];
+  let rgbObj = {};
+  let color = colorString.replace(/^rgba?\(|\s+|\)$/g, '').split(',');
+
+  for (let i in rgbKeys)
+    rgbObj[rgbKeys[i]] = color[i] || 1;
+
+  return rgbObj;
+}
+
+export function convertOBJtoRgb(obj) {
+  return `rgba(${obj.r}, ${obj.g}, ${obj.b}, ${obj.a})`;
+}
+
+export const uid = () => String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, '');
+
+export const isContainerElement = (config) => config.section ? true : false;
+
+export const removeObjRef = (obj) => JSON.parse(JSON.stringify(obj || {}));
+
+export const getGradientValue = (colors, direction = 'to right') => {
+  let colorsString = '';
+  colors.map((c, i) => {
+    colorsString = `${colorsString}${c.color}${i != colors.length - 1 ? ', ' : ''}`
+  })
+  return (`linear-gradient(${direction}, ${colorsString})`);
+}
+
+export function isSameObjects(value, other) {
+  // Get the value type
+  var type = Object.prototype.toString.call(value);
+  // If the two objects are not the same type, return false
+  if (type !== Object.prototype.toString.call(other)) return false;
+  // If items are not an object or array, return false
+  if (['[object Array]', '[object Object]'].indexOf(type) < 0) return false;
+  // Compare the length of the length of the two items
+  var valueLen = type === '[object Array]' ? value.length : Object.keys(value).length;
+  var otherLen = type === '[object Array]' ? other.length : Object.keys(other).length;
+  if (valueLen !== otherLen) return false;
+  // Compare two items
+  var compare = function (item1, item2) {
+    // Get the object type
+    var itemType = Object.prototype.toString.call(item1);
+    // If an object or array, compare recursively
+    if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
+      if (!isSameObjects(item1, item2)) return false;
+    }
+    // Otherwise, do a simple comparison
+    else {
+      // If the two items are not the same type, return false
+      if (itemType !== Object.prototype.toString.call(item2)) return false;
+      // Else if it's a function, convert to a string and compare
+      // Otherwise, just compare
+      if (itemType === '[object Function]') {
+        if (item1.toString() !== item2.toString()) return false;
+      } else {
+        if (item1 !== item2) return false;
+      }
+    }
+  };
+
+  // Compare properties
+  if (type === '[object Array]') {
+    for (var i = 0; i < valueLen; i++) {
+      if (compare(value[i], other[i]) === false) return false;
+    }
+  } else {
+    for (var key in value) {
+      if (value.hasOwnProperty(key)) {
+        if (compare(value[key], other[key]) === false) return false;
+      }
+    }
+  }
+  // If nothing failed, return true
+  return true;
+
+};

@@ -1,27 +1,29 @@
 @import "/styles/abstracts/mixins";
 
-.componentWrap {
-  display: flex;
-  user-select: none;
-  padding: 0.5rem;
-  margin: 10px 0;
-  align-items: center;
-  align-content: center;
-  line-height: 1.5;
-  justify-content: center;
-  border-radius: 3px;
-  background: #fff;
-  border: 1px solid #ddd;
-  text-align: center;
-  @include transition;
-  &.draggingInProgress {
-    border: 1px dashed #4099ff;
-    background: var(--secondary-color-alpha);
-    @include transition;
-  }
-  &.draggingItem {
-    background: var(--secondary-color-beta);
-    border: 1px solid var(--common-color);
-    @include transition;
+.sectionsContainer {
+  .sectionConatiner {
+    margin-bottom: 5px;
+    .sectionList {
+      font-family: var(--f-SemiBold);
+    }
+    .componentWrap {
+      user-select: none;
+      margin-bottom: 10px;
+      transition: all ease-out 0.3s;
+      border: 1px solid var(--secondary-color-beta);
+      border-radius: 4px;
+      background: white;
+      @include transition;
+      &.draggingInProgress {
+        border: 1px dashed #4099ff;
+        background: var(--secondary-color-alpha);
+        @include transition;
+      }
+      &.draggingItem {
+        background: var(--secondary-color-beta);
+        border: 1px solid var(--common-color);
+        @include transition;
+      }
+    }
   }
 }

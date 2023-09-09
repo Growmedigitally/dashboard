@@ -6,11 +6,11 @@ import { USER_COOKIE_KEY } from 'src/constants/user';
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     console.log("inside api/login", req.body)
     if (!req.body) {
-        return res.status(401).json({ id: 'credentials', message: 'Invalid credentials' });
+        return res.status(403).json({ id: 'credentials', message: 'Invalid credentials' });
     }
     const { username, password } = req.body;
     if (!username || !password) {
-        return res.status(401).json({ id: 'credentials', message: 'Invalid credentials' });
+        return res.status(403).json({ id: 'credentials', message: 'Invalid credentials' });
     }
     // Check in the database
     // if a user with this username
@@ -23,8 +23,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         { username: 'admin', password: 'admin' },
     ]
     const userDetails = users.find((u) => u.username == username) || null;
-    if (!userDetails) return res.status(401).json({ id: "username", message: 'Invalid username' });
-    if (userDetails.password != password) return res.status(401).json({ id: "password", message: 'Invalid password' });
+    if (!userDetails) return res.status(403).json({ id: "username", message: 'Invalid username' });
+    if (userDetails.password != password) return res.status(403).json({ id: "password", message: 'Invalid password' });
     if (userDetails) {
         const token = sign({
             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 1, // 1 day

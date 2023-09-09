@@ -6,7 +6,7 @@ import { getDarkModeState } from "@reduxStore/slices/darkMode";
 
 const withTheme = (children: JSX.Element) => {
     const isDarkMode = useAppSelector(getDarkModeState);
-
+    const { token } = theme.useToken();
     return (
         <>
             <ConfigProvider
@@ -14,17 +14,22 @@ const withTheme = (children: JSX.Element) => {
                     algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
                     token: {
                         // colorPrimary: '#3bceac',
-                        colorPrimary: isDarkMode ? '#00C9A7' : '#D65DB1',
+                        colorPrimary: isDarkMode ? '#00C9A7' : '#002864',
                         borderRadius: 5,
                         wireframe: false
-                    }
+                    },
+                    components: {
+                        Menu: {
+                            colorItemBgSelected: token.colorPrimaryBg
+                        },
+                    },
                 }}
             >
                 <ConfigProvider
                     theme={{
                         token: {
                             borderRadius: 4,
-                        },
+                        }
                     }}
                 >
                     {children}

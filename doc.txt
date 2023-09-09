@@ -13,6 +13,3 @@ Settings
     Theme
     Sidebar
 
-
-
-    

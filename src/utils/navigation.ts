@@ -1,3 +1,4 @@
+import router from "next/router";
 import IRoute from "src/types/navigation";
 
 // NextJS Requirement
@@ -25,3 +26,7 @@ export const getActiveNavbar = (routes: IRoute[]): boolean => {
 export const getActiveNavbarText = (routes: IRoute[]): string | boolean => {
   return getActiveRoute(routes) || false;
 };
+
+export const navigateTo = (path: any, baseRouteUrl = "") => {
+  router.push({ pathname: baseRouteUrl + path }, undefined, { scroll: false, shallow: true })
+}

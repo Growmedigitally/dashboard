@@ -20,10 +20,8 @@ if (process.env.NODE_ENV === 'development') {
       disableStaticImages: true
     },
     webpack(config) {
-      config.module.rules.push({
-        test: /\.svg$/,
-        use: ["@svgr/webpack"]
-      });
+      config.externals.push({ sharp: 'commonjs sharp', canvas: 'commonjs canvas' });
+      config.module.rules.push({ test: /\.svg$/, use: ["@svgr/webpack"] });
 
       return config;
     },

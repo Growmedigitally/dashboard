@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { MenuProps, theme } from 'antd';
+import { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import styles from '@organismsCSS/sidebarComponent/sidebarComponent.module.scss'
 import { useAppSelector } from '@hook/useAppSelector';
 import { getDarkModeState, toggleDarkMode } from '@reduxStore/slices/darkMode';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import SvgIcon from '@atoms/svgIcon';
-import { consoleLog } from '@util/conole.log';
 import { windowRef } from '@util/window';
-import { isWindowAvailable } from '@util/navigation';
+import { isWindowAvailable, navigateTo } from '@util/navigation';
 import { initialThemeHandler } from '@util/utils';
-import Router, { useRouter } from 'next/router';
-import { navigateTo } from '@util/routerService';
+import { useRouter } from 'next/router';
 const { Sider }: any = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -22,13 +20,11 @@ const SidebarComponent = () => {
     const [open, setOpen] = useState(false);
     const [activeNav, setActiveNav] = useState('dashboard');
     const dispatch = useAppDispatch();
-    const { token } = theme.useToken();
     const router = useRouter();
 
     useEffect(() => {
         if (isWindowAvailable()) {
             dispatch(toggleDarkMode(initialThemeHandler()));
-            console.log(router);
             setActiveNav(router.asPath.split('/')[0]);
         }
     }, [windowRef])
@@ -44,7 +40,7 @@ const SidebarComponent = () => {
         { label: 'PWA', key: 'PWA', icon: 'PWA' },
         { label: 'Chat', key: 'chat', icon: 'chat' },
         { label: 'Note', key: 'note', icon: 'note' },
-        { label: 'Query', key: 'query', icon: 'query' },
+        { label: 'Blogs', key: 'query', icon: 'query' },
         { label: 'Promotion', key: 'promotion', icon: 'promotion' },
         {
             label: 'Profile', key: 'profile', icon: 'profile',
@@ -82,7 +78,6 @@ const SidebarComponent = () => {
     }
 
     const onClickNav: MenuProps['onClick'] = (menu) => {
-        console.log('click', menu);
         switch (menu.key) {
             case 'light':
                 localStorage.setItem("theme", 'light');
@@ -99,7 +94,7 @@ const SidebarComponent = () => {
                 setOpen(!open);
                 break;
             default:
-                router.push(`${menu.key}`)
+                navigateTo(`${menu.key}`);
                 setActiveNav(menu.key);
                 break;
         }

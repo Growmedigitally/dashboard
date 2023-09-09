@@ -1,16 +1,9 @@
 import styles from '@templatesCSS/builderPage/builderPage.module.scss'
 import React, { useEffect, useState } from 'react'
-import { Col, Layout, Row, Segmented, theme, Typography } from 'antd';
+import { Col, Layout, Popconfirm, Row, Segmented, theme, Tooltip, Typography } from 'antd';
 import { useAppSelector } from '@hook/useAppSelector';
 import { getDarkModeState } from '@reduxStore/slices/darkMode';
-const { Header, Content, Sider } = Layout;
-const { Text } = Typography;
-import { BsPencil } from 'react-icons/bs';
-import { BsLaptop } from 'react-icons/bs';
-import { BsPhone } from 'react-icons/bs';
-import { BsTabletLandscape } from 'react-icons/bs';
-import { BsFillLayersFill } from 'react-icons/bs';
-import { consoleLog } from '@util/conole.log';
+import { BsFillPencilFill, BsLaptop, BsPhone, BsTabletLandscape, BsFillLayersFill, BsArrowCounterclockwise, BsFillPhoneFill, BsFillTabletLandscapeFill, BsLaptopFill, BsMagic } from 'react-icons/bs';
 import { v4 as uuid } from 'uuid';
 import SectionsContainer from './sectionsContainer';
 import BuilderContainer from './builderContainer';
@@ -18,122 +11,100 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { getBuilderState, updateBuilderState } from '@reduxStore/slices/builderState';
 import ComponentEditor from '@organisms/componentEditor';
-import { getActiveEditorComponent, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import { getActiveEditorComponent, initialState, updateActiveEditorComponent } from '@reduxStore/slices/activeEditorComponent';
+import ComponentConfigs from '@organisms/sections/configsList';
+import { copy, move, reorder } from '@util/dndHelpers';
+import { showSuccessToast } from '@reduxStore/slices/toast';
+import GlobalContainer from './globalContainer';
+import { LOGO_TEXT } from '@constant/common';
 
+const { Header, Content, Sider } = Layout;
+const { Text } = Typography;
 
 const DEVICE_TYPES = [
-    { name: 'Mobile', icon: <BsPhone /> },
-    { name: 'Tablet', icon: <BsTabletLandscape /> },
-    { name: 'Laptop', icon: <BsLaptop /> },
+    { title: 'Mobile', icon: <BsPhone /> },
+    { title: 'Tablet', icon: <BsTabletLandscape /> },
+    { title: 'Laptop', icon: <BsLaptop /> },
+    // { title: 'Mobile', icon: <BsFillPhoneFill /> },
+    // { title: 'Tablet', icon: <BsFillTabletLandscapeFill /> },
+    // { title: 'Laptop', icon: <BsLaptopFill /> },
 ]
 
-const ITEMS = [
-    {
-        id: uuid(),
-        text: 'Header Bar'
-    },
-    {
-        id: uuid(),
-        text: 'Hero Banners'
-    },
-    {
-        id: uuid(),
-        text: 'How it works'
-    },
-    {
-        id: uuid(),
-        text: 'Slideshow'
-    },
-    {
-        id: uuid(),
-        text: 'Footer'
-    }
-];
-
+const SEGMENT_OPTIONS = [
+    { title: 'Sections', icon: <BsFillLayersFill /> },
+    { title: 'Editor', icon: <BsFillPencilFill /> },
+    { title: 'Global', icon: <BsMagic /> },
+]
 
 function BuilderPage() {
-    const isDarkMode = useAppSelector(getDarkModeState)
     const { token } = theme.useToken();
+    const isDarkMode = useAppSelector(getDarkModeState)
     const [activeOptionTab, setActiveOptionTab] = useState('Sections');
-    const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].name);
+    const [activeDeviceType, setActiveDeviceType] = useState(DEVICE_TYPES[0].title);
     const dispatch = useAppDispatch();
-    // const [droppedComponentsList, setDroppedComponentsList] = useState({
-    //     [uuid()]: []
-    // })
-    const droppedComponentsList = useAppSelector(getBuilderState) || { [uuid()]: [] };
-    const activeComponentID = useAppSelector(getActiveEditorComponent);
+    const builderState = useAppSelector(getBuilderState) || { [uuid()]: [] };
+    const activeComponent = useAppSelector(getActiveEditorComponent);
+    const [originalDesignState, setOriginalDesignState] = useState({ [uuid()]: [] });
 
     useEffect(() => {
-        if (activeComponentID != null) setActiveOptionTab('Editor');
-    }, [activeComponentID])
+        if (Boolean(activeComponent.uid)) setActiveOptionTab('Editor');
+    }, [activeComponent])
 
+    const getSegmentOptions = () => {
+        return SEGMENT_OPTIONS.map((option) => {
+            return {
+                label: <div style={{ color: activeOptionTab == option.title ? token.colorPrimary : 'inherit' }}
+                    className={`${styles.segmentItem} ${activeOptionTab == option.title ? styles.active : ''}`}>
+                    <div className={styles.iconWrap} >
+                        {option.icon}
+                    </div>
+                    <div className={styles.title}>{option.title}</div>
+                </div>,
+                value: option.title
+            }
+        })
+    }
 
     const onClickOptionsTab = (tab: any) => {
         setActiveOptionTab(tab);
-        dispatch(updateActiveEditorComponent(null));
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
     }
-    // a little function to help us with reordering the result
-    const reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-
-        return result;
-    };
-    /**
-     * Moves an item from one list to another list.
-     */
-    const copy = (source, destination, droppableSource, droppableDestination) => {
-        console.log('==> dest', destination);
-        const sourceClone = Array.from(source);
-        const destClone = Array.from(destination);
-        const item: any = sourceClone[droppableSource.index];
-        destClone.splice(droppableDestination.index, 0, { ...item, id: uuid() });
-        return destClone;
-    };
-
-    const move = (source, destination, droppableSource, droppableDestination) => {
-        const sourceClone = Array.from(source);
-        const destClone = Array.from(destination);
-        const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-        destClone.splice(droppableDestination.index, 0, removed);
-
-        const result = {};
-        result[droppableSource.droppableId] = sourceClone;
-        result[droppableDestination.droppableId] = destClone;
-
-        return result;
-    };
 
     const onDragEnd = result => {
         const { source, destination } = result;
-
-        console.log('==> result', result);
         // dropped outside the list
         if (!destination) {
             return;
         }
-
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
         switch (source.droppableId) {
             case destination.droppableId:
                 dispatch(updateBuilderState({
-                    [destination.droppableId]: reorder(droppedComponentsList[source.droppableId], source.index, destination.index)
+                    [destination.droppableId]: reorder(builderState[source.droppableId], source.index, destination.index)
                 }));
                 break;
-            case 'ITEMS':
+            case 'ECOMAI_BUILDER':
                 dispatch(updateBuilderState({
-                    [destination.droppableId]: copy(ITEMS, droppedComponentsList[destination.droppableId], source, destination)
+                    [destination.droppableId]: copy(ComponentConfigs, builderState[destination.droppableId], source, destination)
                 }));
                 break;
             default:
                 dispatch(updateBuilderState(
-                    move(droppedComponentsList[source.droppableId], droppedComponentsList[destination.droppableId], source, destination)
+                    move(builderState[source.droppableId], builderState[destination.droppableId], source, destination)
                 ));
                 break;
         }
     };
 
+    const onClickRevert = () => {
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
+        dispatch(updateBuilderState(originalDesignState));
+        dispatch(showSuccessToast('Changes reverted successfully'));
+    }
+
+    const onOutsideEditorClick = () => {
+        dispatch(updateActiveEditorComponent(initialState.activeEditorComponent));
+    }
     return (
         <Layout className={styles.builderPageWrap}>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -141,25 +112,41 @@ function BuilderPage() {
                     <Header className={`${styles.headerWrap}`} style={{ background: token.colorBgLayout }}>
                         <Row>
                             <Col className={styles.headingWrap} span={18}>
-                                <Text style={{ color: token.colorPrimary }}>EcomAi Website Builder</Text>
+                                <Text style={{ color: token.colorPrimary }}>{LOGO_TEXT} Website Builder</Text>
                             </Col>
-                            <Col className={styles.sizeWrap} span={6}>
+                            <Col className={styles.actionsWrap} span={6}>
+
+                                <Tooltip title="Revert Changes" color={'#8892b0'} key='3'>
+                                    <Popconfirm
+                                        title="Revert Changes"
+                                        description="Are you sure you want revert?"
+                                        onConfirm={onClickRevert}
+                                    >
+                                        <div style={{ color: isDarkMode ? 'white' : 'black', background: '#dee1ec46' }}
+                                            onClick={() => { }}
+                                            className={`iconWrap hover ${styles.iconWrap}`}>
+                                            <BsArrowCounterclockwise />
+                                        </div>
+                                    </Popconfirm>
+                                </Tooltip>
+
                                 {DEVICE_TYPES.map((device: any, i: number) => {
-                                    return <div key={i}
-                                        style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.name ? token.colorPrimary : '#dee1ec46' }}
-                                        onClick={() => setActiveDeviceType(device.name)}
-                                        className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.name ? styles.active : ''}`}>
-                                        {device.icon}
-                                    </div>
+                                    return <React.Fragment key={i}>
+                                        <Tooltip title={`${device.title} View`} color={'#8892b0'} key='3'>
+                                            <div style={{ color: isDarkMode ? 'white' : 'black', background: activeDeviceType == device.title ? token.colorPrimary : '#dee1ec46' }}
+                                                onClick={() => setActiveDeviceType(device.title)}
+                                                className={`iconWrap hover ${styles.iconWrap} ${activeDeviceType == device.title ? styles.active : ''}`}>
+                                                {device.icon}
+                                            </div>
+                                        </Tooltip>
+                                    </React.Fragment>
                                 })}
                             </Col>
                         </Row>
                     </Header>
-                    <Content className={`${styles.editorWrap} ${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{
-                        background: token.colorBgLayout
-                    }}>
-                        <div className={styles.editorContent}>
-                            <BuilderContainer droppedComponentsList={droppedComponentsList} activeDeviceType={activeDeviceType} />
+                    <Content className={`${isDarkMode ? "ant-layout-sider-dark" : "ant-layout-sider-light"}`} style={{ background: token.colorBgLayout }}>
+                        <div className={styles.editorContent} onClick={onOutsideEditorClick} >
+                            <BuilderContainer builderState={builderState} activeDeviceType={activeDeviceType} />
                         </div>
                     </Content>
                 </Layout>
@@ -172,42 +159,26 @@ function BuilderPage() {
                                 block={true}
                                 value={activeOptionTab}
                                 onChange={(tab: any) => onClickOptionsTab(tab)}
-                                options={[
-                                    {
-                                        label: <div style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }} className={`${styles.segmentItem}`}>
-                                            <div className={styles.iconWrap} style={{ color: activeOptionTab == 'Sections' ? token.colorPrimary : 'inherit' }} >
-                                                <BsFillLayersFill />
-                                            </div>
-                                            <div>Sections</div>
-                                        </div>,
-                                        value: 'Sections'
-                                    },
-                                    {
-                                        label: <div style={{ color: activeOptionTab == 'Editor' ? token.colorPrimary : 'inherit' }} className={`${styles.segmentItem}`}>
-                                            <div className={styles.iconWrap} style={{ color: activeOptionTab == 'Editor' ? token.colorPrimary : 'inherit' }} >
-                                                <BsPencil />
-                                            </div>
-                                            <div>Editor</div>
-                                        </div>,
-                                        value: 'Editor',
-                                    },
-                                ]}
+                                options={getSegmentOptions()}
                             />
                         </div>
-                        {activeOptionTab == 'Sections' ? <div className={styles.sidebarContentWrap}>
+                        {activeOptionTab == SEGMENT_OPTIONS[0].title && <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
                                 Drag and drop section to left builder area
                             </div>
-                            <div className={styles.sectionWrap}>
-                                <SectionsContainer ITEMS={ITEMS} />
-                            </div>
-                        </div> : <div className={styles.sidebarContentWrap}>
+                            <SectionsContainer ComponentConfigs={ComponentConfigs} />
+                        </div>}
+                        {activeOptionTab == SEGMENT_OPTIONS[1].title && <div className={styles.sidebarContentWrap}>
                             <div className={styles.note} style={{ color: token.colorPrimary }}>
-                                {activeComponentID != null ? 'Edit content of selected section' : 'You have no component selected'}
+                                {Boolean(activeComponent.uid) ? 'Edit content of selected section' : 'You have no component selected'}
                             </div>
-                            {activeComponentID != null && <div className={styles.editorWrap}>
-                                <ComponentEditor activeComponentID={activeComponentID} droppedComponentsList={droppedComponentsList} />
-                            </div>}
+                            {Boolean(activeComponent.uid) && <ComponentEditor activeComponent={activeComponent} builderState={builderState} />}
+                        </div>}
+                        {activeOptionTab == SEGMENT_OPTIONS[2].title && <div className={styles.sidebarContentWrap}>
+                            <div className={styles.note} style={{ color: token.colorPrimary }}>
+                                Edit global styles and elements
+                            </div>
+                            <GlobalContainer />
                         </div>}
                     </div>
                 </Sider>

@@ -8,7 +8,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const token = cookies[USER_COOKIE_KEY || ''];
     if (!token) {
         // return res.redirect(307, '/login');
-        return res.status(401).json({ message: "Invalid token!" });
+        return res.status(403).json({ message: "Invalid token!" });
     } else {
         const { username, password } = jwt.decode(token);
         const users = [
@@ -44,7 +44,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                 path: "/",
             });
             // res.setHeader("Set-Cookie", serialised);
-            return res.status(401).json({ message: "Invalid token!" });
+            return res.status(403).json({ message: "Invalid token!" });
         }
     }
 }
