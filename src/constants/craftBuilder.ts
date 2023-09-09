@@ -13,7 +13,13 @@ export const CUSTOME_ATTRIBUTES = {
     IS_INLINE_WATERMARK: 'isInline'
 }
 
-export const CUSTOME_ATTRIBUTES_LIST = [CUSTOME_ATTRIBUTES.PATTERN_DATA, CUSTOME_ATTRIBUTES.OBJECT_TYPE, CUSTOME_ATTRIBUTES.UID, CUSTOME_ATTRIBUTES.IS_INLINE_WATERMARK, CUSTOME_ATTRIBUTES.QR_CODE_CONFIG];
+export const CUSTOME_ATTRIBUTES_LIST = [
+    CUSTOME_ATTRIBUTES.PATTERN_DATA,
+    CUSTOME_ATTRIBUTES.OBJECT_TYPE,
+    CUSTOME_ATTRIBUTES.UID,
+    CUSTOME_ATTRIBUTES.IS_INLINE_WATERMARK,
+    CUSTOME_ATTRIBUTES.QR_CODE_CONFIG
+];
 export const HOTKEYS_MOVE_PIXELS = 3;
 export const IMAGE_TYPES = {
     SVG: 'svg',
@@ -638,4 +644,18 @@ export const TREE_D_STYLES = [
         label: 'Subtle Reversed',
         value: 'Subtle Reversed',
     }
+]
+
+
+export const SHARE_CRAFT_TYPES = [
+    { id: 3, tooltip: 'Whatsapp', name: 'Whatsapp', icon: "whatsapp", showTitle: false, showDesc: true, showUserData: true, userDataType: 'Number' },
+    { id: 2, tooltip: 'Facebook', name: 'Facebook', icon: "facebook", showTitle: false, showDesc: false },
+    { id: 9, tooltip: 'Instagram', name: 'Instagram', icon: "instagram", showTitle: false, showDesc: false },
+    { id: 3, tooltip: 'Twitter', name: 'Twitter', icon: "twitter", showDesc: true },
+    { id: 4, tooltip: 'Linkedin', name: 'Linkedin', icon: "linkedin", showTitle: true, showDesc: true },
+    { id: 7, tooltip: 'Email', name: 'Email', icon: "email", showTitle: true, showDesc: true, showUserData: true, userDataType: 'Email' },
+    { id: 8, tooltip: 'Pinterest', name: 'Pinterest', icon: "pinterest", showTitle: false, showDesc: true },
+    { id: 10, tooltip: 'Tumblr', name: 'Tumblr', icon: "tumblr", showTitle: false, showDesc: true },
+    { id: 11, tooltip: 'Snapchat', name: 'Snapchat', icon: "snapchat", showTitle: false, showDesc: false },
+    { id: 15, tooltip: 'SMS', name: 'SMS', icon: "sms", showTitle: false, showDesc: true, showUserData: true, userDataType: 'Number' },
 ]

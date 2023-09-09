@@ -1,3 +1,5 @@
+import { LOGO_TEXT } from "@constant/common";
+
 const DARK_COLORS = ['#0C134F', '#5F264A', '#393646', '#37306B', '#2C3333'];
 const LIGHT_COLORS = ['#79E0EE', '#B799FF', '#99A98F', '#A6D0DD', '#FFACAC'];
 const NEON_COLORS = ['#79E0EE', '#FFB84C', '#FF55BB', '#F6F1E9', '#F0FF42', '#060047'];
@@ -10,7 +12,7 @@ export default {
     modifiedOn: "",
     logo: {
         type: 'TEXT',
-        value: "EcomAI"
+        value: LOGO_TEXT
     },
     background: {
         value: '#D3CCE3',

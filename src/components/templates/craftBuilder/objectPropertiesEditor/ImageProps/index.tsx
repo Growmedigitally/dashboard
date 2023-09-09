@@ -4,7 +4,7 @@ import { fabric } from "fabric";
 import styles from '@objectPropertiesEditor/objectPropertiesEditor.module.scss'
 import { Button } from 'antd';
 import { LuImagePlus } from 'react-icons/lu'
-import { insertImgFile } from '@util/craftBuilderUtils';
+import { getCustomObjectType, insertImgFile } from '@util/craftBuilderUtils';
 import { showErrorToast } from '@reduxStore/slices/toast';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import Filters from './filters';
@@ -61,14 +61,16 @@ function ImageObjectProps({ updateLocalCanvas, workspace, canvas, activeObjectsS
 
     return (
         <React.Fragment>
-            {Boolean(canvas?.getActiveObject()?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE)?.includes(OBJECT_TYPES.watermark)) && <div className={styles.watermarkImage}>Watermark Image</div>}
+            {Boolean((getCustomObjectType(canvas?.getActiveObject()) || "")?.includes(OBJECT_TYPES.watermark)) && <div className={styles.watermarkImage}>Watermark Image</div>}
             <div className={styles.currentImage}>
                 {canvas?.getActiveObject()?._originalElement?.currentSrc && <img src={canvas.getActiveObject()._originalElement.currentSrc} />}
             </div>
-            {!Boolean(canvas?.getActiveObject()?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE)?.includes(OBJECT_TYPES.watermark)) &&
+            {!Boolean((getCustomObjectType(canvas?.getActiveObject()) || "")?.includes(OBJECT_TYPES.watermark)) &&
                 <>
-                    <UploadImage onUpload={handleImageAdded} label='Replace Image' />
-                    <UploadImage isResize={true} src={canvas.getActiveObject()._originalElement.currentSrc} onUpload={handleImageAdded} label='Resize Image' />
+                    <div className={styles.imageActions}>
+                        <UploadImage onUpload={handleImageAdded} label='Replace' />
+                        <UploadImage isResize={true} src={canvas?.getActiveObject()?._originalElement?.currentSrc} onUpload={handleImageAdded} label='Resize' />
+                    </div>
                 </>
             }
             <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} />

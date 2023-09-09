@@ -22,10 +22,10 @@ import QuickActionsMenu from "./quickActionsMenu";
 import Header from "./header";
 import { WATERMARKS, WATERMARK_TYPES } from "@constant/watermarks";
 import { updateImageTextWatermark } from "./tabsComposer/watermark/utils";
-import { LOGO } from "@constant/common";
+import { LOGO, LOGO_TEXT } from "@constant/common";
 import defaultCraftBuilderConfig from "src/data/defaultCraftBuilderConfig";
 import { TiChevronRightOutline } from "react-icons/ti";
-import { checkNonRestrictedObject, getObjectType } from "@util/craftBuilderUtils";
+import { checkNonRestrictedObject, getCustomObjectType, getObjectType } from "@util/craftBuilderUtils";
 import TabsWrapper from "./craftBuilderTabs";
 import useDebounce, { debounce } from "@hook/useDebounce";
 
@@ -57,6 +57,7 @@ export default function CraftBuilder() {
     const [activeEditorTab, setActiveEditorTab] = useState('');
     const [showLayers, setShowLayers] = useState(false)
     const [actionMenuProps, setActionMenuProps] = useState({ type: '', active: false, activeObject: null, top: 0, left: 0, contextMenuTop: 0, contextMenuLeft: 0, showContextMenu: false })
+
     const [activeObjectsState, setActiveObjectsState] = useState<activeObjectsState>({
         eventMode: editorEventMode.EMPTY,
         isGroup: false,
@@ -64,6 +65,25 @@ export default function CraftBuilder() {
         selectedObject: [],
         isSelected: false
     })
+
+    useEffect(() => {
+        if (showLayers) {
+            setTimeout(() => {
+                const objects = canvas.getObjects();
+                const layers = [];
+                objects.map((obj) => {
+                    if ((getCustomObjectType(obj) !== OBJECT_TYPES.workspace) && (getCustomObjectType(obj) !== OBJECT_TYPES.watermark)) {
+                        layers.push({
+                            type: getObjectType(obj),
+                            src: obj.toDataURL(),
+                            uid: obj.get('uid')
+                        })
+                    }
+                })
+                if (layers.length == 0) setShowLayers(false)
+            }, 5000);
+        }
+    }, [showLayers])
 
     const onObjectModified = useCallback((e: any) => {
         console.log("object:modified", "CraftBuilder")
@@ -120,22 +140,19 @@ export default function CraftBuilder() {
     const updateActiveObjectCords = (showContextMenu = false) => {
         const activeObject = canvasInstance.current.getActiveObject();
         if (activeObject) {
-            let leftCenter = ((activeObject.getScaledWidth() / 2) - 50 + activeObject.getBoundingRect().left);
-            // if (leftCenter > (activeObject.getBoundingRect().left + activeObject.getScaledWidth())) {
-            //     leftCenter = activeObject.getBoundingRect().left + activeObject.getScaledWidth()
-            // }
-            const leftCord = getObjectType(activeObject) == OBJECT_TYPES.text ? activeObject.getBoundingRect().left : ((activeObject.getScaledWidth() / 2) - 55 + activeObject.getBoundingRect().left)
-            const contextMenuGap = 10;
+            const leftCord = getObjectType(activeObject) == OBJECT_TYPES.text ? activeObject.getBoundingRect().left : ((activeObject.getScaledWidth() / 2) - 70 + activeObject.getBoundingRect().left)
+            const contextMenuGapTop = 60;
+            const contextMenuGapLeft = 0;
             setActionMenuProps({
                 type: getObjectType(activeObject),
                 active: true,
                 activeObject,
-                top: activeObject.getBoundingRect().top - 60,
+                top: activeObject.getBoundingRect().top - contextMenuGapTop,
                 left: leftCord,
                 showContextMenu: showContextMenu || false,
                 contextMenuTop: (activeObject.getBoundingRect().top),
                 // contextMenuTop: ((activeObject.getScaledHeight() / 2) - contextMenuHeight + activeObject.getBoundingRect().top),
-                contextMenuLeft: (activeObject.getBoundingRect().left + activeObject.getScaledWidth() + contextMenuGap),
+                contextMenuLeft: (activeObject.getBoundingRect().left + activeObject.getScaledWidth() + contextMenuGapLeft),
             })
         } else {
             setActionMenuProps({ type: '', active: false, activeObject: null, top: 0, left: 0, showContextMenu: false, contextMenuTop: 0, contextMenuLeft: 0, })
@@ -189,7 +206,7 @@ export default function CraftBuilder() {
 
         // Scale all other objects
         canvasInstance.current.getObjects().forEach((object) => {
-            if (object[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace) { // Skip scaling the rectangle object
+            if (getCustomObjectType(object) !== OBJECT_TYPES.workspace) { // Skip scaling the rectangle object
                 const scaleX = object.scaleX * widthScaleFactor;
                 const scaleY = object.scaleY * heightScaleFactor;
 
@@ -206,7 +223,7 @@ export default function CraftBuilder() {
             }
         });
 
-        workspace = canvasInstance.current.getObjects().find((item) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] === OBJECT_TYPES.workspace) as fabric.Rect;
+        workspace = canvasInstance.current.getObjects().find((item) => getCustomObjectType(item) === OBJECT_TYPES.workspace) as fabric.Rect;
         workspace.set('width', width);
         workspace.set('height', height);
         // Calculate the scale factors
@@ -322,7 +339,7 @@ export default function CraftBuilder() {
     }
 
     const initWatermark = () => {
-        const watermarkPropsCopy = { active: true, type: '', src: LOGO, text: 'EcomAi', isInline: false };
+        const watermarkPropsCopy = { active: true, type: '', src: LOGO, text: LOGO_TEXT, isInline: false };
         watermarkPropsCopy.type = WATERMARK_TYPES.LOGO_AND_TEXT;
         updateImageTextWatermark(canvasInstance.current, watermarkPropsCopy, workspace, 'default');
     }
@@ -423,6 +440,9 @@ export default function CraftBuilder() {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
                 <div className={styles.editorContainer} style={{ background: token.colorBgContainer, color: token.colorTextBase }}>
                     <div className={styles.tabsSection}>
+                        <div className={styles.logoWrap}>
+                            <img src={LOGO} />
+                        </div>
                         <TabsWrapper activeEditorTab={activeEditorTab} setActiveEditorTab={onChangeTab} />
                     </div>
                     <div className={styles.editorContent} >
@@ -431,8 +451,8 @@ export default function CraftBuilder() {
                                 <ObjectPropertiesEditor updateLocalCanvas={updateLocalCanvas} workspace={workspace} canvas={canvasInstance.current} activeObjectsState={activeObjectsState} />
                             </div>
                         </div>}
-                        {activeEditorTab && <div className={styles.tabActionsSection} style={{ background: token.colorBgElevated, color: token.colorTextBase }}>
-                            <div className={styles.tabActionsWrap} style={{ background: token.colorBorder, color: token.colorTextBase, padding: '5px' }}>
+                        {activeEditorTab && <div className={styles.tabActionsSection} style={{ color: token.colorTextBase }}>
+                            <div className={styles.tabActionsWrap} style={{ color: token.colorTextBase, padding: '5px' }}>
                                 <TabsComposer
                                     activeObjectsState={activeObjectsState}
                                     canvas={canvasInstance.current}
@@ -442,7 +462,7 @@ export default function CraftBuilder() {
                                     setActiveEditorTab={setActiveEditorTab} />
                             </div>
                         </div>}
-                        <div className={styles.editorCanvasContent} style={{ width: `calc(100% - ${Boolean(activeEditorTab) ? 300 : 0}px)`, background: token.colorBgTextHover, color: token.colorTextBase }}>
+                        <div className={styles.editorCanvasContent} style={{ width: `calc(100% - ${Boolean(activeEditorTab) ? 300 : 0}px)`, color: token.colorTextBase }}>
                             <div className={styles.headerWrap} >
                                 <Header
                                     updateWorkspaceSize={updateWorkspaceSize}
@@ -452,7 +472,7 @@ export default function CraftBuilder() {
                                     activeObjectsState={activeObjectsState}
                                 />
                             </div>
-                            <div className={styles.canvasSection} id="canvasWrapper" ref={canvasWrapperRef}>
+                            <div className={styles.canvasSection} id="canvasWrapper" ref={canvasWrapperRef} style={{ background: token.colorBgTextHover }}>
                                 {/* canvas mounter */}
                                 <canvas ref={canvasRef} width="300" height="300" />
                                 {/* //canvas active object quick actions */}
@@ -475,7 +495,7 @@ export default function CraftBuilder() {
                                 />
                                 {/* //layers wrap */}
                                 <div className={`${styles.layersWrapper} ${showLayers ? styles.showLayers : ''}`}
-                                    style={{ background: token.colorBgBase, color: token.colorTextBase, borderRadius: showLayers ? '0 10px 10px' : '10px' }}>
+                                    style={{ background: token.colorBgBase, color: token.colorTextBase, borderRadius: showLayers ? '0 6px 6px' : '6px' }}>
                                     <div style={{
                                         background: showLayers ? token.colorBgBase : '',
                                         color: token.colorTextBase

@@ -5,6 +5,10 @@ export const getObjectType = (canvasObject) => {
     return canvasObject ? (canvasObject?.get('type').includes('text') ? OBJECT_TYPES.text : canvasObject.get('type')) : '';
 }
 
+export const getCustomObjectType = (canvasObject) => {
+    return canvasObject ? canvasObject?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) : '';
+}
+
 export function insertImgFile(str: string) {
     return new Promise((resolve) => {
         const imgEl = document.createElement('img');
@@ -38,9 +42,9 @@ export function convertDataUrlToSvg(dataUrl) {
 
 export const checkNonRestrictedObject = (obj) => {
     // used in src/components/templates/craftBuilder/initDragging.ts & src/components/templates/craftBuilder/initHotKeys.ts
-    if (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.workspace) {
+    if (getCustomObjectType(obj) == OBJECT_TYPES.workspace) {
         return false
-    } else if (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.watermark && !defaultCraftBuilderConfig.isPro) {
+    } else if (getCustomObjectType(obj) == OBJECT_TYPES.watermark && !defaultCraftBuilderConfig.isPro) {
         return false
     } return true;
 }

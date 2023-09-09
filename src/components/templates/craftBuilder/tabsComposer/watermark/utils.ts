@@ -1,6 +1,6 @@
 
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from "@constant/craftBuilder";
-import { getObjectType } from "@util/craftBuilderUtils";
+import { getCustomObjectType, getObjectType } from "@util/craftBuilderUtils";
 import { fabric } from "fabric";
 import { v4 as uuid } from 'uuid';
 
@@ -99,7 +99,7 @@ const updateCanvas = (object, canvas) => {
 
 export const updateLogoWatermark = (canvas, updateLocalCanvas, watermarkProps, workspace) => {
     const objects = canvas.getObjects();
-    const addedWatermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+    const addedWatermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
 
     if (addedWatermarkObjectIndex != -1) {
         //existing watermark as image
@@ -151,7 +151,7 @@ export const updateLogoWatermark = (canvas, updateLocalCanvas, watermarkProps, w
 
 export const updateTextWatermark = (canvas, watermarkProps, workspace) => {
     const objects = canvas.getObjects();
-    const addedWatermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+    const addedWatermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
 
     if (addedWatermarkObjectIndex != -1) {
         //existing watermark as text
@@ -191,7 +191,7 @@ export const updateTextWatermark = (canvas, watermarkProps, workspace) => {
 
 export const updateImageTextWatermark = (canvas, watermarkProps, workspace, from = '') => {
     const objects = canvas.getObjects();
-    const addedWatermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+    const addedWatermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
 
     if (addedWatermarkObjectIndex != -1) {
         //existing watermark as text

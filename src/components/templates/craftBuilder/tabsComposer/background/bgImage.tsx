@@ -16,6 +16,7 @@ import { TbIcons } from 'react-icons/tb';
 import IconsElements from '@template/craftBuilder/tabsComposer/graphics/iconsElements';
 import GraphicsElements from '@template/craftBuilder/tabsComposer/graphics/graphicsElements';
 import GraphicsCss from '@template/craftBuilder/tabsComposer/graphics/graphics.module.scss'
+import { getCustomObjectType } from '@util/craftBuilderUtils';
 
 type pageProps = {
     activeObject: any,
@@ -63,7 +64,7 @@ const BGImage = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState }
         console.log("inside updateCanvasPatternData")
         activeObject.set('patternData', {
             ...paternData,
-            [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.workspace ? OBJECT_TYPES.workspace + '-' + OBJECT_TYPES.pattern : OBJECT_TYPES.pattern}`
+            [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${getCustomObjectType(activeObject) == OBJECT_TYPES.workspace ? OBJECT_TYPES.workspace + '-' + OBJECT_TYPES.pattern : OBJECT_TYPES.pattern}`
         })
         updateLocalCanvas(canvas, 'BGImage updateCanvasPatternData')
         setCurrentPaternData({ ...paternData, forceUpdate: true })
@@ -77,7 +78,7 @@ const BGImage = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState }
                 //if fill is set to pattern
                 const patternData = activeObject.get('patternData');
                 if (activeObject.get('fill') instanceof fabric.Pattern || currentPaternData.forceUpdateImage) {
-                    if (activeObject && patternData && patternData.src && patternData[CUSTOME_ATTRIBUTES.OBJECT_TYPE].includes(OBJECT_TYPES.pattern)) {
+                    if (activeObject && patternData && patternData.src && getCustomObjectType(patternData).includes(OBJECT_TYPES.pattern)) {
                         fabric.Image.fromURL(patternData.src, function (img) {
                             const widthValue = ((activeObject?.getScaledWidth() || 1) / 2)
                             const repeat = patternData.repeat || 'repeat';

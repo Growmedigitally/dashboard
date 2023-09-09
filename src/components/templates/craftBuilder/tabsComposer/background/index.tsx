@@ -9,6 +9,7 @@ import BGPattern from './bgPattern';
 import BGImage from './bgImage';
 import { fabric } from "fabric";
 import { CUSTOME_ATTRIBUTES, DEFAULT_NO_BG_OPACITY, OBJECT_TYPES } from '@constant/craftBuilder';
+import { getCustomObjectType } from '@util/craftBuilderUtils';
 
 const TAB_TYPES = {
     COLOR: 'Color',
@@ -37,7 +38,7 @@ function Background({ canvas, updateLocalCanvas, workspace }) {
                 setActiveTab(TAB_TYPES.COLOR);
             } else if (currentFill instanceof fabric.Pattern) {
                 const patternData = workspace.get('patternData');
-                if (patternData[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == `${OBJECT_TYPES.workspace}-${OBJECT_TYPES.pattern}`) {
+                if (getCustomObjectType(patternData) == `${OBJECT_TYPES.workspace}-${OBJECT_TYPES.pattern}`) {
                     setActiveTab(TAB_TYPES.PATTERN)
                 } else {
                     setActiveTab(TAB_TYPES.IMAGE)

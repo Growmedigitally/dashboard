@@ -16,6 +16,7 @@ import ComponentConfigs from '@organisms/sections/configsList';
 import { copy, move, reorder } from '@util/dndHelpers';
 import { showSuccessToast } from '@reduxStore/slices/toast';
 import GlobalContainer from './globalContainer';
+import { LOGO_TEXT } from '@constant/common';
 
 const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
@@ -111,7 +112,7 @@ function BuilderPage() {
                     <Header className={`${styles.headerWrap}`} style={{ background: token.colorBgLayout }}>
                         <Row>
                             <Col className={styles.headingWrap} span={18}>
-                                <Text style={{ color: token.colorPrimary }}>EcomAi Website Builder</Text>
+                                <Text style={{ color: token.colorPrimary }}>{LOGO_TEXT} Website Builder</Text>
                             </Col>
                             <Col className={styles.actionsWrap} span={6}>
 

@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { fabric } from "fabric";
 import styles from './header.module.scss'
-import { LuCheck, LuImage, LuSaveAll, LuShare2 } from 'react-icons/lu'
+import { LuCheck, LuImage, LuShare2 } from 'react-icons/lu'
 import { activeObjectsState } from '../types';
-import { Button, Popover, theme, Image, Tooltip, Modal, Checkbox, Input, Popconfirm, Dropdown, MenuProps, Space } from 'antd';
+import { Button, theme, Tooltip, Modal, Checkbox, Input, Popconfirm, Dropdown, MenuProps } from 'antd';
 import defaultCraftBuilderConfig from 'src/data/defaultCraftBuilderConfig';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { showErrorToast } from '@reduxStore/slices/toast';
@@ -12,21 +12,23 @@ import { TbDownload, TbEdit, TbResize } from 'react-icons/tb';
 import ProIcon from '@atoms/proIcon';
 import { toggleDarkMode, getDarkModeState } from '@reduxStore/slices/darkMode';
 import { useAppSelector } from '@hook/useAppSelector';
-import { MdLightMode, MdDarkMode, MdLayersClear, MdCleaningServices, MdUpdate, MdSave } from 'react-icons/md'
+import { MdDarkMode, MdCleaningServices, MdSave } from 'react-icons/md'
 import { v4 as uuid } from 'uuid';
 import { BiSolidHomeSmile } from 'react-icons/bi';
-import { checkNonRestrictedObject } from '@util/craftBuilderUtils';
-import { BsFillSunFill, BsSave } from 'react-icons/bs';
+import { checkNonRestrictedObject, getCustomObjectType } from '@util/craftBuilderUtils';
+import { BsFillSunFill } from 'react-icons/bs';
 import CRAFT_SIZES from '@constant/craftSizes';
 import SocialIcon from '@assets/Icons/social/SocialIcon';
-import { IoClose, IoSave } from 'react-icons/io5';
-import { GiCancel, GiSave } from 'react-icons/gi';
+import { IoSave } from 'react-icons/io5';
+import { GiSave } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { ImDownload } from 'react-icons/im';
 const { Search } = Input;
 import { DownOutlined } from '@ant-design/icons';
 import { showSuccessAlert } from '@reduxStore/slices/alert';
-import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
+import { OBJECT_TYPES, SHARE_CRAFT_TYPES } from '@constant/craftBuilder';
+import GlobalCss from '@craftBuilder/craftBuilder.module.scss'
+const { TextArea } = Input;
 
 type pageProps = {
     updateWorkspaceSize: any,
@@ -50,6 +52,17 @@ const FILE_TYPES = [
     { name: DOWNLOAD_OPTIONS.SVG, icon: <PiFileSvg /> },
 ]
 
+const shareModalEmptyObj = {
+    active: false,
+    type: {
+        name: 'SMS',
+        showTitle: false,
+        showDesc: false,
+        showUserData: false,
+        userDataType: 'Email'
+    },
+    title: "", description: "", userData: ''
+};
 
 function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas, activeObjectsState }: pageProps) {
 
@@ -68,7 +81,24 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
     const [openSizeModal, setOpenSizeModal] = useState(false)
     const [openDownloadModal, setOpenDownloadModal] = useState('')
     const [selectedSize, setSelectedSize] = useState({ name: 'Square', width: 500, height: 500 })
-    const [templateName, setTemplateName] = useState('')
+    const [templateName, setTemplateName] = useState('');
+    const [shareModal, setShareModal] = useState(shareModalEmptyObj);
+    const [navigatorShareAvailable, setNavigatorShareAvailable] = useState(false);
+    const [error, setError] = useState({ id: '', message: '' });
+
+    useEffect(() => {
+        if (navigator.share) {
+            setNavigatorShareAvailable(true)
+            // Web Share API is available, you can use it
+            console.log('Web Share API is supported');
+            // You can enable your share button here
+        } else {
+            setNavigatorShareAvailable(false)
+            // Web Share API is not supported, provide a fallback
+            console.log('Web Share API is not supported');
+            // You can provide an alternative sharing solution or hide the share button
+        }
+    }, [])
 
     const TEMPLATE_ACTIONS: MenuProps['items'] = [
         {
@@ -101,7 +131,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
     }
 
     const getImgUrl = (type = 'png') => {
-        const workspace = canvas.getObjects().find((item: fabric.Object) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.workspace);
+        const workspace = canvas.getObjects().find((item: fabric.Object) => getCustomObjectType(item) == OBJECT_TYPES.workspace);
         const { left, top, width, height } = workspace as fabric.Object;
         const option = {
             name: 'New Image',
@@ -113,7 +143,7 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
             top,
         };
         canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-        const watermark = canvas.getObjects().find((item: fabric.Object) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.watermark);
+        const watermark = canvas.getObjects().find((item: fabric.Object) => getCustomObjectType(item) == OBJECT_TYPES.watermark);
         watermark.bringToFront()
         canvas.renderAll();
         const dataUrl = canvas.toDataURL(option);
@@ -156,18 +186,9 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                 const dataUrl = getImgUrl(downloadOptions.type);
                 downloadFile(dataUrl, downloadOptions.type);
             } else {
-                const workspace = canvas.getObjects().find((item: fabric.Object) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] == OBJECT_TYPES.workspace);
+                const workspace = canvas.getObjects().find((item: fabric.Object) => getCustomObjectType(item) == OBJECT_TYPES.workspace);
                 const { left, top, width, height } = workspace as fabric.Object;
-                const dataUrl = canvas.toSVG({
-                    width,
-                    height,
-                    viewBox: {
-                        x: left,
-                        y: top,
-                        width,
-                        height,
-                    },
-                });
+                const dataUrl = canvas.toSVG({ width, height, viewBox: { x: left, y: top, width, height }, });
                 const fileStr = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(dataUrl)}`;
                 downloadFile(fileStr, 'svg');
                 setOpenDownloadModal(null);
@@ -220,6 +241,106 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
             dispatch(showSuccessAlert(`Template ${key} successfuly`))
         } else dispatch(showErrorToast(`To ${key} template you need to be on pro version`))
     };
+
+    const onClickShareOption = (option) => {
+        if (option.name == 'More') {
+            onShare(shareModal)
+        } else setShareModal({ ...shareModal, type: option });
+    }
+
+    const renderShareOptions = (options) => {
+        return <React.Fragment>
+            {options.map((type, i) => {
+                return <React.Fragment key={i}>
+                    <Tooltip title={type.tooltip}>
+                        <div className={styles.typeDetails}
+                            onClick={() => onClickShareOption(type)}
+                            style={{ borderColor: shareModal.type.name == type.name ? token.colorPrimary : token.colorBorder }}
+                        >
+                            <div className={styles.iconWrap}>
+                                <SocialIcon width={30} style={{ padding: 0 }} height={30} icon={type.icon} />
+                            </div>
+                            <div className={`${styles.iconWrap} ${styles.nameWrap}`}>
+                                {type.name}
+                            </div>
+                            {shareModal.type.name == type.name && <div className={styles.selectedItem} style={{ backgroundColor: token.colorPrimary }}>
+                                <LuCheck />
+                            </div>}
+                        </div>
+                    </Tooltip>
+                </React.Fragment>
+            })}
+        </React.Fragment>
+
+    }
+
+    const validateShareData = () => {
+        let err = { id: '', message: "" };
+        if (shareModal.type.showUserData && !shareModal.userData) err = { id: 'Email', message: `Please enter ${shareModal.type.userDataType}` }
+        if (err.id) {
+            dispatch(showErrorToast(err.message))
+            setError(err);
+        } else return true;
+    }
+
+    const onShare = (shareData) => {
+        let shareUrl = '';
+        const imageUrl = 'https://dashboard.respark.in/assets/images/respark_logo.png' || getImgUrl();
+        const { title, description, userData } = shareData;
+        if (shareData.type.name != 'More') {
+            if (validateShareData()) {
+                switch (shareData.type.name) {
+                    case 'Whatsapp':
+                        shareUrl = `https://wa.me/${userData}?text=${encodeURIComponent(description + ' ' + imageUrl)}`
+                        // shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(description + ' ' + imageUrl)}`
+                        break;
+                    case 'Facebook':
+                        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(description + ' ' + imageUrl)}`
+                        // shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}`
+                        break;
+                    case 'Instagram':
+                        shareUrl = `https://www.instagram.com/share?url=${encodeURIComponent(imageUrl)}`
+                        break;
+                    case 'Twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(description)}&url=${encodeURIComponent(imageUrl)}`
+                        break;
+                    case 'Linkedin':
+                        shareUrl = `https://www.linkedin.com/shareArticle?mini=true&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}&url=${encodeURIComponent(imageUrl)}`
+                        break;
+                    case 'Email':
+                        shareUrl = `mailto:${userData}?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(description + ' ' + imageUrl)}`
+                        break;
+                    case 'Pinterest':
+                        shareUrl = `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(imageUrl)}&description=${encodeURIComponent(description)}`
+                        break;
+                    case 'Tumblr':
+                        shareUrl = `https://www.tumblr.com/widgets/share/tool?canonicalUrl=${encodeURIComponent(imageUrl)}&caption=${encodeURIComponent(description)}`
+                        break;
+                    case 'Snapchat':
+                        shareUrl = 'https://www.snapchat.com/share?url=' + encodeURIComponent(imageUrl)
+                        break;
+                    case 'SMS':
+                        shareUrl = `sms:+${userData}?body=` + encodeURIComponent(description + ' ' + imageUrl)
+                        break;
+                    default:
+                        break;
+                }
+                window.open(shareUrl, '_blank');
+            }
+        } else {
+            if (navigatorShareAvailable) {
+                navigator.share({
+                    title: title,
+                    text: description,
+                    url: imageUrl
+                });
+            } else {
+                setShareModal(shareModalEmptyObj)
+                dispatch(showErrorToast("Default share option not available for your device"))
+            }
+        }
+    }
+
     return (
         <div className={styles.headerWrap}>
             <Button type='dashed' className={styles.navToHome} icon={<BiSolidHomeSmile />} onClick={switchTheme} />
@@ -238,9 +359,9 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                         <Button icon={<MdCleaningServices />}></Button>
                     </Tooltip>
                 </Popconfirm>}
-                {/* <Tooltip title="Share your design">
-                    <Button icon={<LuShare2 />}></Button>
-                </Tooltip> */}
+                <Tooltip title="Share your design">
+                    <Button icon={<LuShare2 />} onClick={() => setShareModal({ ...shareModalEmptyObj, active: true })}></Button>
+                </Tooltip>
                 <Tooltip title={`Switch theme to ${isDarkMode ? 'Light' : 'Dark'} Mode`}>
                     <Button type='dashed' className={styles.themeMode} icon={isDarkMode ? <MdDarkMode /> : <BsFillSunFill />} onClick={switchTheme} />
                 </Tooltip>
@@ -271,6 +392,50 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                     <img src={previewUrl} />
                 </div>
             </Modal>
+
+            {/* Share Image */}
+            <Modal
+                destroyOnClose
+                title="Share your creativity"
+                open={Boolean(shareModal.active)}
+                onCancel={() => setShareModal({ ...shareModalEmptyObj, active: false })}
+                maskStyle={{ backdropFilter: 'blur(6px)' }}
+                closeIcon={<AiOutlineClose />}
+                width={'max-content'}
+                onOk={() => onShare(shareModal)}
+                okText={<div className="d-f-c"><LuShare2 /> &nbsp; Share </div>}
+                cancelText={<div className="d-f-c"><AiOutlineClose /> &nbsp; Cancel </div>}
+            >
+                <div className={styles.shareModalWrap}>
+                    <div className={styles.shareTypesWrap}>
+                        {renderShareOptions(SHARE_CRAFT_TYPES)}
+                        {navigatorShareAvailable && renderShareOptions([{ id: 16, tooltip: 'Share Via ...', name: 'More', icon: "sharevia" }])}
+                    </div>
+                    <div className={styles.dataWrap}>
+                        {shareModal.type.showUserData && <div className={styles.titleWrap}>
+                            <div className={styles.lable}>Enter {shareModal.type.userDataType}</div>
+                            <Input status={error.id == shareModal.type.name ? "error" : ""} defaultValue={shareModal.userData} value={shareModal.userData} onChange={(e) => setShareModal({ ...shareModal, userData: e.target.value })} />
+                        </div>}
+                        {shareModal.type.showTitle && <div className={styles.titleWrap}>
+                            <div className={styles.lable}>Enter title</div>
+                            <Input defaultValue={shareModal.title} value={shareModal.title} onChange={(e) => setShareModal({ ...shareModal, title: e.target.value })} />
+                        </div>}
+                        {shareModal.type.showDesc && <div className={styles.titleWrap}>
+                            <div className={styles.lable}>Enter short description</div>
+                            <TextArea
+                                status={error.id == 'text' ? "error" : ''}
+                                allowClear
+                                size="large"
+                                value={shareModal.description}
+                                placeholder="Enter message you want to share"
+                                style={{ minHeight: 'auto' }}
+                                onChange={(e) => setShareModal({ ...shareModal, description: e.target.value })}
+                            />
+                        </div>}
+                    </div>
+                </div>
+            </Modal>
+
             {/* Sizes Options: */}
             <Modal
                 destroyOnClose
@@ -388,18 +553,11 @@ function Header({ updateWorkspaceSize, setAutoSizing, updateLocalCanvas, canvas,
                                     onMouseEnter={() => setHoverId(option)}
                                     onMouseLeave={() => setHoverId('')}
                                     style={{
-                                        // backgroundColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimaryBgHover : token.colorBgBase,
                                         border: '1px solid #dee1ec',
                                         borderColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorBorder,
                                         color: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorTextLabel
                                     }}>
-                                    <div className={styles.iconWrap}
-                                        style={{
-                                            // backgroundColor: (downloadOptions.type == option.name|| hoverId == option) ? token.colorPrimary : token.colorBgBase,
-                                            // border: '1px solid #dee1ec',
-                                            // borderColor: (downloadOptions.type == option.name || hoverId == option) ? token.colorPrimary : token.colorBorder,
-                                        }}
-                                    >{option.icon}</div>
+                                    <div className={styles.iconWrap}>{option.icon}</div>
                                     {option.name} File
                                     <div className={`${styles.selected} ${downloadOptions.type == option.name ? styles.active : ''}`} style={{ backgroundColor: token.colorPrimary }}>
                                         <LuCheck />

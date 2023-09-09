@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './tabs.module.scss';
-import { MenuProps } from 'antd';
+import { MenuProps, theme } from 'antd';
 import { Layout, Menu } from 'antd';
 import SvgIcon from '@atoms/svgIcon';
 import { EDITOR_SIDEBAR, EDITOR_TABS } from '@constant/craftBuilder';
@@ -10,6 +10,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 function TabsWrapper({ setActiveEditorTab, activeEditorTab }) {
     const isDarkMode = true;
     const [collapsed, setCollapsed] = useState(false);
+    const { token } = theme.useToken();
     const [open, setOpen] = useState(false);
     const getMenuItems: any = (navMenu: any, isSubMenu: boolean = false) => {
         const menuItems: MenuItem[] = [];
@@ -17,7 +18,9 @@ function TabsWrapper({ setActiveEditorTab, activeEditorTab }) {
             menuItems.push({
                 label: (<span className={styles.navLabel}>{nav.label}</span>),
                 key: nav.key,
-                icon: (<span role="img" aria-label="desktop" className={`${styles.navIcon} anticon anticon-desktop ant-menu-item-icon`}>
+                icon: (<span role="img" aria-label="desktop"
+                    style={{ filter: `drop-shadow(2px 0px 1px ${token.colorBgTextHover})` }}
+                    className={`${styles.navIcon} anticon anticon-desktop ant-menu-item-icon`}>
                     <SvgIcon icon={nav.icon} onlySvg={true} />
                 </span>),
                 className: (isSubMenu ? styles.navMenu + ' ' + styles.navSubMenu : styles.navMenu) + ' ' + (nav.subNav ? styles.hasSubMenu : '') + (((nav.key == 'dark' && isDarkMode) || (nav.key == 'light' && !isDarkMode) ? ' ant-menu-item-selected' : '')),
@@ -51,13 +54,18 @@ function TabsWrapper({ setActiveEditorTab, activeEditorTab }) {
                     defaultSelectedKeys={[activeEditorTab]}
                     items={getMenuItems(EDITOR_SIDEBAR)}
                     style={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        padding: "4px",
-                        flexDirection: "column",
-                        gap: "10px",
-                        height: '100vh'
+                        "display": "flex",
+                        "justifyContent": "flex-start",
+                        "alignItems": "center",
+                        "padding": "7px 2px",
+                        "flexDirection": "column",
+                        "maxHeight": "calc(100vh - 70px)",
+                        "borderRadius": "8px",
+                        "overflow": "auto",
+                        "width": "100%",
+                        // "background": ${token.colorBorder},
+                        "border": `unset`,
+                        "gap": "8px"
                     }}
                 />
             </div>

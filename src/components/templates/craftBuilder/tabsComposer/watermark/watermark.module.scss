@@ -58,18 +58,6 @@
           }
         }
       }
-      .selected {
-        position: absolute;
-        height: 24px;
-        width: 24px;
-        z-index: 2;
-        top: -6px;
-        right: -6px;
-        border-radius: 14px;
-        color: white;
-        @include transition;
-        @include flexCenter;
-      }
     }
   }
   .watremarkStyles {

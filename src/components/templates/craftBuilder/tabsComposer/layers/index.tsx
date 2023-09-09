@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './layers.module.scss'
 import GlobalCss from '@craftBuilder/craftBuilder.module.scss'
 import { BsLayers, BsLayersHalf } from 'react-icons/bs'
-import { getObjectType } from '@util/craftBuilderUtils';
+import { getCustomObjectType, getObjectType } from '@util/craftBuilderUtils';
 import { RiBringForward, RiBringToFront, RiSendBackward, RiSendToBack, RiDeleteBin6Fill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
 import { FaClone } from 'react-icons/fa'
 import { fabric } from "fabric";
@@ -45,7 +45,7 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
         // setLayersList(canvas.getObjects())
         const layers: any[] = [];
         objects.map((obj) => {
-            if ((obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.workspace) && (obj[CUSTOME_ATTRIBUTES.OBJECT_TYPE] !== OBJECT_TYPES.watermark)) {
+            if ((getCustomObjectType(obj) !== OBJECT_TYPES.workspace) && (getCustomObjectType(obj) !== OBJECT_TYPES.watermark)) {
                 layers.push({
                     type: getObjectType(obj),
                     src: obj.toDataURL(),
@@ -265,6 +265,11 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
     }
 
     const getLayerActions = (layerIndex, listLength) => {
+        let isQrObject = false;
+        if (canvas && Boolean(canvas.getActiveObjects())) {
+            const qrObject = canvas.getActiveObjects()?.find((i) => getCustomObjectType(i) == OBJECT_TYPES.qrCode);;
+            if (qrObject) isQrObject = true;
+        }
         return [
             { id: 'UP', name: 'Move Forward', icon: <RiBringForward />, tooltip: 'Move Forward', active: (selectedObjectTypes == SELECTED_OBJECTS_TYPES.SINGLE && layerIndex != 0) },
             { id: 'DOWN', name: 'Move Backword', icon: < RiSendBackward />, tooltip: 'Move Backword', active: (selectedObjectTypes == SELECTED_OBJECTS_TYPES.SINGLE && layerIndex != listLength - 1) },
@@ -272,7 +277,7 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
             { id: 'DOWNTOP', name: 'Move To Back', icon: <RiSendToBack />, tooltip: 'Move To Back', active: layerIndex != listLength - 1 },
             { id: 'LOCK', name: 'Lock Layer', icon: <RiLockFill />, tooltip: 'Lock Layer', active: (activeTab == TAB_TYPES.ALL_LAYERS && !checkForIsLocked()) },
             { id: 'UNLOCK', name: 'Unlock Layer', icon: <RiLockUnlockFill />, tooltip: 'Unlock Layer', active: (activeTab == TAB_TYPES.ALL_LAYERS && checkForIsLocked()) },
-            { id: 'CLONE', name: 'Clone Layer', icon: <FaClone />, tooltip: 'Clone Layer', active: (activeTab == TAB_TYPES.ALL_LAYERS) },
+            { id: 'CLONE', name: 'Clone Layer', icon: <FaClone />, tooltip: 'Clone Layer', active: (!isQrObject && activeTab == TAB_TYPES.ALL_LAYERS) },
         ]
     }
 
@@ -280,6 +285,7 @@ function Layers({ canvas, updateLocalCanvas, activeObjectsState }: pageProps) {
         console.log(layerId)
         return <div className={styles.layerActionsWrap}>
             {getLayerActions(layerIndex, listLength).map((action) => {
+
                 return <React.Fragment key={action.id}>
                     {action.active && <Tooltip title={action.tooltip} key={action.id} placement='right'>
                         <div className={`${styles.iconWrap}`}

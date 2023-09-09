@@ -4,7 +4,7 @@ import { WATERMARKS } from '@constant/watermarks';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import UploadImage from '@organisms/imagePickerModal/uploadImage';
 import { showErrorToast } from '@reduxStore/slices/toast';
-import { getObjectType, insertImgFile } from '@util/craftBuilderUtils';
+import { getCustomObjectType, getObjectType, insertImgFile } from '@util/craftBuilderUtils';
 import { Button, Input } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { LuImagePlus } from 'react-icons/lu';
@@ -40,7 +40,7 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
 
     const handleImageAdded = async (imageData: any) => {
         const objects = canvas.getObjects();
-        const addedWatermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+        const addedWatermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
         const watermarkobject = objects[addedWatermarkObjectIndex];
         const imgEl: any = await insertImgFile(imageData);
         const width = watermarkobject.get('width');
@@ -50,7 +50,7 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
         if (getObjectType(watermarkobject) == OBJECT_TYPES.group) {
             const groupObjects = watermarkobject.getObjects();
             groupObjects.forEach((obj) => {
-                if (obj.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.image}`) {
+                if (getCustomObjectType(obj) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.image}`) {
                     obj.setSrc(imgEl.src, () => {
                         obj.set('scaleX', (width * scaleX) / imgEl.width);
                         obj.set('scaleY', (height * scaleY) / imgEl.height);
@@ -92,12 +92,12 @@ function Styles({ canvas, watermarkProps, setWatermarkProps, updateLocalCanvas }
             if (text) {
                 setWatermarkProps({ ...watermarkProps, text: text });
                 const objects = canvas.getObjects();
-                const addedWatermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+                const addedWatermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
                 const watermarkobject = objects[addedWatermarkObjectIndex];
                 if (getObjectType(watermarkobject) == OBJECT_TYPES.group) {
                     const groupObjects = watermarkobject.getObjects();
                     groupObjects.forEach((obj) => {
-                        if (obj.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.text}`) {
+                        if (getCustomObjectType(obj) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.text}`) {
                             if (obj.get('text') != text) {
                                 obj.set('text', text)
                                 updateLocalCanvas(canvas, 'watermark/styles.tsx')

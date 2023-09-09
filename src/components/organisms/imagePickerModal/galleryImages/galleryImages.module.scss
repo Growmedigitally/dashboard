@@ -1,6 +1,8 @@
 @import "/styles/abstracts/mixins";
 .galleryImagesWrap {
   width: 100%;
+  overflow: auto;
+  max-height: calc(100vh - 170px);
   .categoriesWrap {
     display: flex;
     justify-content: flex-start;

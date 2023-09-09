@@ -1,8 +1,9 @@
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from "@constant/craftBuilder";
 import { workspace } from "@template/craftBuilder";
+import { getCustomObjectType } from "@util/craftBuilderUtils";
 
 const getWorkspace = (canvas) => {
-    return canvas.getObjects().find((obj) => obj.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.workspace);
+    return canvas.getObjects().find((obj) => getCustomObjectType(obj) == OBJECT_TYPES.workspace);
 }
 
 export const moveLayerUp = (canvas, activeObject, updateLocalCanvas) => {

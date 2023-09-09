@@ -8,6 +8,7 @@ import ColorPickerComponent from '@molecules/styleElement/colorPicker'
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES, SOLID_COLORS_LIST } from '@constant/craftBuilder'
 import { fabric } from "fabric";
 import BGGradient from './bgGradient'
+import { getCustomObjectType } from '@util/craftBuilderUtils'
 
 const TAB_TYPES = {
     SOLID: 'Solid',
@@ -22,7 +23,7 @@ function BGColor({ workspace, canvas, updateLocalCanvas }) {
 
     useEffect(() => {
         if (canvas) {
-            const workspaceObject = canvas.getObjects ? canvas.getObjects().find((item) => item[CUSTOME_ATTRIBUTES.OBJECT_TYPE] === OBJECT_TYPES.workspace) as fabric.Rect : null;
+            const workspaceObject = canvas.getObjects ? canvas.getObjects().find((item) => getCustomObjectType(item) === OBJECT_TYPES.workspace) as fabric.Rect : null;
             if (workspace) {
                 if (typeof workspace.get('fill') === 'string') {
                     setFillColor(workspace.get('fill'));
@@ -96,7 +97,7 @@ function BGColor({ workspace, canvas, updateLocalCanvas }) {
             </div>
             {activeTab == TAB_TYPES.SOLID ? <>
                 <div className={`${styles.tabContent} ${styles.solidColorWrap}`}>
-                    {Boolean(initialPropsGets && typeof workspace.get('fill') === 'string') && <div className={styles.colorPickerWrap}>
+                    {Boolean(initialPropsGets && typeof workspace?.get('fill') === 'string') && <div className={styles.colorPickerWrap}>
                         <ColorPickerComponent
                             parentStyles={{ background: 'unset', color: token.colorTextBase }}
                             hidePresets

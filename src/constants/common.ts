@@ -9,6 +9,7 @@ export const SEARCHED_IMAGES_COUNT_PER_REQUEST_UNSPLASH = 30;
 export const SEARCHED_IMAGES_COUNT_PER_REQUEST_PEXELS = 80;
 export const SEARCHED_IMAGES_COUNT_PER_REQUEST_PIXABAY = 200;
 export const LOGO = '/assets/3.png'
+export const LOGO_TEXT = 'GMD'
 export const BACKGROUND_IMAGES_ORIENTATIONS = {
     LANDSCAPE: 'landscape',
     PORTRAIT: 'portrait',

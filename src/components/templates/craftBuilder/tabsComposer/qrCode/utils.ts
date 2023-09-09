@@ -1,25 +1,40 @@
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from "@constant/craftBuilder";
+import { DEFAULT_QR_SIZE } from "@constant/qrCodeTypes";
+import { workspace } from "@template/craftBuilder";
 import { getObjectType } from "@util/craftBuilderUtils";
 import { fabric } from "fabric";
 import { v4 as uuid } from 'uuid';
 
-const getImageObject = (src) => {
+const getImageObject = (qrConfig) => {
     return new Promise((resolve, reject) => {
-        fabric.Image.fromURL(src, function (img: any) {
+        fabric.Image.fromURL(qrConfig.src, function (img: any) {
             if (img == null) return;
             else {
                 img.set({
-                    left: 50,
-                    top: 50,
                     uid: uuid(),
+                    [CUSTOME_ATTRIBUTES.QR_CODE_CONFIG]: qrConfig,
                     [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${OBJECT_TYPES.qrCode}`
-                }).scaleToWidth(50);
+                }).scaleToWidth(DEFAULT_QR_SIZE);
+
+                const clipPath = new fabric.Rect({
+                    width: img.width,
+                    height: img.height,
+                    rx: qrConfig.borderRadius * 5,
+                    ry: qrConfig.borderRadius * 5,
+                    originX: 'center', // Set the origin to the center for positioning
+                    originY: 'center', // Set the origin to the center for positioning
+                    selectable: false, // Make the clip path unselectable
+                    evented: false,    // Make the clip path unresponsive to events
+                });
+
+                img.clipPath = clipPath;
                 resolve(img);
             }
         }, { crossOrigin: 'anonymous' });
     })
 }
 
+//if use qrcode by antd
 const getQrImage = (qrConfig) => {
     return new Promise((resolve, reject) => {
         fabric.Image.fromURL(qrConfig.src, function (img) {
@@ -51,6 +66,7 @@ const getQrImage = (qrConfig) => {
 
             patternSourceCanvas.backgroundColor = qrConfig.bgColor;
             fabric.Image.fromURL(patternSourceCanvas.toDataURL(), function (img) {
+                img.set({ uid: uuid(), [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${OBJECT_TYPES.qrCode}` })
                 resolve(img)
             }, { crossOrigin: 'anonymous' });
         }, { crossOrigin: 'anonymous' });
@@ -98,10 +114,12 @@ const getQrImage = (qrConfig) => {
 // }
 
 export const addSelectedQRImage = (canvas, updateLocalCanvas, qrConfig) => {
-    getQrImage(qrConfig).then((imgObject) => {
+    getImageObject(qrConfig).then((imgObject) => {
         canvas.add(imgObject);
-        canvas.viewportCenterObject(imgObject)
-        canvas.setActiveObject(imgObject)
-        updateLocalCanvas(canvas, 'Images');
+        const center = workspace.getCenterPoint();
+        canvas._centerObject(imgObject, center);
+        // canvas.viewportCenterObject(imgObject)
+        // canvas.setActiveObject(imgObject)
+        // updateLocalCanvas(canvas, 'QR Code Image')
     });
 };

@@ -112,7 +112,7 @@ const Images = ({ canvas, updateLocalCanvas }: any) => {
             <div className={styles.tabContent}>
                 {TAB_ITEMS_LIST.find((t) => t.key == activeTab).children}
             </div>
-            <Saperator />
+            {/* <Saperator /> */}
         </div>
     );
 };

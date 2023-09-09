@@ -13,6 +13,7 @@ import Watermark from './watermark';
 import Help from './help';
 import Characters from './characters';
 import QrCode from './qrCode';
+import { BiArrowBack } from 'react-icons/bi';
 
 const TABS_COMPONENT = {
     [EDITOR_TABS.TEMPLATES]: Templates,
@@ -32,10 +33,10 @@ function TabsComposer({ activeObjectsState, canvas, updateLocalCanvas, activeTab
     return (
         <div className={styles.tabsComposerWrap}>
             <div className={styles.headingWrap} style={{ background: token.colorBgLayout }}>
-                <div className={styles.title} style={{ color: token.colorTextBase }}>{activeTab}</div>
                 <div className={`${styles.iconWrap}`} style={{ background: token.colorBgBase, color: token.colorText }} onClick={() => setActiveEditorTab('')}>
-                    <AiOutlineClose color={token.colorText} />
+                    <BiArrowBack color={token.colorText} />
                 </div>
+                <div className={styles.title} style={{ color: token.colorTextBase }}>{activeTab}</div>
             </div>
             <div className={styles.tabComponentWrap} style={{ background: token.colorBgBase }}>
                 {/* //React.createElement(`tab component`, `tab component props`) */}

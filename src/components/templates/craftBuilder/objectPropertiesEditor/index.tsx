@@ -7,7 +7,7 @@ import Lock, { lockObject } from './lock';
 import styles from './objectPropertiesEditor.module.scss'
 import CenterAlignment from './centerAlignment';
 import Flip from './flip';
-import { getObjectType } from '@util/craftBuilderUtils';
+import { getCustomObjectType, getObjectType } from '@util/craftBuilderUtils';
 import ImageObjectProps from './ImageProps';
 import TextObjectProps from './TextProps';
 import Saperator from '@atoms/Saperator';
@@ -21,6 +21,7 @@ import Stroke from './stroke';
 import ShapesProps from './shapesProps';
 import CharactersProps from './charactersProps';
 import ThreeD from '../tabsComposer/threeD';
+import { BiArrowBack } from 'react-icons/bi';
 const { Text } = Typography;
 
 type pageProps = {
@@ -48,6 +49,14 @@ function ObjectPropertiesEditor({ updateLocalCanvas, workspace, canvas, activeOb
     return (
         <React.Fragment>
             {activeObjectsState.isSelected && <div className={styles.objectPropertiesEditorWrap}>
+                <div className={styles.headingWrap} style={{ background: token.colorBgLayout }}>
+                    <div className={`${styles.iconWrap}`} style={{ background: token.colorBgBase, color: token.colorText }} onClick={() => canvas?.discardActiveObject().renderAll()}>
+                        <BiArrowBack color={token.colorText} />
+                    </div>
+                    <div className={styles.title} style={{ color: token.colorTextBase }}>
+                        <img src={canvas?.getActiveObject()?.toDataURL()} />
+                    </div>
+                </div>
                 <div className={styles.groupLockWrap}>
                     <Group updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />
                     <Lock updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />
@@ -61,12 +70,15 @@ function ObjectPropertiesEditor({ updateLocalCanvas, workspace, canvas, activeOb
                         {activeObjectsState.isMultiple && <GroupAlignment updateLocalCanvas={updateLocalCanvas} workspace={workspace} canvas={canvas} activeObjectsState={activeObjectsState} />}
                         <Saperator />
                     </> : <>
-                        {(!activeObjectsState.isGroup && getObjectType(activeObjectsState.selectedObject[0]) == OBJECT_TYPES.image) && <div className={styles.imagePropsWrapper}>
-                            <>
-                                <ImageObjectProps updateLocalCanvas={updateLocalCanvas} workspace={workspace} canvas={canvas} activeObjectsState={activeObjectsState} />
-                                <Saperator />
-                            </>
-                        </div>}
+                        {(!activeObjectsState.isGroup &&
+                            getObjectType(activeObjectsState.selectedObject[0]) == OBJECT_TYPES.image &&
+                            getCustomObjectType(activeObjectsState.selectedObject[0]) != OBJECT_TYPES.qrCode) &&
+                            <div className={styles.imagePropsWrapper}>
+                                <>
+                                    <ImageObjectProps updateLocalCanvas={updateLocalCanvas} workspace={workspace} canvas={canvas} activeObjectsState={activeObjectsState} />
+                                    <Saperator />
+                                </>
+                            </div>}
                         {(!activeObjectsState.isGroup && getObjectType(activeObjectsState.selectedObject[0]) == OBJECT_TYPES.text) && <div className={styles.textPropsWrapper}>
                             <>
                                 <TextObjectProps updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />
@@ -82,7 +94,7 @@ function ObjectPropertiesEditor({ updateLocalCanvas, workspace, canvas, activeOb
                             getObjectType(activeObjectsState.selectedObject[0]) == OBJECT_TYPES.path) &&
                             <ShapesProps updateLocalCanvas={updateLocalCanvas} canvas={canvas} activeObjectsState={activeObjectsState} />}
 
-                        {(activeObjectsState?.selectedObject[0]?.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.CharactersProps) && <CharactersProps canvas={canvas} activeObjectsState={activeObjectsState} />}
+                        {/* {(getCustomObjectType(activeObjectsState?.selectedObject[0]) == OBJECT_TYPES.CharactersProps) && <CharactersProps canvas={canvas} activeObjectsState={activeObjectsState} />} */}
                         <Opacity updateLocalCanvas={updateLocalCanvas} canvas={canvas} />
                         <Saperator />
                         <Angle updateLocalCanvas={updateLocalCanvas} canvas={canvas} />

@@ -10,7 +10,7 @@ import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss
 import { fabric } from "fabric";
 import ColorPickerComponent from '@molecules/styleElement/colorPicker';
 import { activeObjectsState } from '@template/craftBuilder/types';
-import { getObjectType } from '@util/craftBuilderUtils';
+import { getCustomObjectType, getObjectType } from '@util/craftBuilderUtils';
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { showToast } from '@reduxStore/slices/toast';
@@ -76,7 +76,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
     const updateCanvasPatternData = (paternData) => {
         activeObject.set('patternData', {
             ...paternData,
-            [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.workspace ? OBJECT_TYPES.workspace + '-' + OBJECT_TYPES.pattern : OBJECT_TYPES.pattern}`
+            [CUSTOME_ATTRIBUTES.OBJECT_TYPE]: `${getCustomObjectType(activeObject) == OBJECT_TYPES.workspace ? OBJECT_TYPES.workspace + '-' + OBJECT_TYPES.pattern : OBJECT_TYPES.pattern}`
         })
         updateLocalCanvas(canvas, "Patterns: updateCanvasPatternData")
         setCurrentPaternData({ ...paternData, forceUpdate: true })
@@ -85,7 +85,7 @@ const Patterns = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState 
     useEffect(() => {
         if (currentPaternData.forceUpdate) {
             if (activeObjectsState.isSelected && canvas) {
-                setIsFillColor(activeObject.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) ? false : true);
+                setIsFillColor(getCustomObjectType(activeObject) ? false : true);
                 //if fill is set to pattern
                 const patternData = activeObject.get('patternData');
                 if (activeObject.get('fill') instanceof fabric.Pattern || currentPaternData.forceUpdateImage) {

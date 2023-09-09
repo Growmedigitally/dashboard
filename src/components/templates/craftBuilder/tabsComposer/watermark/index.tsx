@@ -1,5 +1,5 @@
 import Saperator from '@atoms/Saperator';
-import { LOGO } from '@constant/common';
+import { LOGO, LOGO_TEXT } from '@constant/common';
 import { Checkbox, Segmented, theme, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { LuCheck, LuFileSignature } from 'react-icons/lu';
@@ -11,7 +11,7 @@ import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
 import { workspace } from '@template/craftBuilder';
 import { updateImageTextWatermark, updateLogoWatermark, updateTextWatermark } from './utils';
 import { activeObjectsState } from '@template/craftBuilder/types';
-import { getObjectType } from '@util/craftBuilderUtils';
+import { getCustomObjectType, getObjectType } from '@util/craftBuilderUtils';
 import Styles from './styles';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { showErrorToast } from '@reduxStore/slices/toast';
@@ -35,14 +35,14 @@ function Watermark({ canvas, updateLocalCanvas, workspace, activeObjectsState }:
 
     const { token } = theme.useToken();
     const [hoverId, setHoverId] = useState(null);
-    const [watermarkProps, setWatermarkProps] = useState({ active: true, type: '', src: LOGO, text: 'EcomAi', isInline: false })
+    const [watermarkProps, setWatermarkProps] = useState({ active: true, type: '', src: LOGO, text: LOGO_TEXT, isInline: false })
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         const objects = canvas ? canvas.getObjects() : [];
-        const props = { active: false, type: '', src: LOGO, text: 'EcomAi', isInline: false };
+        const props = { active: false, type: '', src: LOGO, text: LOGO_TEXT, isInline: false };
         if (objects.length) {
-            const atermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+            const atermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
             if (atermarkObjectIndex != -1) {
                 const watermarkobject = objects[atermarkObjectIndex];
                 props.active = watermarkobject.get('visible');
@@ -57,9 +57,9 @@ function Watermark({ canvas, updateLocalCanvas, workspace, activeObjectsState }:
                     props.isInline = watermarkobject.get(CUSTOME_ATTRIBUTES.IS_INLINE_WATERMARK);
                     props.type = props.isInline ? WATERMARK_TYPES.INLINE_LOGO_AND_TEXT : WATERMARK_TYPES.LOGO_AND_TEXT;
                     groupObjects.forEach((obj) => {
-                        if (obj.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.image}`) {
+                        if (getCustomObjectType(obj) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.image}`) {
                             props.src = obj.getSrc();
-                        } else if (obj.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.text}`) {
+                        } else if (getCustomObjectType(obj) == `${OBJECT_TYPES.watermark}-${OBJECT_TYPES.text}`) {
                             props.text = obj.get('text');
                         }
                     })
@@ -124,7 +124,7 @@ function Watermark({ canvas, updateLocalCanvas, workspace, activeObjectsState }:
         if (defaultCraftBuilderConfig.isPro) {
             setWatermarkProps({ ...watermarkProps, active: status })
             const objects = canvas.getObjects();
-            const atermarkObjectIndex = objects.findIndex((o) => o.get(CUSTOME_ATTRIBUTES.OBJECT_TYPE) == OBJECT_TYPES.watermark);
+            const atermarkObjectIndex = objects.findIndex((o) => getCustomObjectType(o) == OBJECT_TYPES.watermark);
             if (status) {
                 if (atermarkObjectIndex != -1) {
                     objects[atermarkObjectIndex].set('visible', true);
@@ -192,7 +192,7 @@ function Watermark({ canvas, updateLocalCanvas, workspace, activeObjectsState }:
                                 }}
                                 onMouseEnter={() => setHoverId(type.id)}
                                 onMouseLeave={() => setHoverId('')}>
-                                {watermarkProps.type == type.id && <div className={styles.selected} style={{ backgroundColor: token.colorPrimary }}>
+                                {watermarkProps.type == type.id && <div className={GlobalCss.selectedItem} style={{ backgroundColor: token.colorPrimary }}>
                                     <LuCheck />
                                 </div>}
                                 <div className={styles.title}>{type.title}</div>

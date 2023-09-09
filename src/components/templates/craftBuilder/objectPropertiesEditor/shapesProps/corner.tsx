@@ -7,14 +7,15 @@ import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss
 type pageProps = {
     onChange: any,
     value: any,
-    max: number
+    max: number,
+    label?: string
 }
 
-function Corner({ onChange, value, max }: pageProps) {
+function Corner({ onChange, value, max, label = 'Corner' }: pageProps) {
     const { token } = theme.useToken();
     return (
         <div className={`${styleElementCSS.styleWrap} ${styles.imageBlurWrap}`} style={{ color: token.colorTextBase }}>
-            <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>Corner</div>
+            <div className={`${styleElementCSS.label}  ${styles.imageBlurLabel}`}>{label}</div>
             <div className={`${styleElementCSS.elementWrap} ${styles.imageBlurContent}`}>
                 <Slider
                     min={0}

@@ -1,123 +1,177 @@
-import { fabric } from "fabric";
-import { LOGO } from '@constant/common'
-import { Button, Input, Modal, QRCode, Segmented, Slider, theme, Tooltip } from 'antd'
+import { LOGO, NO_COLOR_VALUE } from '@constant/common'
+import { Button, Checkbox, Input, InputNumber, Modal, Popover, Segmented, theme, Tooltip } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './qrCode.module.scss'
-import type { QRCodeProps } from 'antd';
-import { TbBrandWhatsapp, TbClipboardCopy, TbDeviceMobileMessage, TbLink, TbMinus, TbPlus, TbReplace, TbSignature } from 'react-icons/tb';
+import { TbBrandWhatsapp, TbClipboardCopy, TbDeviceMobileMessage, TbLink, TbQrcode, TbReplace } from 'react-icons/tb';
 import GlobalCss from '@craftBuilder/craftBuilder.module.scss'
+import { fabric } from "fabric";
 import styleElementCSS from '@moleculesCSS/styleElement/styleElement.module.scss';
 import ColorPickerComponent from '@molecules/styleElement/colorPicker';
-import { LuCheck, LuFileSignature, LuUpload } from 'react-icons/lu';
 import Saperator from '@atoms/Saperator';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { showErrorToast, showSuccessToast } from '@reduxStore/slices/toast';
 import { AiOutlineClose } from 'react-icons/ai';
-import { VscDeviceMobile } from 'react-icons/vsc';
 import { addSelectedQRImage } from './utils';
 import useDebounce from '@hook/useDebounce';
-import Corner from '@template/craftBuilder/objectPropertiesEditor/shapesProps/corner';
+import { v4 as uuid } from 'uuid';
+import { QRCode } from 'react-qrcode-logo';
+import { isSameObjects, removeObjRef } from "@util/utils";
+import { IoMdColorPalette } from "react-icons/io";
+import { RiQrScan2Line } from "react-icons/ri";
+import SocialIcon from '@assets/Icons/social/SocialIcon';
+import { ImEnlarge } from 'react-icons/im';
+import { LuCheck, LuDelete, LuQrCode, LuSettings } from 'react-icons/lu';
+import SliderComponent from '@atoms/slider';
+import { CONTENT_TYPES, DEFAULT_QR_SIZE, LOGO_SIZES, QRProps, TAB_TYPES, VALUE_TYPES } from '@constant/qrCodeTypes';
+import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
+import { getCustomObjectType, insertImgFile } from '@util/craftBuilderUtils';
+import ImageObjectProps from '@template/craftBuilder/objectPropertiesEditor/ImageProps';
+import Filters from '@template/craftBuilder/objectPropertiesEditor/ImageProps/filters';
+import Group from '@template/craftBuilder/objectPropertiesEditor/group';
+import Lock from '@template/craftBuilder/objectPropertiesEditor/lock';
+import QrProps from './qrProps';
+import SegmentComponent, { SEGMENT_OPTIONS_TYPES } from '@atoms/segment';
+
 const { TextArea } = Input;
 
-const TAB_TYPES = {
-    STYLE: 'Style',
-    TEMPLATE: 'Template',
-}
-
-const TAB_TYPES_LIST = [
-    { key: TAB_TYPES.STYLE, icon: <LuFileSignature /> },
-    { key: TAB_TYPES.TEMPLATE, icon: <TbSignature /> },
-]
-const VALUE_TYPES = {
-    URL: 'URL',
-    WHATSAPP: 'Whatsapp',
-}
-
-const VALUE_TYPES_LIST = [
-    { key: VALUE_TYPES.WHATSAPP, icon: <TbBrandWhatsapp />, color: 'green' },
-    { key: VALUE_TYPES.URL, icon: <TbLink />, color: 'inherit' },
+export const TAB_TYPES_LIST = [
+    { key: TAB_TYPES.STYLE, icon: <IoMdColorPalette /> },
+    { key: TAB_TYPES.CONTENT, icon: <RiQrScan2Line /> },
+    { key: TAB_TYPES.TEMPLATE, icon: <TbQrcode /> },
 ]
 
-const LOGO_SIZES = [
-    // { key: 'Hide', value: 0 },
-    { key: 'Small', value: 30 },
-    { key: 'Medium', value: 50 },
-    { key: 'Large', value: 70 },
+export const VALUE_TYPES_LIST = [
+    { key: VALUE_TYPES.WHATSAPP, icon: <TbBrandWhatsapp /> },
+    { key: VALUE_TYPES.OTHERS, icon: <TbLink /> },
 ]
 
-// const QR_LEVELS = ['L', 'M', 'Q', 'H'];
-const QR_LEVELS = ['L', 'H'];
-function QrCode({ canvas, updateLocalCanvas }) {
+const EYE_TYPES = { INNER: 'inner', OUTER: "outer" }
+function QrCode({ canvas, updateLocalCanvas, activeObjectsState, workspace }) {
     const { token } = theme.useToken();
     const dispatch = useAppDispatch()
     const fileInputRef = useRef(null);
-    const [showPreviewModal, setShowPreviewModal] = useState(false)
-    const [qrConfig, setQrConfig] = useState({
-        selectedType: "",
-        selectedIcon: LOGO,
-        size: 300,
-        logo: LOGO,
-        disableLogo: false,
-        logoSize: 50,
-        color: "black",
+    const [showWAPreviewModal, setShowWAPreviewModal] = useState(false)
+    const [showQRPreviewModal, setShowQRPreviewModal] = useState(false)
+    const [qrConfig, setQrConfig] = useState<QRProps>({
+        value: "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
+        ecLevel: "M",
+        size: DEFAULT_QR_SIZE,
+        logoImage: LOGO,
+        logoWidth: 80,
+        logoOpacity: 1,
+        removeQrCodeBehindLogo: false,
+        logoPadding: 10,
+        logoPaddingStyle: "square",//circle
+        qrStyle: 'dots',//dots
+        borderRadius: 0,
+        eyeRadius: [
+            { [EYE_TYPES.OUTER]: [10, 10, 0, 10], [EYE_TYPES.INNER]: [10, 10, 0, 10] },
+            { [EYE_TYPES.OUTER]: [10, 10, 10, 0], [EYE_TYPES.INNER]: [10, 10, 10, 0] },
+            { [EYE_TYPES.OUTER]: [10, 0, 10, 10], [EYE_TYPES.INNER]: [10, 0, 10, 10] }
+        ],
+        eyeColor: [
+            { [EYE_TYPES.OUTER]: token.colorPrimaryActive, [EYE_TYPES.INNER]: token.colorPrimary },
+            { [EYE_TYPES.OUTER]: token.colorPrimaryActive, [EYE_TYPES.INNER]: token.colorPrimary },
+            { [EYE_TYPES.OUTER]: token.colorPrimaryActive, [EYE_TYPES.INNER]: token.colorPrimary }],
+        id: uuid(),
+        fgColor: "black",
         bgColor: '#dee1ec',
+        quietZone: 10,
         valueType: VALUE_TYPES.WHATSAPP,
+        contentType: VALUE_TYPES.WHATSAPP,
         phone: '',
         text: '',
-        padding: 10,
-        // corner: 10,
-        value: "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
     })
     const [error, setError] = useState({ id: '', message: '' });
+    const [qrImage, setQrImage] = useState('');
+    const [isAddedToCanvas, setIsAddedToCanvas] = useState(false)
 
-    const [qrStylesImages, setQrStylesImages] = useState([]);
-
-    const updateQRLevelImages = useDebounce(() => {
-        const list = [];
-        QR_LEVELS.map((type) => {
-            const qrCanvas = document.getElementById(`qr-element-${type}`)?.querySelector<HTMLCanvasElement>('canvas');
-            const imageSrc = qrCanvas.toDataURL("image/png", 1.0);
-            list.push(imageSrc)
-        })
-        setQrStylesImages(list)
+    const updateQrImage = useDebounce(() => {
+        const qrCanvas = document.getElementById(`qr-element`)?.querySelector<HTMLCanvasElement>('canvas');
+        const imageSrc = qrCanvas.toDataURL("image/png", 1.0);
+        setQrImage(imageSrc)
     })
 
     useEffect(() => {
-        updateQRLevelImages()
-    }, [])
-
-    const downloadQRCode = () => {
-        const canvas = document.getElementById(`qr-element-${qrConfig.selectedType}`)?.querySelector<HTMLCanvasElement>('canvas');
+        updateQrImage();
+        //get already added qr code object
         if (canvas) {
-            const url = canvas.toDataURL();
-            const a = document.createElement('a');
-            a.download = 'QRCode.png';
-            a.href = url;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            //if fill is set to pattern
+            const qrObject = canvas.getObjects()?.find((i) => getCustomObjectType(i) == OBJECT_TYPES.qrCode);
+            if (qrObject) {
+                const qrCodeConfig: QRProps = qrObject.get(CUSTOME_ATTRIBUTES.QR_CODE_CONFIG);
+                if (qrCodeConfig && qrCodeConfig.value) {
+                    // if (!isSameObjects(qrCodeConfig, qrConfig)) {
+                    setQrConfig(removeObjRef(qrCodeConfig))
+                    // }
+                    setIsAddedToCanvas(true)
+                } else setIsAddedToCanvas(false)
+            } else setIsAddedToCanvas(false)
         }
-    };
+    }, [activeObjectsState])
+
+    const updateCanvasQRObject = useDebounce(() => {
+        const qrObject = canvas.getObjects()?.find((i) => getCustomObjectType(i) == OBJECT_TYPES.qrCode);
+        const activeObject = canvas.getActiveObjects();
+        if (qrObject) {
+            const qrCodeConfig: QRProps = qrObject.get(CUSTOME_ATTRIBUTES.QR_CODE_CONFIG);
+            if (!isSameObjects(qrCodeConfig, qrConfig)) {
+                activeObject.map((item) => canvas.remove(item));
+                canvas.discardActiveObject();
+                canvas.remove(qrObject);
+                onAddUpdateQr(qrConfig)
+            }
+        }
+    })
+
+    useEffect(() => {
+        //get already added qr code object
+        if (canvas && isAddedToCanvas) {
+            console.log("activeObjectsState QRCODE rerender")
+            updateCanvasQRObject(qrConfig)
+        }
+    }, [qrConfig])
+
 
     const onChange = (property, value) => {
         setError({ id: '', message: '' })
-        const qrConfigCopy = { ...qrConfig };
+        const qrConfigCopy: QRProps = removeObjRef(qrConfig);
         qrConfigCopy[property] = value;
-        if (property == 'color' && value == '#ffffff00') qrConfigCopy.color = 'black';
+        if (property == 'fgColor' && value == NO_COLOR_VALUE) qrConfigCopy.fgColor = 'black';
+        if (property == 'bgColor' && value == NO_COLOR_VALUE) qrConfigCopy.bgColor = 'white';
+        if (property == 'logoSize' && value == 1) qrConfigCopy.logoPadding = 0;
         if (property === 'text' || property === 'phone') {
             qrConfigCopy.value = `https://wa.me/${qrConfigCopy.phone}?text=${encodeURI(qrConfigCopy.text)}`;
         }
-        updateQRLevelImages()
+        if (property == 'logoWidth' && (value == qrConfig.size || value == 1)) {
+            qrConfigCopy.logoOpacity = 0.4;
+            qrConfigCopy.logoPadding = 0;
+            qrConfigCopy.removeQrCodeBehindLogo = false;
+        }
         setQrConfig(qrConfigCopy)
+        updateQrImage()
     }
 
-    const onChangeSize = (value) => {
-        const qrConfigCopy = { ...qrConfig };
-        if (value == 'Hide') qrConfigCopy.disableLogo = true;
-        else qrConfigCopy.disableLogo = false;
-        qrConfigCopy.logoSize = LOGO_SIZES.find((i) => i.key == value).value;
-        updateQRLevelImages()
+    const onChangeEyeColors = (property, value) => {
+        const qrConfigCopy: QRProps = removeObjRef(qrConfig);
+        const eyeColorCopy = qrConfigCopy.eyeColor;
+        eyeColorCopy.map((corner) => {
+            corner[property] = value
+        })
+        qrConfigCopy.eyeColor = eyeColorCopy;
         setQrConfig(qrConfigCopy)
+        updateQrImage()
+    }
+
+    const onChangeRadius = (property, value) => {
+        const qrConfigCopy: QRProps = removeObjRef(qrConfig);
+        const eyeRadiusCopy = qrConfigCopy.eyeRadius;
+        eyeRadiusCopy.map((corner) => {
+            corner[property] = Array(4).fill(value)
+        })
+        qrConfigCopy.eyeRadius = eyeRadiusCopy;
+        setQrConfig(qrConfigCopy)
+        updateQrImage()
     }
 
     const validateWhatsappData = () => {
@@ -132,9 +186,6 @@ function QrCode({ canvas, updateLocalCanvas }) {
         } else return true
     }
 
-    {/* https://api.whatsapp.com/send?phone=912009209092&text=lsklkssss */ }
-    {/* https://wa.me/7507832247?text=%E2%80%9CHello,%20I%20want%20more%20info%20about%20the%20product%E2%80%9D */ }
-    {/* https://wa.me/7979759978998?text=%E2%80%9CHello%2C%20I%20want%20more%20info%20about%20the%20product%E2%80%9D */ }
     const generateLink = () => {
         if (validateWhatsappData()) {
             const qrConfigCopy = { ...qrConfig };
@@ -143,13 +194,13 @@ function QrCode({ canvas, updateLocalCanvas }) {
             dispatch(showSuccessToast("Link copied successfully!"))
             setQrConfig(qrConfigCopy);
             const element = document.getElementById("qr-list-wrap");
-            element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+            element && element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
         }
     }
 
     const showPreview = () => {
         if (validateWhatsappData()) {
-            setShowPreviewModal(true);
+            setShowWAPreviewModal(true);
         }
     }
 
@@ -158,331 +209,518 @@ function QrCode({ canvas, updateLocalCanvas }) {
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                onChange('selectedIcon', reader.result);
+                onChange('logoImage', reader.result);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const getSegmentOptions = () => {
-        return TAB_TYPES_LIST.map((option) => {
-            return {
-                label:
-                    <Tooltip title={`${option.key} images`}>
-                        <div style={{ color: activeTab == option.key ? token.colorPrimary : 'inherit' }}
-                            className={`${GlobalCss.segmentItem} ${activeTab == option.key ? GlobalCss.active : ''}`}>
-                            <div className={GlobalCss.iconWrap} style={{ backgroundColor: activeTab == option.key ? token.colorPrimary : token.colorBgBase }}>
-                                {option.icon}
-                            </div>
-                            <div className={GlobalCss.name} style={{ color: activeTab == option.key ? token.colorPrimary : token.colorBgBase }}>{option.key}</div>
-                        </div>
-                    </Tooltip>,
-                value: option.key
-            }
-        })
-    }
+    const [activeTab, setActiveTab] = useState(TAB_TYPES.STYLE);
 
-    const getLogoSizeOptions = () => {
-        return LOGO_SIZES.map((option) => {
-            return {
-                label:
-                    <Tooltip title={`${option.key} logo`}>
-                        <div style={{ color: qrConfig.logoSize == option.value ? token.colorPrimary : 'inherit' }}
-                            className={`${GlobalCss.segmentItem} ${qrConfig.logoSize == option.value ? GlobalCss.active : ''}`}>
-                            <div className={GlobalCss.name} style={{ color: qrConfig.logoSize == option.value ? token.colorPrimary : token.colorBgBase }}>{option.key}</div>
-                        </div>
-                    </Tooltip>,
-                value: option.key
-            }
-        })
-    }
-
-    const getValueOptions = () => {
-        return VALUE_TYPES_LIST.map((option) => {
-            return {
-                label:
-                    <Tooltip title={`${option.key} after scan`}>
-                        <div style={{ color: qrConfig.valueType == option.key ? token.colorPrimary : 'inherit' }}
-                            className={`${GlobalCss.segmentItem} ${qrConfig.valueType == option.key ? GlobalCss.active : ''}`}>
-                            <div className={GlobalCss.iconWrap} style={{ backgroundColor: qrConfig.valueType == option.key ? token.colorPrimary : token.colorBgBase }}>
-                                {option.icon}
-                            </div>
-                            <div className={GlobalCss.name} style={{ color: qrConfig.valueType == option.key ? token.colorPrimary : token.colorBgBase }}>{option.key}</div>
-                        </div>
-                    </Tooltip>,
-                value: option.key
-            }
-        })
-    }
-    const [activeTab, setActiveTab] = useState(TAB_TYPES.TEMPLATE);
-
-    const onClickType = (type) => {
+    const onAddUpdateQr = (qrConfig) => {
         setError({ id: '', message: '' });
-        const qrConfigCopy = { ...qrConfig, selectedType: type }
 
-        if (qrConfigCopy.valueType === VALUE_TYPES.WHATSAPP && !validateWhatsappData()) {
-            const element = document.getElementById("valueContentWrap");
-            element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        if (qrConfig?.valueType === VALUE_TYPES.WHATSAPP && !validateWhatsappData()) {
+            setActiveTab(TAB_TYPES.CONTENT)
+            setTimeout(() => {
+                const element = document.getElementById("valueContentWrap");
+                element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+            }, 1000);
             return false;
 
-        } else if (qrConfigCopy.valueType === VALUE_TYPES.URL && !qrConfigCopy.value) {
+        } else if (qrConfig?.valueType === VALUE_TYPES.OTHERS && !qrConfig.value) {
             setError({ id: 'url', message: 'Please enter url' });
             dispatch(showErrorToast("Please enter url"));
+            setActiveTab(TAB_TYPES.CONTENT)
             return false;
         }
 
-        setQrConfig(qrConfigCopy)
-        const qrCanvas = document.getElementById(`qr-element-${type}`)?.querySelector<HTMLCanvasElement>('canvas');
+        // setQrConfig(qrConfig)
+        const qrCanvas = document.getElementById(`qr-element`)?.querySelector<HTMLCanvasElement>('canvas');
         const imageSrc = qrCanvas.toDataURL("image/png", 1.0);
-        addSelectedQRImage(canvas, updateLocalCanvas, { ...qrConfigCopy, src: imageSrc })
+        const qrObject = canvas.getObjects()?.find((i) => getCustomObjectType(i) == OBJECT_TYPES.qrCode);
+        addSelectedQRImage(canvas, updateLocalCanvas, { ...qrConfig, src: imageSrc })
+        setIsAddedToCanvas(true);
+    }
+
+    const getBorderRadius = (values) => {
+        return `${values[0] * 1.6}px ${values[1] * 1.6}px ${values[2] * 1.6}px ${values[3] * 1.6}px`
+    }
+
+    const onChangeEyeRadius = (typeIndex, type, index, value) => {
+        const qrConfigCopy = removeObjRef(qrConfig);
+        qrConfigCopy.eyeRadius[typeIndex][type][index] = value
+        setQrConfig(qrConfigCopy);
+        updateQrImage()
+    }
+
+    const renderRadiusActions = (type) => {//type == inner or outer
+        const cornerTypes = ['Top Left', 'Top Right', 'Bottom Left'];
+        return <div className={styles.radiusActionsWrap}>
+            {cornerTypes.map((cornerType, typeIndex) => {
+                return <div className={styles.radiusActions} key={typeIndex}>
+                    <div className={styles.label} style={{ color: token.colorTextBase }}>{cornerType} Radius</div>
+                    <div className={styles.actionWrap}>
+                        <div className={styles.preview}
+                            style={{
+                                borderColor: token.colorBorder,
+                                borderRadius: qrConfig.borderRadius,
+                                backgroundColor: qrConfig.bgColor
+                            }}>
+                            <div className={styles.outer}
+                                style={{
+                                    zIndex: type == EYE_TYPES.INNER ? 1 : 2,
+                                    borderColor: qrConfig.eyeColor[typeIndex].outer,
+                                    borderRadius: getBorderRadius(qrConfig.eyeRadius[typeIndex].outer),
+                                }}>
+                            </div>
+                            <div className={styles.inner}
+                                style={{
+                                    opacity: type == EYE_TYPES.OUTER ? 1 : 2,
+                                    backgroundColor: qrConfig.eyeColor[typeIndex].inner,
+                                    borderRadius: getBorderRadius(qrConfig.eyeRadius[typeIndex].inner),
+                                }}>
+                            </div>
+                        </div>
+                        <div className={styles.actions}>
+                            {['Top Left', 'Top Right', 'Bottom Right', 'Bottom Left'].map((eyeCorner, eyeCornerIndex) => {
+                                return <div key={eyeCornerIndex} className={`${styles.eyeRadiusWrap}`}>
+                                    <div className={`${styles.label}`} style={{ color: token.colorTextBase }}>{eyeCorner}</div>
+                                    <div className={`${styles.sliderWrap}`}>
+                                        <SliderComponent
+                                            min={0}
+                                            max={30}
+                                            onChange={(value) => onChangeEyeRadius(typeIndex, type, eyeCornerIndex, value)}
+                                            value={qrConfig.eyeRadius[typeIndex][type][eyeCornerIndex]}
+                                            step={2}
+                                        />
+                                    </div>
+                                </div>
+                            })}
+                        </div>
+                    </div>
+                </div>
+            })}
+        </div>
     }
 
     return (
         <div className={styles.qrCodeWrap} >
-            <div className={`${GlobalCss.segmentWrap} ${styles.segmentWrap}`} >
-                <Segmented
-                    className={GlobalCss.largeSegmentWrap}
-                    style={{ background: token.colorBgTextActive }}
-                    size="middle"
-                    block={true}
-                    value={activeTab}
-                    defaultValue={TAB_TYPES.TEMPLATE}
-                    onChange={(tab: any) => setActiveTab(tab)}
-                    options={getSegmentOptions()}
-                />
-            </div>
+            {/* active Tab */}
+            <SegmentComponent
+                label=""
+                entity={''}
+                showIcon={true}
+                value={activeTab}
+                onChange={(tab: any) => setActiveTab(tab)}
+                options={TAB_TYPES_LIST}
+                type={SEGMENT_OPTIONS_TYPES.ARRAY_OF_OBJECTS}
+            />
 
-            <div className={styles.valueWrap}>
-                <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                    <div className={`${styleElementCSS.label} ${styles.label}`}>Results after scan</div>
-                    <div className={`${GlobalCss.segmentWrap} ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                        <Segmented
-                            value={qrConfig.valueType}
-                            style={{ background: token.colorBgTextActive }}
-                            size="middle"
-                            block={true}
-                            defaultValue={qrConfig.valueType}
-                            onChange={(value: any) => setQrConfig({ ...qrConfig, valueType: value, value: '' })}
-                            options={getValueOptions()}
-                        />
-                    </div>
-                </div>
+            {/* {isAddedToCanvas && <QrProps updateLocalCanvas={updateLocalCanvas} workspace={workspace} canvas={canvas} activeObjectsState={activeObjectsState} />} */}
 
-                <div className={styles.valueContentWrap} id="valueContentWrap">
-                    {qrConfig.valueType == VALUE_TYPES.URL ? <>
+            {/* selected */}
+            {qrImage && <div className={styles.selectedQrCodeWrap}>
+                <img src={qrImage} style={{ borderRadius: qrConfig.borderRadius }} />
+                <Button onClick={() => setShowQRPreviewModal(true)} icon={<ImEnlarge />}>Preview</Button>
+            </div>}
+
+
+            <div className={styles.qrContentWrap}>
+                {activeTab == TAB_TYPES.STYLE && <>
+                    {/* Bg colors */}
+                    <Saperator />
+                    <div className={styles.colorsWrap}>
                         <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
                             <div className={`${styleElementCSS.elementWrap}`}>
-                                <TextArea
-                                    status={error.id == 'url' ? "error" : ''}
-                                    showCount
-                                    allowClear
-                                    size="large"
-                                    value={qrConfig.value}
-                                    placeholder="Enter url that display after scanning the qr code"
-                                    style={{ minHeight: 'auto', marginBottom: 24 }}
-                                    onChange={(e: any) => onChange('value', e.target.value)}
+                                <ColorPickerComponent
+                                    parentStyles={{ background: 'unset', color: token.colorTextBase }}
+                                    hideColorString
+                                    // hideTransparency
+                                    value={{ format: 'hex', color: qrConfig.bgColor }}
+                                    onChange={(value) => onChange('bgColor', value.color)}
+                                    label="Background Color" />
+                            </div>
+                        </div>
+                        <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                            <div className={`${styleElementCSS.elementWrap}`}>
+                                <ColorPickerComponent
+                                    parentStyles={{ background: 'unset', color: token.colorTextBase }}
+                                    hideColorString
+                                    // hideTransparency
+                                    value={{ format: 'hex', color: qrConfig.fgColor }}
+                                    onChange={(value) => onChange('fgColor', value.color)}
+                                    label="Design Color" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Eye colors */}
+                    <div className={styles.colorsWrap}>
+                        <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                            <div className={`${styleElementCSS.elementWrap}`}>
+                                <ColorPickerComponent
+                                    parentStyles={{ background: 'unset', color: token.colorTextBase }}
+                                    hideColorString
+                                    hideTransparency
+                                    value={{ format: 'hex', color: qrConfig.eyeColor[0].inner }}
+                                    onChange={(value) => onChangeEyeColors(EYE_TYPES.INNER, value.color)}
+                                    label="Inner Eye Color" />
+                            </div>
+                        </div>
+                        <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                            <div className={`${styleElementCSS.elementWrap}`}>
+                                <ColorPickerComponent
+                                    parentStyles={{ background: 'unset', color: token.colorTextBase }}
+                                    hideColorString
+                                    hideTransparency
+                                    value={{ format: 'hex', color: qrConfig.eyeColor[0].outer }}
+                                    onChange={(value) => onChangeEyeColors(EYE_TYPES.OUTER, value.color)}
+                                    label="Outer Eye Color" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <Saperator />
+                    {/* Border Radius */}
+                    <div className={`${styleElementCSS.styleWrap} ${styles.logoWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                        <div className={`${styleElementCSS.label}`}>Background Radius</div>
+                        <div className={`${styles.styleWrap} ${styles.sliderWrap} ${styleElementCSS.elementWrap}`}>
+                            <SliderComponent
+                                min={0}
+                                max={qrConfig.quietZone / 1.5}
+                                onChange={(value) => onChange('borderRadius', value)}
+                                value={qrConfig.borderRadius}
+                                step={2}
+                            />
+                        </div>
+                    </div>
+
+                    <Saperator />
+                    {/*Eye Radius */}
+                    {[EYE_TYPES.OUTER, EYE_TYPES.INNER].map((type) => {
+                        return <div key={type} className={`${styleElementCSS.styleWrap} ${styles.logoWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                            <div className={`${styleElementCSS.label} ${styles.iconLable}`}>{type} Eye Radius
+                                <Popover title={<div className={styles.popoverTitle}>{type} eye radius</div>} content={() => renderRadiusActions(type)} placement="left" trigger="click">
+                                    <div className={styles.iconWrap}>
+                                        <LuSettings />
+                                    </div>
+                                </Popover>
+                            </div>
+                            <div className={`${styles.styleWrap} ${styles.sliderWrap} ${styleElementCSS.elementWrap}`}>
+                                <SliderComponent
+                                    min={0}
+                                    max={30}
+                                    onChange={(value) => onChangeRadius(type, value)}
+                                    value={qrConfig.eyeRadius[0][type][0]}
+                                    step={2}
                                 />
                             </div>
                         </div>
-                    </> : <>
-                        <div className={styles.whatsappLinkWrap}>
-                            <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                                <div className={`${styleElementCSS.label} ${styles.label}`}>Enter your phone number</div>
-                                <div className={`${GlobalCss.segmentWrap} ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                                    <Input
-                                        status={error.id == 'phone' ? "error" : ''}
-                                        placeholder="Enter your phone number"
-                                        allowClear
-                                        size="middle"
-                                        value={qrConfig.phone}
-                                        onChange={(e: any) => onChange('phone', e.target.value)}
-                                    />
-                                </div>
-                            </div>
+                    })}
 
-                            <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                                <div className={`${styleElementCSS.label} ${styles.label}`}>Enter message you want to share</div>
-                                <div className={`${GlobalCss.segmentWrap} ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                                    <TextArea
-                                        status={error.id == 'text' ? "error" : ''}
-                                        showCount
-                                        allowClear
-                                        size="large"
-                                        value={qrConfig.text}
-                                        placeholder="Enter message that display on whatsapp after scanning the qr code"
-                                        style={{ minHeight: 'auto' }}
-                                        onChange={(e: any) => onChange('text', e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className={styles.generateLinkBtn}>
-                                <Button size='middle' icon={<TbClipboardCopy />} type='primary' onClick={generateLink}>Copy Link</Button>
-                                <Button size='middle' icon={<TbDeviceMobileMessage />} type='primary' onClick={showPreview}>Preview</Button>
-                            </div>
-                        </div>
-                    </>}
-                </div>
+                    <Saperator />
+                    {/* style */}
+                    <SegmentComponent
+                        label="Style of the QR Code modules"
+                        value={qrConfig.qrStyle}
+                        onChange={(value) => onChange('qrStyle', value)}
+                        options={['squares', 'dots']}
+                        type={SEGMENT_OPTIONS_TYPES.ARRAY}
+                    />
 
-                <Saperator />
-                <Modal
-                    destroyOnClose
-                    title="Whatsapp message preview"
-                    open={Boolean(showPreviewModal)}
-                    onCancel={() => setShowPreviewModal(false)}
-                    onOk={() => window.open(qrConfig.value, "_blank")}
-                    maskStyle={{ backdropFilter: 'blur(6px)' }}
-                    className={styles.modalWrap}
-                    closeIcon={<AiOutlineClose />}
-                    width={'max-content'}
-                    okText={<div className="d-f-c">Open whatsapp&nbsp; <TbBrandWhatsapp /></div>}
-                    cancelText="Close"
-                >
-                    <div className={styles.previewImageWrap}>
-                        <div className={styles.frameWrap} >
-                            <div className={styles.imgWrap}>
-                                <img src="/assets/images/chat_screen.png" />
-                            </div>
-                            <div className={styles.numberWrap}>{qrConfig.phone}</div>
-                            <div className={styles.messageWrap}>
-                                {qrConfig.text}
+                    <Saperator />
+                    {/* Dencity */}
+                    <SegmentComponent
+                        label={`${qrConfig.qrStyle} Dencity`}
+                        value={qrConfig.ecLevel}
+                        onChange={(value) => onChange('ecLevel', value)}
+                        options={['M', 'Q', 'H']}
+                        type={SEGMENT_OPTIONS_TYPES.ARRAY}
+                    />
+
+                    <Saperator />
+                    {/* spacing */}
+                    <SegmentComponent
+                        label="Outer Spacing"
+                        value={qrConfig.quietZone}
+                        onChange={(value) => onChange('quietZone', value)}
+                        options={[0, 10, 20, 30, 40]}
+                        type={SEGMENT_OPTIONS_TYPES.ARRAY}
+                    />
+
+                    {/* LOGO */}
+                    <Saperator />
+                    <div className={`${styleElementCSS.styleWrap} ${styles.logoWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                        <div className={`${styleElementCSS.label}`}>Logo/Image</div>
+                        <div className={`${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
+                            <div className={styles.qrLogo}>
+                                <img src={qrConfig.logoImage} />
+                                <Button size='middle' onClick={() => fileInputRef.current.click()} icon={<TbReplace />} >Replace</Button>
+                                <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} />
                             </div>
                         </div>
                     </div>
-                </Modal>
-            </div>
 
-            <div className={`${styleElementCSS.label} ${styles.label}`} style={{ margin: '10px 0' }}>Select QR Style</div>
-            <div className={`${styles.qrListsWrap} ${styles.displayImages}`}>
-                {qrStylesImages.map((type, i) => {
-                    return <React.Fragment key={i}>
-                        <div className={styles.qrWrap}
-                            style={{
-                                borderColor: (QR_LEVELS[i] === qrConfig.selectedType) ? token.colorPrimary : 'transparent',
-                                background: qrConfig.bgColor,
-                                padding: qrConfig.padding,
-                                // borderRadius: qrConfig.corner,
-                            }}
-                            onClick={() => onClickType(QR_LEVELS[i])}>
-                            <img src={type} />
-                            {QR_LEVELS[i] === qrConfig.selectedType && <div className={styles.selected} style={{ backgroundColor: token.colorPrimary }}>
-                                <LuCheck />
-                            </div>}
-                        </div>
-                    </React.Fragment>
-                })}
-            </div>
-            <div className={styles.qrListsWrap} id="qr-list-wrap" style={{ display: 'none' }}>
-                {QR_LEVELS.map((type, i) => {
-                    return <React.Fragment key={i}>
-                        <div className={styles.qrWrap}
-                            id={`qr-element-${type}`}
-                            style={{
-                                borderColor: (type === qrConfig.selectedType) ? token.colorPrimary : 'transparent',
-                            }}
-                            onClick={() => onClickType(type)}>
-                            <QRCode
-                                color={qrConfig.color}
-                                bgColor={qrConfig.bgColor}
-                                bordered={true}
-                                errorLevel={type as QRCodeProps['errorLevel']}
-                                size={qrConfig.size}
-                                iconSize={qrConfig.logoSize}
-                                value={qrConfig.value || 'Your text'}
-                                icon={((qrConfig.logoSize == 50 && (type === 'M' || type === 'Q')) || qrConfig.disableLogo || type === 'L') ? null : qrConfig.logo}
+                    <Saperator />
+                    {/* Logo size */}
+                    <SegmentComponent
+                        label="Logo Size"
+                        value={LOGO_SIZES.find((i) => i.value == qrConfig.logoWidth)?.key}
+                        onChange={(value) => onChange('logoWidth', LOGO_SIZES.find((i) => i.key == value).value)}
+                        options={LOGO_SIZES}
+                        type={SEGMENT_OPTIONS_TYPES.ARRAY_OF_OBJECTS}
+                    />
+
+                    {/* Logo Blur */}
+                    <div className={`${styleElementCSS.styleWrap} ${styles.logoWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                        <div className={`${styleElementCSS.label}`}>Logo Blur</div>
+                        <div className={`${styles.sliderWrap} ${styles.sliderWrap} ${styleElementCSS.elementWrap}`}>
+                            <SliderComponent
+                                min={0}
+                                max={1}
+                                onChange={(value) => onChange('logoOpacity', value)}
+                                value={qrConfig.logoOpacity}
+                                step={0.1}
                             />
-                            {type === qrConfig.selectedType && <div className={styles.selected} style={{ backgroundColor: token.colorPrimary }}>
-                                <LuCheck />
-                            </div>}
                         </div>
-                    </React.Fragment>
-                })}
+                    </div>
+
+                    {/* Logo Spacing */}
+                    <div className={`${styleElementCSS.styleWrap} ${styles.logoWrap} ${qrConfig.size == qrConfig.logoWidth ? 'disabled' : ''}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                        <div className={`${styleElementCSS.label}`}>Logo Spacing</div>
+                        <div className={`${styles.styleWrap} ${styles.sliderWrap} ${styleElementCSS.elementWrap}`}>
+                            <SliderComponent
+                                min={0}
+                                max={20}
+                                onChange={(value) => onChange('logoPadding', value)}
+                                value={qrConfig.logoPadding}
+                                step={2}
+                            />
+                        </div>
+                    </div>
+
+                    <Saperator />
+                    {/* Logo Spacing style */}
+                    <SegmentComponent
+                        label="Logo Spacing style"
+                        value={qrConfig.logoPaddingStyle}
+                        onChange={(value) => onChange('logoPaddingStyle', value)}
+                        options={['square', 'circle']}
+                        type={SEGMENT_OPTIONS_TYPES.ARRAY}
+                    />
+
+                    <Saperator />
+                    {/* Fit Logo to QR */}
+                    <div className={` ${styles.styleWrap}`}>
+                        <Checkbox
+                            className={styles.checkboxElement}
+                            defaultChecked={qrConfig.logoWidth == qrConfig.size}
+                            style={{ color: token.colorTextBase }}
+                            checked={qrConfig.logoWidth == qrConfig.size}
+                            onChange={(value) => onChange('logoWidth', qrConfig.size)}>
+                            Fit Logo to QR
+                        </Checkbox>
+                    </div>
+
+                    <Saperator />
+                    {/* Remove QR Pttern Behinde Logo */}
+                    <div className={` ${styles.styleWrap}`}>
+                        <Checkbox
+                            className={styles.checkboxElement}
+                            defaultChecked={qrConfig.removeQrCodeBehindLogo}
+                            style={{ color: token.colorTextBase }}
+                            checked={qrConfig.removeQrCodeBehindLogo}
+                            onChange={(value) => onChange('removeQrCodeBehindLogo', !qrConfig.removeQrCodeBehindLogo)}>
+                            Remove QR Pttern Behinde Logo
+                        </Checkbox>
+                    </div>
+                </>}
+
+                {/* Results after scan" */}
+                {activeTab == TAB_TYPES.CONTENT && <>
+
+                    <div className={styles.valueWrap}>
+                        <SegmentComponent
+                            label="Results after scan"
+                            showIcon={true}
+                            value={qrConfig?.valueType}
+                            onChange={(value: any) => setQrConfig({ ...qrConfig, valueType: value, value: '' })}
+                            options={VALUE_TYPES_LIST}
+                            type={SEGMENT_OPTIONS_TYPES.ARRAY_OF_OBJECTS}
+                        />
+
+                        <div className={styles.valueContentWrap} id="valueContentWrap">
+                            {!Boolean(CONTENT_TYPES.find((t) => t.name == qrConfig.contentType)) && <div className={styles.note}>
+                                <div className={`${styleElementCSS.label}`}>Select type you want share after QR Code scanned</div>
+                            </div>}
+                            {qrConfig.valueType == VALUE_TYPES.OTHERS ? <>
+                                <div className={styles.contentTypesWrap}>
+                                    {CONTENT_TYPES.map((type, i) => {
+                                        return <React.Fragment key={i}>
+                                            <Tooltip title={type.tooltip}>
+                                                <div className={styles.typeDetails}
+                                                    onClick={() => setQrConfig({ ...qrConfig, contentType: type.name })}
+                                                    style={{ borderColor: qrConfig.contentType == type.name ? token.colorPrimary : token.colorBorder }}
+                                                >
+                                                    <div className={styles.iconWrap}>
+                                                        <SocialIcon width={30} style={{ padding: 0 }} height={30} icon={type.icon} />
+                                                    </div>
+                                                    {qrConfig.contentType == type.name && <div className={GlobalCss.selectedItem} style={{ backgroundColor: token.colorPrimary }}>
+                                                        <LuCheck />
+                                                    </div>}
+                                                </div>
+                                            </Tooltip>
+                                        </React.Fragment>
+
+                                    })}
+                                </div>
+                                {Boolean(CONTENT_TYPES.find((t) => t.name == qrConfig.contentType)) ? <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                                    <div className={`${styleElementCSS.label}`}>Enter {CONTENT_TYPES.find((t) => t.name == qrConfig.contentType)?.tooltip} you want to share</div>
+                                    <div className={`${styleElementCSS.elementWrap}`}>
+                                        <TextArea
+                                            status={error.id == 'url' ? "error" : ''}
+                                            allowClear
+                                            size="large"
+                                            value={qrConfig.value}
+                                            placeholder="Enter url that display after scanning the qr code"
+                                            style={{ minHeight: 'auto', marginBottom: 24 }}
+                                            onChange={(e: any) => onChange('value', e.target.value)}
+                                        />
+                                    </div>
+                                </div> : <></>}
+                            </> : <>
+                                <div className={styles.whatsappLinkWrap}>
+                                    <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                                        <div className={`${styleElementCSS.label}`}>Enter your phone number</div>
+                                        <div className={` ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
+                                            <InputNumber
+                                                status={error.id == 'phone' ? "error" : ''}
+                                                placeholder="Enter your phone number"
+                                                // allowClear
+                                                type="number"
+                                                controls={false}
+                                                size="middle"
+                                                style={{ width: "100%" }}
+                                                value={qrConfig.phone}
+                                                onChange={(e: any) => onChange('phone', e)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
+                                        <div className={`${styleElementCSS.label}`}>Enter message you want to share</div>
+                                        <div className={` ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
+                                            <TextArea
+                                                status={error.id == 'text' ? "error" : ''}
+                                                allowClear
+                                                size="large"
+                                                value={qrConfig.text}
+                                                placeholder="Enter message that display on whatsapp after scanning the qr code"
+                                                style={{ minHeight: 'auto' }}
+                                                onChange={(e: any) => onChange('text', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className={styles.generateLinkBtn}>
+                                        <Button size='middle' icon={<TbClipboardCopy />} type='primary' onClick={generateLink}>Copy Link</Button>
+                                        <Button size='middle' icon={<TbDeviceMobileMessage />} type='primary' onClick={showPreview}>Preview</Button>
+                                    </div>
+                                </div>
+                            </>}
+                        </div>
+                        <Saperator />
+                    </div>
+                </>}
             </div>
 
-            <Saperator />
-            <div className={styles.colorsWrap}>
-                <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                    <div className={`${styleElementCSS.elementWrap}`}>
-                        <ColorPickerComponent
-                            parentStyles={{ background: 'unset', color: token.colorTextBase }}
-                            hideColorString
-                            // hideTransparency
-                            value={{ format: 'hex', color: qrConfig.bgColor }}
-                            onChange={(value) => onChange('bgColor', value.color)}
-                            label="Background Color" />
+            {!isAddedToCanvas && <div className={styles.qrActionWrap}>
+                <Button size='middle' icon={<LuQrCode />} type='primary' onClick={() => onAddUpdateQr(qrConfig)}>Add QR Code</Button>
+            </div>}
+
+            {/* //QR Element wrapper */}
+            <div className={styles.qrRendererWrap} id="qr-element" style={{ display: 'none' }}>
+                <QRCode
+                    value={qrConfig.value}
+                    ecLevel={qrConfig.ecLevel}
+                    size={qrConfig.size}
+                    logoImage={qrConfig.logoImage}
+                    logoWidth={qrConfig.logoWidth}
+                    logoOpacity={qrConfig.logoOpacity}
+                    removeQrCodeBehindLogo={qrConfig.removeQrCodeBehindLogo}
+                    logoPadding={qrConfig.logoPadding}
+                    logoPaddingStyle={qrConfig.logoPaddingStyle}
+                    qrStyle={qrConfig.qrStyle}
+                    eyeRadius={qrConfig.eyeRadius}
+                    eyeColor={qrConfig.eyeColor}
+                    id={qrConfig.id}
+                    fgColor={qrConfig.fgColor}
+                    bgColor={qrConfig.bgColor}
+                    quietZone={qrConfig.quietZone}
+                />
+            </div>
+
+            {/* "Whatsapp message preview" */}
+            <Modal
+                destroyOnClose
+                title="Whatsapp message preview"
+                open={Boolean(showWAPreviewModal)}
+                onCancel={() => setShowWAPreviewModal(false)}
+                onOk={() => window.open(qrConfig.value, "_blank")}
+                maskStyle={{ backdropFilter: 'blur(6px)' }}
+                className={styles.modalWrap}
+                closeIcon={<AiOutlineClose />}
+                width={'max-content'}
+                okText={<div className="d-f-c">Open whatsapp&nbsp; <TbBrandWhatsapp /></div>}
+                cancelText="Close"
+            >
+                <div className={styles.previewImageWrap}>
+                    <div className={styles.frameWrap} >
+                        <div className={styles.imgWrap}>
+                            <img src="/assets/images/chat_screen.png" />
+                        </div>
+                        <div className={styles.numberWrap}>{qrConfig.phone}</div>
+                        <div className={styles.messageWrap}>
+                            {qrConfig.text}
+                        </div>
                     </div>
                 </div>
-                <div className={`${styleElementCSS.styleWrap}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                    <div className={`${styleElementCSS.elementWrap}`}>
-                        <ColorPickerComponent
-                            parentStyles={{ background: 'unset', color: token.colorTextBase }}
-                            hideColorString
-                            // hideTransparency
-                            value={{ format: 'hex', color: qrConfig.color }}
-                            onChange={(value) => onChange('color', value.color)}
-                            label="Design Color" />
+            </Modal>
+
+            {/* "QR Code Preview" */}
+            <Modal
+                destroyOnClose
+                title="QR Code Preview"
+                open={Boolean(showQRPreviewModal)}
+                onCancel={() => setShowQRPreviewModal(false)}
+                onOk={() => window.open(qrConfig.value, "_blank")}
+                maskStyle={{ backdropFilter: 'blur(6px)' }}
+                className={styles.modalWrap}
+                closeIcon={<AiOutlineClose />}
+                width={'max-content'}
+                footer={null}
+                okText={<div className="d-f-c">Open whatsapp&nbsp; <TbBrandWhatsapp /></div>}
+                cancelText="Close"
+            >
+                <div className={`${styles.previewImageWrap} ${styles.qrpreviewImageWrap}`}>
+                    <div className={styles.frameWrap} >
+                        <div className={styles.imgWrap}>
+                            <img src={qrImage} style={{ borderRadius: qrConfig.borderRadius }} />
+                        </div>
+                        <div className={styles.messageWrap}
+                            style={{ borderColor: token.colorBorder, color: token.colorTextBase, background: token.colorBgLayout }}
+                        >
+                            <div className={styles.numberWrap} style={{ color: token.colorTextLabel }}>Results after scan</div>
+                            {qrConfig.value ? qrConfig.value : "Please add content"}
+                        </div>
+                        <div className={styles.messageWrap}
+                            style={{ borderColor: token.colorBorder, color: token.colorTextBase, background: token.colorBgLayout }}
+                        >
+                            <div className={styles.numberWrap} style={{ color: token.colorTextLabel }}>Scan this qr code using your phone and check the results</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div className={styles.propertyWrapper}>
-                <div className={`${styleElementCSS.label} ${styles.label}`}>Spacing</div>
-                <div className={`${GlobalCss.segmentWrap} ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                    <Segmented
-                        value={qrConfig.padding}
-                        style={{ background: token.colorBgTextActive }}
-                        size="middle"
-                        block={true}
-                        defaultValue={qrConfig.padding}
-                        onChange={(value) => onChange('padding', value)}
-                        options={[0, 5, 10, 15]}
-                    />
-                </div>
-            </div>
-            <Saperator />
-
-            <Saperator />
-            <div className={`${styleElementCSS.styleWrap} ${styles.logoWrap} ${qrConfig.selectedType === 'L' ? 'disabled' : ''}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                <div className={`${styleElementCSS.label} ${styles.label}`}>Logo</div>
-                <div className={`${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                    <div className={styles.qrLogo}>
-                        <img src={qrConfig.selectedIcon} />
-                        <Button size='middle' onClick={() => fileInputRef.current.click()} icon={<TbReplace />} >Replace</Button>
-                        <input type="file" style={{ display: 'none' }} accept="image/*" ref={fileInputRef} onChange={handleFileChange} />
-                    </div>
-                </div>
-            </div>
-
-            <Saperator />
-            <div className={`${styleElementCSS.styleWrap} ${styles.logoWrap} ${qrConfig.selectedType === 'L' ? 'disabled' : ''}`} style={{ background: 'unset', color: token.colorTextBase }}>
-                <div className={`${styleElementCSS.label} ${styles.label}`}>Logo Size</div>
-                <div className={`${GlobalCss.segmentWrap} ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                    <Segmented
-                        value={LOGO_SIZES.find((i) => i.value == qrConfig.logoSize).key}
-                        style={{ background: token.colorBgTextActive }}
-                        size="middle"
-                        block={true}
-                        defaultValue={LOGO_SIZES[2].key}
-                        onChange={(value) => onChangeSize(value)}
-                        options={getLogoSizeOptions()}
-                    />
-                </div>
-            </div>
-
-            {/* <Saperator />
-            <div className={styles.propertyWrapper}>
-                <div className={`${styleElementCSS.label} ${styles.label}`}>Corner</div>
-                <div className={`${GlobalCss.segmentWrap} ${styles.styleWrap} ${styleElementCSS.elementWrap}`}>
-                    <Segmented
-                        value={qrConfig.corner}
-                        style={{ background: token.colorBgTextActive }}
-                        size="middle"
-                        block={true}
-                        defaultValue={qrConfig.corner}
-                        onChange={(value) => onChange('corner', value)}
-                        options={[0, 10, 20, 30]}
-                    />
-                </div>
-            </div> */}
+            </Modal>
         </div>
     )
 }

@@ -124,7 +124,7 @@ function ImageCropper({ modalData, onSave, onCancel, onReplaceImage }) {
                 <Button key="action" type="primary" loading={false} onClick={onReplaceImage} icon={<TbReplaceFilled />}>Change Image</Button>,
                 <Button key="submit" type="primary" icon={<TbCrop />} loading={false} onClick={onClickSave}>Crop & Upload</Button>
             ]}
-
+            maskClosable={false}
         >
             <div className={styles.cropperModalContent}>
                 <div className={styles.displayImagesWrap}>

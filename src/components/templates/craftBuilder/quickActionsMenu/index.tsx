@@ -12,6 +12,7 @@ import { RiBringForward, RiSendBackward, RiBringToFront, RiSendToBack, RiLockFil
 import { lockObject, unlockObject } from '../objectPropertiesEditor/lock';
 import { moveLayerUp, moveLayerDown, moveLayerUpTop, moveLayerDownTop } from '../tabsComposer/layers/layersActions';
 import TextActionsMenu from './textActionsMenu';
+import { getCustomObjectType } from '@util/craftBuilderUtils';
 
 
 type pageProps = {
@@ -171,6 +172,12 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
                 </> : <>
                     <React.Fragment>
                         {MENU_ACTIONS.map((action) => {
+                            if (action.action == 'CLONE' && canvas && Boolean(canvas.getActiveObjects())) {
+                                const qrObject = canvas.getActiveObjects()?.find((i) => getCustomObjectType(i) == OBJECT_TYPES.qrCode);;
+                                if (qrObject) {
+                                    return null
+                                }
+                            }
                             return <div className={styles.action} key={action.id}>
                                 <Tooltip title={action.tooltip}>
                                     <div className={styles.iconWrap}
@@ -178,9 +185,9 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
                                         onMouseLeave={() => setHoverId('')}
                                         onClick={(e) => onClickAction(e, action.action)}
                                         style={{
-                                            backgroundColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorTextBase : token.colorBgBase,
-                                            color: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimary : token.colorTextBase,
-                                            borderColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorTextLightSolid : token.colorBorder
+                                            backgroundColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimary : token.colorBgTextHover,
+                                            color: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorBgBase : token.colorTextBase,
+                                            borderColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorBgTextHover : token.colorBorder
                                         }}
                                     >
                                         {action.icon}
@@ -190,8 +197,8 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
                         })}
                     </React.Fragment>
                 </>}
-                <div style={{ boxShadow: `0 -20px 0 0 ${token.colorBgBase}` }} className={styles.before}></div>
-                <div style={{ boxShadow: `0 -20px 0 0 ${token.colorBgBase}` }} className={styles.after}></div>
+                {/* <div style={{ boxShadow: `0 -20px 0 0 ${token.colorBgBase}` }} className={styles.before}></div> */}
+                <div style={{ boxShadow: `0 -20px 0 0 ${token.colorBgBase}`, background: token.colorBgBase }} className={styles.after}></div>
             </div>
             <div className={styles.contextMenuWrap}
                 id="contextMenuWrap"
@@ -208,16 +215,16 @@ function QuickActionsMenu({ updateActiveObjectCords, actionMenuProps, updateLoca
                             onMouseLeave={() => setHoverId('')}
                             onClick={(e) => onClickContextMenuAction(e, action.action)}
                             style={{
-                                backgroundColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorTextBase : token.colorBgBase,
-                                color: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimary : token.colorTextBase,
-                                borderColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorTextLightSolid : token.colorBorder
+                                backgroundColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimaryHover : token.colorBgBase,
+                                color: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorBgBase : token.colorTextBase,
+                                borderColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimaryHover : token.colorBorder
                             }}
                         >
                             <span>
                                 <div className={styles.iconWrap}
                                     style={{
-                                        backgroundColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorTextBase : token.colorBgBase,
-                                        color: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimary : token.colorTextBase,
+                                        backgroundColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorPrimary : token.colorBgBase,
+                                        color: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorBgBase : token.colorTextBase,
                                         borderColor: ((action.action == 'MORE' && actionMenuProps.showContextMenu) || hoverId == action.id) ? token.colorTextLightSolid : token.colorBorder
                                     }}
                                 >

@@ -17,7 +17,16 @@ import notion from "./notion.svg";
 import blogger from "./blogger.svg";
 import productHunt from "./productHunt.svg";
 import tiktok from "./tiktok.svg";
-// import logout from "@assets/Icons/sidebar/logout";
+import email from "./email.svg";
+import drive from "./drive.svg";
+import vcard from "./vcard.svg";
+import sms from "./sms.svg";
+import call from "./call.svg";
+import location from "./location.svg";
+import playstore from "./playstore.svg";
+import weburl from "./weburl.svg";
+import sharevia from "./sharevia.svg";
+import whatsapp from "./whatsapp.svg";
 
 const icons: any = {
     dribble: dribble,
@@ -36,6 +45,16 @@ const icons: any = {
     tumblr: tumblr,
     instagram: instagram,
     reddit: reddit,
+    whatsapp: whatsapp,
+    sharevia: sharevia,
+    weburl: weburl,
+    playstore: playstore,
+    location: location,
+    call: call,
+    sms: sms,
+    vcard: vcard,
+    drive: drive,
+    email: email,
     // logout: logout,
 };
 
