@@ -101,9 +101,7 @@ function QrCode({ canvas, updateLocalCanvas, activeObjectsState, workspace }) {
             if (qrObject) {
                 const qrCodeConfig: QRProps = qrObject.get(CUSTOME_ATTRIBUTES.QR_CODE_CONFIG);
                 if (qrCodeConfig && qrCodeConfig.value) {
-                    // if (!isSameObjects(qrCodeConfig, qrConfig)) {
                     setQrConfig(removeObjRef(qrCodeConfig))
-                    // }
                     setIsAddedToCanvas(true)
                 } else setIsAddedToCanvas(false)
             } else setIsAddedToCanvas(false)
