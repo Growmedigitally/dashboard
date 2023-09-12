@@ -2,7 +2,6 @@ import SvgIcon from "@atoms/svgIcon";
 import { useAppDispatch } from "@hook/useAppDispatch";
 import Layout from "@organisms/layout";
 import { showErrorToast, showSuccessToast, showToast, showWarningToast } from "@reduxStore/slices/toast";
-import { wrapper } from "@reduxStore/store/store";
 import { Button } from "antd";
 import { ReactElement } from "react";
 import { NextPageWithLayout } from "./_app";
@@ -16,18 +15,18 @@ const Home: NextPageWithLayout = () => {
     );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-    (store) =>
-        async ({ params }) => {
-            // we can set the initial User from here
-            // we are setting to false but you can run your custom logic here
-            // await store.dispatch(showAlert({ message: "hieee" }));
-            console.log("state on server", store.getState());
-            return {
-                props: {},
-            };
-        }
-);
+// export const getServerSideProps = wrapper.getServerSideProps(
+//     (store) =>
+//         async ({ params }) => {
+//             // we can set the initial User from here
+//             // we are setting to false but you can run your custom logic here
+//             // await store.dispatch(showAlert({ message: "hieee" }));
+//             console.log("state on server", store.getState());
+//             return {
+//                 props: {},
+//             };
+//         }
+// );
 
 Home.getLayout = (page: ReactElement) => <Layout>{page}</Layout>
 export default Home;

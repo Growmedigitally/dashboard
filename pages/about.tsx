@@ -1,13 +1,6 @@
-import { useAppDispatch } from '@hook/useAppDispatch';
-import { useAppSelector } from '@hook/useAppSelector';
 import Layout from '@organisms/layout';
-import { consoleLog } from '@util/conole.log';
-import { Button, ConfigProvider, Space, Select, theme, Switch } from 'antd';
-import { connect, useSelector } from 'react-redux';
-import { ReactElement, useEffect, useState } from 'react';
-import { TOGGLE_DARK_MODE } from '@constant/common';
-import { wrapper } from '@reduxStore/store/store';
-import { toggleDarkMode } from '@reduxStore/slices/darkMode';
+import { connect } from 'react-redux';
+import { ReactElement, useState } from 'react';
 
 const options = [
     { value: 'jack', label: 'Jack' },

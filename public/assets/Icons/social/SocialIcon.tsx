@@ -27,6 +27,8 @@ import playstore from "./playstore.svg";
 import weburl from "./weburl.svg";
 import sharevia from "./sharevia.svg";
 import whatsapp from "./whatsapp.svg";
+export { appstore }
+
 
 const icons: any = {
     dribble: dribble,

@@ -17,7 +17,7 @@ const TAB_TYPES = {
     IMAGE: 'Image',
 }
 
-function Background({ canvas, updateLocalCanvas, workspace }) {
+function Background({ canvas, updateLocalCanvas, workspace, activeObjectsState }) {
     const { token } = theme.useToken();
 
     const [bgProps, setBgProps] = useState({

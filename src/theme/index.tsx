@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { ConfigProvider } from "antd";
 import { theme } from 'antd';

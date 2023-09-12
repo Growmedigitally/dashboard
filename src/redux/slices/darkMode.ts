@@ -1,7 +1,7 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "../store/store";
-import { HYDRATE } from "next-redux-wrapper";
-const HYDRATE_ACTION = createAction(HYDRATE)
+// import { HYDRATE } from "next-redux-wrapper";
+// const HYDRATE_ACTION = createAction(HYDRATE)
 
 export interface DarkMode {
     darkMode: any;
@@ -19,15 +19,15 @@ export const darkMode = createSlice({
             state.darkMode = action.payload;
         },
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(HYDRATE_ACTION, (state, action: any) => {
-                return {
-                    ...state,
-                    ...action.payload.darkMode,
-                };
-            })
-    },
+    // extraReducers: (builder) => {
+    //     builder
+    //         .addCase(HYDRATE_ACTION, (state, action: any) => {
+    //             return {
+    //                 ...state,
+    //                 ...action.payload.darkMode,
+    //             };
+    //         })
+    // },
 });
 
 export const { toggleDarkMode } = darkMode.actions;

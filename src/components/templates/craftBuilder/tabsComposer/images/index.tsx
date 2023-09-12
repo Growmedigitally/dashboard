@@ -19,7 +19,7 @@ const TAB_TYPES = {
     UPLOAD: 'Upload',
 }
 
-const Images = ({ canvas, updateLocalCanvas }: any) => {
+const Images = ({ canvas, updateLocalCanvas, workspace, activeObjectsState }: any) => {
     const { token } = theme.useToken();
     const [activeTab, setActiveTab] = useState(TAB_TYPES.GALLERY);
     const [selectedImage, setSelectedImage] = useState({ src: '' });

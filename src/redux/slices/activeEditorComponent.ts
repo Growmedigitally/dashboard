@@ -1,8 +1,8 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "../store/store";
-import { HYDRATE } from "next-redux-wrapper";
 import { removeObjRef } from "@util/utils";
-const HYDRATE_ACTION = createAction(HYDRATE)
+// import { HYDRATE } from "next-redux-wrapper";
+// const HYDRATE_ACTION = createAction(HYDRATE)
 
 export interface ActiveEditorComponent {
     activeEditorComponent: any;
@@ -20,15 +20,15 @@ export const activeEditorComponent = createSlice({
             state.activeEditorComponent = action.payload ? removeObjRef(action.payload) : initialState.activeEditorComponent;
         },
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(HYDRATE_ACTION, (state, action: any) => {
-                return {
-                    ...state,
-                    ...action.payload.activeEditorComponent,
-                };
-            })
-    },
+    // extraReducers: (builder) => {
+    //     builder
+    //         .addCase(HYDRATE_ACTION, (state, action: any) => {
+    //             return {
+    //                 ...state,
+    //                 ...action.payload.activeEditorComponent,
+    //             };
+    //         })
+    // },
 });
 
 export const { updateActiveEditorComponent } = activeEditorComponent.actions;

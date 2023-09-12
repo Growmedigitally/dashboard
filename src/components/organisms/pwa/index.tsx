@@ -1,5 +1,3 @@
-import SvgIcon from "app/components/molecules/svgIcon";
-import Backdrop from "@material-ui/core/Backdrop";
 import React from "react";
 
 function IoIosShare(props) {
@@ -80,7 +78,7 @@ function BsThreeDotsVertical() {
 function PWAPrompt({ showPrompt, type, promptEvent, handlePromptClose }) {
   return (
     <div className="confirmation-modal-wrap">
-      <Backdrop
+      {/* <Backdrop
         className="backdrop-modal-wrapper install-pwa-modal-wrap"
         open={showPrompt ? true : false}
         onClick={() => handlePromptClose(false)}
@@ -134,7 +132,7 @@ function PWAPrompt({ showPrompt, type, promptEvent, handlePromptClose }) {
             )}
           </div>
         </div>
-      </Backdrop>
+      </Backdrop> */}
     </div>
   );
 }

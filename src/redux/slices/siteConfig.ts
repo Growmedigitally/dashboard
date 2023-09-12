@@ -1,8 +1,8 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "../store/store";
-import { HYDRATE } from "next-redux-wrapper";
 import defaultSiteConfig from "src/data/defaultSiteConfig";
-const HYDRATE_ACTION = createAction(HYDRATE)
+// import { HYDRATE } from "next-redux-wrapper";
+// const HYDRATE_ACTION = createAction(HYDRATE)
 
 export interface SiteConfig {
     siteConfig: any;
@@ -20,14 +20,14 @@ export const siteConfig = createSlice({
             state.siteConfig = action.payload;
         },
     },
-    extraReducers: (config) => {
-        config.addCase(HYDRATE_ACTION, (state, action: any) => {
-            return {
-                ...state,
-                ...action.payload.siteConfig,
-            };
-        })
-    },
+    // extraReducers: (config) => {
+    //     config.addCase(HYDRATE_ACTION, (state, action: any) => {
+    //         return {
+    //             ...state,
+    //             ...action.payload.siteConfig,
+    //         };
+    //     })
+    // },
 });
 
 export const { updateSiteConfig } = siteConfig.actions;

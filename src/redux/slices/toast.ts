@@ -2,8 +2,8 @@ import { ALERT_SUCCESS, ALERT_ERROR, ALERT_WARNING, ALERT_INFO, ALERT_CLEAR } fr
 import { DEFAULT_ALERT_TIME } from 'src/constants/defaultValues';
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "../store/store";
-import { HYDRATE } from "next-redux-wrapper";
-const HYDRATE_ACTION = createAction(HYDRATE)
+// import { HYDRATE } from "next-redux-wrapper";
+// const HYDRATE_ACTION = createAction(HYDRATE)
 
 export interface Toast {
     toast: { type: string, title: string, message: string, time: number };
@@ -33,15 +33,15 @@ export const toast = createSlice({
             state.toast = { ...initialState.toast, type: '', title: '', message: '', time: 0 };
         },
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(HYDRATE_ACTION, (state, action: any) => {
-                return {
-                    ...state,
-                    ...action.payload.toast,
-                };
-            })
-    },
+    // extraReducers: (builder) => {
+    //     builder
+    //         .addCase(HYDRATE_ACTION, (state, action: any) => {
+    //             return {
+    //                 ...state,
+    //                 ...action.payload.toast,
+    //             };
+    //         })
+    // },
 });
 
 export const { showSuccessToast, showErrorToast, showWarningToast, showToast, clearToast } = toast.actions;
