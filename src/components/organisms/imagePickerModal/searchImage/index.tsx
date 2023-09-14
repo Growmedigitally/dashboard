@@ -4,16 +4,16 @@ import { Input, Pagination, Result, Segmented, theme, Tooltip } from 'antd';
 import BgImageEditor from '@molecules/bgImageEditor';
 import { useAppDispatch } from '@hook/useAppDispatch';
 import { getLoaderState, toggleLoader } from '@reduxStore/slices/loader';
-import { getPexelsImagesBySearchQuery } from 'pages/apiService/pexels';
-import { getUnsplashImagesBySearchQuery } from 'pages/apiService/unsplash';
 import { useAppSelector } from '@hook/useAppSelector';
 import { BACKGROUND_IMAGES_ORIENTATIONS, IMAGE_EDITOR_PAGE } from '@constant/common';
-import { getPixabayImagesBySearchQuery } from 'pages/apiService/pixabay';
 import { FaUnsplash } from 'react-icons/fa';
 import { RiPixelfedLine } from 'react-icons/ri';
 import { SiPixiv } from 'react-icons/si'
 import type { PaginationProps } from 'antd';
 import { removeObjRef } from '@util/utils';
+import { getPexelsImagesBySearchQuery } from 'src/apiService/pexels';
+import { getPixabayImagesBySearchQuery } from 'src/apiService/pixabay';
+import { getUnsplashImagesBySearchQuery } from 'src/apiService/unsplash';
 
 const { Search } = Input;
 

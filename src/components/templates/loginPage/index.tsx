@@ -1,4 +1,3 @@
-import { getUserByCredentials } from "pages/apiService/user";
 import { useAppDispatch } from "src/hooks/useAppDispatch";
 import { useAppSelector } from "src/hooks/useAppSelector";
 import Router from "next/router";
@@ -9,6 +8,7 @@ import { Button, Form, Input } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { EMPTY_ERROR } from "@constant/common";
 import { showErrorToast, showSuccessToast, showToast } from "@reduxStore/slices/toast";
+import { getUserByCredentials } from "src/apiService/user";
 
 function LoginPage() {
 

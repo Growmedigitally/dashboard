@@ -20,7 +20,7 @@
       "@hook/*": ["src/hooks/*"],
       "@store/*": ["src/redux/stateProvider/*"],
       "@util/*": ["src/utils/*"],
-      "@apiService/*": ["pages/apiService/*"],
+      "@apiService/*": ["src/apiService/*"],
       "@assets/*": ["public/assets/*"],
       "@objectPropertiesEditor/*": [
         "src/components/templates/craftBuilder/objectPropertiesEditor/*"

@@ -8,7 +8,11 @@ const withPWA = require('next-pwa')({
   runtimeCaching,
 })
 if (process.env.NODE_ENV === 'development') {
-  module.exports = {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  })
+
+  module.exports = withBundleAnalyzer({
     sassOptions: {
       includePaths: [path.join(__dirname, 'app/styles')],
     },
@@ -26,7 +30,7 @@ if (process.env.NODE_ENV === 'development') {
       return config;
     },
     reactStrictMode: false
-  }
+  })
 } else {
   module.exports = withPWA({
     // config

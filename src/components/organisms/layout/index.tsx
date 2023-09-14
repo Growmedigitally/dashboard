@@ -3,7 +3,6 @@ import { ConfigProvider } from "antd";
 import { getDarkModeState } from "@reduxStore/slices/darkMode";
 import { ReactNode, useEffect, useState } from "react";
 import styles from "@organismsCSS/layout/layout.module.scss";
-import { getUserByToken } from "pages/apiService/user";
 import Router from "next/router";
 import { useAppSelector } from "src/hooks/useAppSelector";
 import { useSelector } from 'react-redux';
@@ -16,6 +15,7 @@ const { Content } = Layout;
 import HeaderComponent from "src/components/organisms/headerComponent";
 import { getAuthUserState, setAuthUser } from "src/redux/slices/auth";
 import ErrorBoundary from "@organisms/errorBoundary";
+import { getUserByToken } from "src/apiService/user";
 
 type LayoutProps = {
   children: ReactNode;
