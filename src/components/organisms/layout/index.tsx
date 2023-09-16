@@ -1,7 +1,7 @@
 
 import { ConfigProvider } from "antd";
 import { getDarkModeState } from "@reduxStore/slices/darkMode";
-import { ReactNode, useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import styles from "@organismsCSS/layout/layout.module.scss";
 import Router from "next/router";
 import { useAppSelector } from "src/hooks/useAppSelector";
@@ -16,6 +16,7 @@ import HeaderComponent from "src/components/organisms/headerComponent";
 import { getAuthUserState, setAuthUser } from "src/redux/slices/auth";
 import ErrorBoundary from "@organisms/errorBoundary";
 import { getUserByToken } from "src/apiService/user";
+import ThemeProvider from "src/themeProvider";
 
 type LayoutProps = {
   children: ReactNode;
@@ -51,45 +52,20 @@ export default function LayoutComponent({ children }: LayoutProps) {
       <HeadMetaTags title={'GrowMeDigitally'} description={'GrowMeDigitally'} image={'GrowMeDigitally'} siteName={'GrowMeDigitally'} storeData={'GrowMeDigitally'} />
       <Layout style={{ minHeight: '100vh' }}>
         <>
-
-          <ConfigProvider
-            theme={{
-              algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
-              token: {
-                // colorPrimary: '#3bceac',
-                colorPrimary: isDarkMode ? '#00C9A7' : '#002864',
-                borderRadius: 5,
-                wireframe: false
-              },
-              components: {
-                Menu: {
-                  colorItemBgSelected: token.colorPrimaryBg
-                },
-              },
-            }}
-          >
-            <ConfigProvider
-              theme={{
-                token: {
-                  borderRadius: 4,
-                }
-              }}
-            >
-              <SidebarComponent />
-              <Layout>
-                {toggleHeader && <HeaderComponent />}
-                <Content>
-                  <ErrorBoundary>
-                    {children}
-                  </ErrorBoundary>
-                </Content>
-                {/* <FooterComponent /> */}
-                <div className={styles.contentContainer}>
-                </div>
-              </Layout>
-            </ConfigProvider>
-          </ConfigProvider>
-
+          <ThemeProvider isDarkMode={isDarkMode}> <Fragment>
+            <SidebarComponent />
+            <Layout>
+              {toggleHeader && <HeaderComponent />}
+              <Content>
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
+              </Content>
+              {/* <FooterComponent /> */}
+              <div className={styles.contentContainer}>
+              </div>
+            </Layout>
+          </Fragment></ThemeProvider>
         </>
       </Layout>
       <main className={styles.layoutContainer}>
@@ -97,3 +73,4 @@ export default function LayoutComponent({ children }: LayoutProps) {
     </>
   );
 }
+

@@ -31,8 +31,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Loader />
       <Toast />
       <AlertNotification />
-      {/* {withTheme()} */}
-      {/* <Component {...pageProps} /> */}
       {getLayout(<Component {...pageProps} />)}
       {/* </PersistGate> */}
     </Providers>

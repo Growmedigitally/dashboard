@@ -3,13 +3,13 @@ import React, { useRef, useState } from 'react'
 import styles from './graphics.module.scss'
 import { fabric } from "fabric";
 import { renderToStaticMarkup } from 'react-dom/server';
-import { GRAPHICS_LIST } from 'src/data/graphics';
 import useInViewport from '@hook/useInViewport';
 import { LoadingOutlined } from '@ant-design/icons';
 import iconCss from './reactIconRenderer/reactIconRenderer.module.scss';
 import { CUSTOME_ATTRIBUTES, OBJECT_TYPES } from '@constant/craftBuilder';
 import { v4 as uuid } from 'uuid';
 import { BiArrowBack } from 'react-icons/bi';
+import { GRAPHICS_LIST } from 'src/data/graphics';
 
 const { Search } = Input;
 // onSelect is passed from background of workspace
@@ -110,7 +110,7 @@ function GraphicsElements({ onSelect = null, canvas, updateLocalCanvas }) {
                     placeholder="Search icon"
                     allowClear
                     enterButton="Search"
-                    size="large"
+                    size="middle"
                     value={searchQuery}
                     onChange={(e) => onChangeSearchQuery(e.target.value)}
                 />

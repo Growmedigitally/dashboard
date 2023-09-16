@@ -74,69 +74,67 @@ function CharactersElements({ canvas, updateLocalCanvas, activeTab }) {
                     placeholder="Search icon"
                     allowClear
                     enterButton="Search"
-                    size="large"
+                    size="middle"
                     value={searchQuery}
                     onChange={(e) => onChangeSearchQuery(e.target.value)}
                 />
             </div>
-            <>
-                <div className={`${styles.iconsListWrap}`} style={{ background: token.colorBgBase }}>
-                    {searchQuery ? <>
-                        <div className={styles.stickyCategory} style={{ background: token.colorBgBase }}>
-                            <div className={styles.categoriesWrap}>
-                                {filteredCategory.map((category, i) => {
-                                    return <div className={styles.categoryName} key={i}
-                                        onClick={() => setActiveCategory(category)}
-                                        onMouseEnter={() => setHoverId(category)}
-                                        onMouseLeave={() => setHoverId('')}
-                                        style={{
-                                            zIndex: 1,
-                                            position: 'relative',
-                                            background: token.colorBgBase,
-                                            borderColor: token.colorBorder,
-                                            color: token.colorText
-                                        }}>
-                                        <div className={styles.category}>
-                                            {category.name}
-                                        </div>
-                                        <div className={styles.iconsWrap}>
-                                            {category.icons.map((icon, i) => {
-                                                return <ReactIconRenderer key={i} onSelect={() => onSelectIcon(category, icon)} icon={icon} />
-                                            })}
-                                        </div>
-                                    </div>
-                                })}
-                            </div>
-                        </div>
-                    </> : <>
-                        <div className={styles.stickyCategory} style={{ background: token.colorBgBase }}>
-                            <div className={styles.categoriesWrap}>
-                                {CHARACTERS_LIST[activeTab].map((category, i) => {
-                                    return <div className={styles.categoryName} key={i}
-                                        onClick={() => setActiveCategory(category)}
-                                        onMouseEnter={() => setHoverId(category)}
-                                        onMouseLeave={() => setHoverId('')}
-                                        style={{
-                                            zIndex: activeCategory.id == category.id ? 2 : 1,
-                                            position: activeCategory.id == category.id ? 'sticky' : 'relative',
-                                            background: token.colorBgBase,
-                                            borderColor: (hoverId == category || activeCategory.id == category.id) ? token.colorPrimary : token.colorBorder,
-                                            color: (activeCategory.id == category.id || hoverId == category) ? token.colorPrimary : token.colorText
-                                        }}>
+            <div className={`${styles.iconsListWrap}`} style={{ background: token.colorBgBase }}>
+                {searchQuery ? <>
+                    <div className={styles.stickyCategory} style={{ background: token.colorBgBase }}>
+                        <div className={styles.categoriesWrap}>
+                            {filteredCategory.map((category, i) => {
+                                return <div className={styles.categoryName} key={i}
+                                    onClick={() => setActiveCategory(category)}
+                                    onMouseEnter={() => setHoverId(category)}
+                                    onMouseLeave={() => setHoverId('')}
+                                    style={{
+                                        zIndex: 1,
+                                        position: 'relative',
+                                        background: token.colorBgBase,
+                                        borderColor: token.colorBorder,
+                                        color: token.colorText
+                                    }}>
+                                    <div className={styles.category}>
                                         {category.name}
                                     </div>
-                                })}
-                            </div>
-                            <div className={styles.activeCategory}>{activeCategory.name}</div>
-                        </div>
-                        {activeCategory && <div className={styles.iconsWrap}>
-                            {activeCategory?.icons.map((iconUrl, i) => {
-                                return <ReactIconRenderer key={i} icon={iconUrl} onSelect={() => onSelectIcon(activeCategory, iconUrl)} />
+                                    <div className={styles.iconsWrap}>
+                                        {category.icons.map((icon, i) => {
+                                            return <ReactIconRenderer key={i} onSelect={() => onSelectIcon(category, icon)} icon={icon} />
+                                        })}
+                                    </div>
+                                </div>
                             })}
-                        </div>}
-                    </>}
-                </div>
-            </>
+                        </div>
+                    </div>
+                </> : <>
+                    <div className={styles.stickyCategory} style={{ background: token.colorBgBase }}>
+                        <div className={styles.categoriesWrap}>
+                            {CHARACTERS_LIST[activeTab].map((category, i) => {
+                                return <div className={styles.categoryName} key={i}
+                                    onClick={() => setActiveCategory(category)}
+                                    onMouseEnter={() => setHoverId(category)}
+                                    onMouseLeave={() => setHoverId('')}
+                                    style={{
+                                        zIndex: activeCategory.id == category.id ? 2 : 1,
+                                        position: activeCategory.id == category.id ? 'sticky' : 'relative',
+                                        background: token.colorBgBase,
+                                        borderColor: (hoverId == category || activeCategory.id == category.id) ? token.colorPrimary : token.colorBorder,
+                                        color: (activeCategory.id == category.id || hoverId == category) ? token.colorPrimary : token.colorText
+                                    }}>
+                                    {category.name}
+                                </div>
+                            })}
+                        </div>
+                        <div className={styles.activeCategory}>{activeCategory.name}</div>
+                    </div>
+                    {activeCategory && <div className={styles.iconsWrap}>
+                        {activeCategory?.icons.map((iconUrl, i) => {
+                            return <ReactIconRenderer key={i} icon={iconUrl} onSelect={() => onSelectIcon(activeCategory, iconUrl)} />
+                        })}
+                    </div>}
+                </>}
+            </div>
         </React.Fragment>
     )
 }

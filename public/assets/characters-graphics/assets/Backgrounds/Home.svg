@@ -3,7 +3,7 @@
     <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
     <title>Scene/Home</title>
     
-    <g id="Scene/Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Scene/Home" stroke="none" stroke-width="1" fill="none" fillRule="evenodd">
         <g id="Clock" transform="translate(505.000000, 85.000000)">
             <circle id="Clock-Frame" fill="#F2F2F2" cx="53" cy="53" r="53"></circle>
             <circle id="Time" fill-opacity="0.1" fill="#000000" cx="53" cy="11" r="3"></circle>

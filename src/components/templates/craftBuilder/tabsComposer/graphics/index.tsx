@@ -2,13 +2,16 @@ import React, { useState } from 'react'
 import styles from './graphics.module.scss'
 import GlobalCss from '@craftBuilder/craftBuilder.module.scss'
 import { Input, Segmented, theme, Tooltip } from 'antd'
-import { TbIcons } from 'react-icons/tb'
+import { TbDimensions, TbIcons } from 'react-icons/tb'
 import { GiThreeLeaves } from 'react-icons/gi'
 import GraphicsElements from './graphicsElements'
 import IconsElements from './iconsElements'
+import { BsThreeDots } from 'react-icons/bs'
+import ThreeDElements from './threeDElements'
 
 const TAB_TYPES = {
     ICONS: 'Icons',
+    THREED: '3D',
     GRAPHICS: 'Graphics',
 }
 
@@ -16,6 +19,7 @@ function Graphics({ canvas, updateLocalCanvas }) {
     const { token } = theme.useToken();
 
     const FILL_TYPE_ITEMS_LIST = [
+        { key: TAB_TYPES.THREED, icon: <TbDimensions /> },
         { key: TAB_TYPES.ICONS, icon: <TbIcons /> },
         { key: TAB_TYPES.GRAPHICS, icon: <GiThreeLeaves /> },
     ]
@@ -37,7 +41,7 @@ function Graphics({ canvas, updateLocalCanvas }) {
             }
         })
     }
-    const [activeTab, setActiveTab] = useState(TAB_TYPES.ICONS);
+    const [activeTab, setActiveTab] = useState(TAB_TYPES.THREED);
 
 
     return (
@@ -49,20 +53,29 @@ function Graphics({ canvas, updateLocalCanvas }) {
                     size="middle"
                     block={true}
                     value={activeTab}
-                    defaultValue={TAB_TYPES.ICONS}
+                    defaultValue={TAB_TYPES.THREED}
                     onChange={(tab: any) => setActiveTab(tab)}
                     options={getSegmentOptions()}
                 />
             </div>
             <div className={styles.tabContent}>
 
-                {activeTab == TAB_TYPES.ICONS ? <>
+                {activeTab == TAB_TYPES.THREED && <>
+                    <div className={styles.graphicsListWrap}>
+                        <ThreeDElements canvas={canvas} updateLocalCanvas={updateLocalCanvas} />
+                    </div>
+                </>}
+
+                {activeTab == TAB_TYPES.ICONS && <>
                     <IconsElements canvas={canvas} updateLocalCanvas={updateLocalCanvas} />
-                </> : <>
+                </>}
+
+                {activeTab == TAB_TYPES.GRAPHICS && <>
                     <div className={styles.graphicsListWrap}>
                         <GraphicsElements canvas={canvas} updateLocalCanvas={updateLocalCanvas} />
                     </div>
                 </>}
+
 
             </div>
         </div>

@@ -36,6 +36,19 @@ import settings from "@assets/Icons/sidebar/settings";
 import profile from "@assets/Icons/sidebar/profile";
 import theme from "@assets/Icons/sidebar/theme";
 import logout from "@assets/Icons/sidebar/logout";
+//craft builder icons
+import template from "@assets/Icons/craftBuilder/template";
+import text from "@assets/Icons/craftBuilder/text";
+import myStuff from "@assets/Icons/craftBuilder/myStuff";
+import documents from "@assets/Icons/craftBuilder/documents";
+import brandKit from "@assets/Icons/craftBuilder/brandKit";
+import graphics from "@assets/Icons/craftBuilder/graphics";
+import qrcode from "@assets/Icons/craftBuilder/qrcode";
+import watermark from "@assets/Icons/craftBuilder/watermark";
+import character from "@assets/Icons/craftBuilder/character";
+import shapes from "@assets/Icons/craftBuilder/shapes";
+import images from "@assets/Icons/craftBuilder/images";
+import background from "@assets/Icons/craftBuilder/background";
 
 const icons: any = {
     cart: cart,
@@ -73,6 +86,19 @@ const icons: any = {
     query: query,
     expandedMenu: expandedMenu,
     help: help,
+    //craft builder icons
+    background: background,
+    images: images,
+    shapes: shapes,
+    character: character,
+    watermark: watermark,
+    qrcode: qrcode,
+    graphics: graphics,
+    brandKit: brandKit,
+    documents: documents,
+    myStuff: myStuff,
+    text: text,
+    template: template,
 };
 
 type Props = {
@@ -86,39 +112,58 @@ type Props = {
     margin?: string;
     padding?: string;
     shape?: string; //circle or square
-    onlySvg?: boolean
+    onlySvg?: boolean;
 };
 const getIcon = (icon: any) => icons[icon];
 
-const SvgIcon: FC<Props> = ({ icon, color = 'inherit', width = 24, height = 24, shape = "", background = "unset", padding = "", margin = "", style, onlySvg = false }: Props) => {
+const SvgIcon: FC<Props> = ({
+    icon,
+    color = "inherit",
+    width = 24,
+    height = 24,
+    shape = "",
+    background = "unset",
+    padding = "",
+    margin = "",
+    style,
+    onlySvg = false,
+}: Props) => {
     const CurrentIcon = getIcon(icon);
 
-    const shapeCss = shape ? {
-        background: '#dee1ec',
-        borderRadius: shape == 'circle' ? '50%' : '6px',
-        padding: padding || '5px',
-        margin: margin || 'unset'
-    } : {};
+    const shapeCss = shape
+        ? {
+            background: "#dee1ec",
+            borderRadius: shape == "circle" ? "50%" : "6px",
+            padding: padding || "5px",
+            margin: margin || "unset",
+        }
+        : {};
 
     return (
         <React.Fragment>
-            {onlySvg ? <>
-                <CurrentIcon />
-            </> : <>
-                <span className="svg-icon-wrap d-f-c" style={
-                    {
-                        'color': color,
-                        'width': `${width}px`,
-                        'height': `${height}px`,
-                        'background': background,
-                        ...shapeCss,
-                        ...style
-                    }}>
+            {onlySvg ? (
+                <>
                     <CurrentIcon />
-                </span>
-            </>}
+                </>
+            ) : (
+                <>
+                    <span
+                        className="svg-icon-wrap d-f-c"
+                        style={{
+                            color: color,
+                            width: `${width}px`,
+                            height: `${height}px`,
+                            background: background,
+                            ...shapeCss,
+                            ...style,
+                        }}
+                    >
+                        <CurrentIcon />
+                    </span>
+                </>
+            )}
         </React.Fragment>
     );
-}
+};
 
 export default SvgIcon;

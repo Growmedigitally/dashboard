@@ -78,7 +78,7 @@ const BGImage = ({ activeObject, updateLocalCanvas, canvas, activeObjectsState }
                 //if fill is set to pattern
                 const patternData = activeObject.get('patternData');
                 if (activeObject.get('fill') instanceof fabric.Pattern || currentPaternData.forceUpdateImage) {
-                    if (activeObject && patternData && patternData.src && getCustomObjectType(patternData).includes(OBJECT_TYPES.pattern)) {
+                    if (activeObject && patternData && patternData.src && patternData?.objectType.includes(OBJECT_TYPES.pattern)) {
                         fabric.Image.fromURL(patternData.src, function (img) {
                             const widthValue = ((activeObject?.getScaledWidth() || 1) / 2)
                             const repeat = patternData.repeat || 'repeat';

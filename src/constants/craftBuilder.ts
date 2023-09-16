@@ -36,20 +36,24 @@ export const EDITOR_TABS = {
     SHAPES: 'Shapes',
     WATERMARK: 'Watermark',
     QRCODE: 'QRCode',
-    HELP: 'Help',
+    MYSTUFF: 'My Stuff',
+    BRANDKIT: 'Brand Kit',
+    DOCUMENTS: 'Documents',
 }
 
 export const EDITOR_SIDEBAR = [
-    { label: EDITOR_TABS.TEMPLATES, key: 'Templates', icon: 'dashboard' },
-    { label: EDITOR_TABS.BACKGROUND, key: 'Background', icon: 'logout' },
-    { label: EDITOR_TABS.IMAGES, key: 'Images', icon: 'analytics' },
-    { label: EDITOR_TABS.TEXT, key: 'Text', icon: 'builder' },
-    { label: EDITOR_TABS.GRAPHICS, key: 'Graphics', icon: 'CRM' },
-    { label: EDITOR_TABS.PARSONAS, key: 'Characters', icon: 'CRM' },
-    { label: EDITOR_TABS.SHAPES, key: 'Shapes', icon: 'PWA' },
-    { label: EDITOR_TABS.WATERMARK, key: 'Watermark', icon: 'query' },
-    { label: EDITOR_TABS.QRCODE, key: 'QRCode', icon: 'query' },
-    { label: EDITOR_TABS.HELP, key: 'Help', icon: 'note' },
+    { label: EDITOR_TABS.TEMPLATES, key: 'Templates', icon: 'template' },
+    { label: EDITOR_TABS.BACKGROUND, key: 'Background', icon: 'background' },
+    { label: EDITOR_TABS.IMAGES, key: 'Images', icon: 'images' },
+    { label: EDITOR_TABS.TEXT, key: 'Text', icon: 'text' },
+    { label: EDITOR_TABS.GRAPHICS, key: 'Graphics', icon: 'graphics' },
+    { label: EDITOR_TABS.PARSONAS, key: 'Characters', icon: 'character' },
+    { label: EDITOR_TABS.SHAPES, key: 'Shapes', icon: 'shapes' },
+    { label: EDITOR_TABS.WATERMARK, key: 'Watermark', icon: 'watermark' },
+    { label: EDITOR_TABS.QRCODE, key: 'QRCode', icon: 'qrcode' },
+    { label: EDITOR_TABS.MYSTUFF, key: 'My Stuff', icon: 'myStuff' },
+    { label: EDITOR_TABS.BRANDKIT, key: 'Brand Kit', icon: 'brandKit' },
+    { label: EDITOR_TABS.DOCUMENTS, key: 'Documents', icon: 'documents' },
 ]
 
 export const editorEventMode = {

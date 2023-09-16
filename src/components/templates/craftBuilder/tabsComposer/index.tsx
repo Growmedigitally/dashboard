@@ -10,10 +10,12 @@ import Text from './text';
 import Graphics from './graphics';
 import Shapes from './shapes';
 import Watermark from './watermark';
-import Help from './help';
 import Characters from './characters';
 import QrCode from './qrCode';
 import { BiArrowBack } from 'react-icons/bi';
+import MyStuff from './myStuff';
+import Documents from './documents';
+import BrandKit from './brandKit';
 
 const TABS_COMPONENT = {
     [EDITOR_TABS.TEMPLATES]: Templates,
@@ -25,8 +27,10 @@ const TABS_COMPONENT = {
     [EDITOR_TABS.SHAPES]: Shapes,
     [EDITOR_TABS.WATERMARK]: Watermark,
     [EDITOR_TABS.QRCODE]: QrCode,
-    [EDITOR_TABS.HELP]: Help,
-}
+    [EDITOR_TABS.MYSTUFF]: MyStuff,
+    [EDITOR_TABS.BRANDKIT]: BrandKit,
+    [EDITOR_TABS.DOCUMENTS]: Documents,
+};
 
 function TabsComposer({ activeObjectsState, canvas, updateLocalCanvas, activeTab, setActiveEditorTab, workspace }) {
     const { token } = theme.useToken();

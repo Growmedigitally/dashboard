@@ -80,7 +80,7 @@ function IconsElements({ onSelect = null, canvas, updateLocalCanvas }) {
                     placeholder="Search icon"
                     allowClear
                     enterButton="Search"
-                    size="large"
+                    size="middle"
                     value={searchQuery}
                     onChange={(e) => onChangeSearchQuery(e.target.value)}
                 />

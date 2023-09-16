@@ -38,7 +38,7 @@ function Background({ canvas, updateLocalCanvas, workspace, activeObjectsState }
                 setActiveTab(TAB_TYPES.COLOR);
             } else if (currentFill instanceof fabric.Pattern) {
                 const patternData = workspace.get('patternData');
-                if (getCustomObjectType(patternData) == `${OBJECT_TYPES.workspace}-${OBJECT_TYPES.pattern}`) {
+                if (patternData.objectType == `${OBJECT_TYPES.workspace}-${OBJECT_TYPES.pattern}`) {
                     setActiveTab(TAB_TYPES.PATTERN)
                 } else {
                     setActiveTab(TAB_TYPES.IMAGE)

@@ -59,13 +59,13 @@ function TabsWrapper({ setActiveEditorTab, activeEditorTab }) {
                         "alignItems": "center",
                         "padding": "7px 2px",
                         "flexDirection": "column",
-                        "maxHeight": "calc(100vh - 70px)",
+                        "maxHeight": "calc(100vh - 84px)",
                         "borderRadius": "8px",
-                        "overflow": "auto",
                         "width": "100%",
                         // "background": ${token.colorBorder},
                         "border": `unset`,
-                        "gap": "8px"
+                        "gap": "8px",
+                        "overflow": "auto"
                     }}
                 />
             </div>
