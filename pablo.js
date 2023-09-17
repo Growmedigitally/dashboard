@@ -8,7 +8,7 @@ if ("undefined" != typeof exports && (exports.fabric = fabric),
             fabric.document.createWindow ? fabric.window = fabric.document.createWindow() : fabric.window = fabric.document.parentWindow),
     fabric.isTouchSupported = "ontouchstart" in fabric.document.documentElement,
     fabric.isLikelyNode = "undefined" != typeof Buffer && "undefined" == typeof window,
-    fabric.SHARED_ATTRIBUTES = ["display", "transform", "fill", "fill-opacity", "fill-rule", "opacity", "stroke", "stroke-dasharray", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-opacity", "stroke-width", "id"],
+    fabric.SHARED_ATTRIBUTES = ["display", "transform", "fill", "fill-opacity", "fillRule", "opacity", "stroke", "stroke-dasharray", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-opacity", "stroke-width", "id"],
     fabric.DPI = 96,
     fabric.reNum = "(?:[-+]?(?:\\d+|\\d*\\.\\d+)(?:e[-+]?\\d+)?)",
     fabric.fontPaths = {},
@@ -2905,7 +2905,7 @@ void 0 === Event.proxy && (Event.proxy = {}),
                 visibility: "visible",
                 transform: "transformMatrix",
                 "fill-opacity": "fillOpacity",
-                "fill-rule": "fillRule",
+                "fillRule": "fillRule",
                 "font-family": "fontFamily",
                 "font-size": "fontSize",
                 "font-style": "fontStyle",
@@ -6727,7 +6727,7 @@ void 0 === Event.proxy && (Event.proxy = {}),
                 , h = this.strokeMiterLimit ? this.strokeMiterLimit : "4"
                 , i = void 0 !== this.opacity ? this.opacity : "1"
                 , j = this.visible ? "" : " visibility: hidden;";
-            return ["stroke: ", c, "; ", "stroke-width: ", d, "; ", "stroke-dasharray: ", e, "; ", "stroke-linecap: ", f, "; ", "stroke-linejoin: ", g, "; ", "stroke-miterlimit: ", h, "; ", "fill: ", a, "; ", "fill-rule: ", b, "; ", "opacity: ", i, ";", this.getSvgFilter(), j].join("")
+            return ["stroke: ", c, "; ", "stroke-width: ", d, "; ", "stroke-dasharray: ", e, "; ", "stroke-linecap: ", f, "; ", "stroke-linejoin: ", g, "; ", "stroke-miterlimit: ", h, "; ", "fill: ", a, "; ", "fillRule: ", b, "; ", "opacity: ", i, ";", this.getSvgFilter(), j].join("")
         },
         getSvgFilter: function () {
             return this.shadow ? "filter: url(#SVGID_" + this.shadow.id + ");" : ""

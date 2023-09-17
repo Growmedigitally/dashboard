@@ -17,11 +17,12 @@
   margin: unset !important;
   line-height: unset !important;
   display: flex;
-  font-size: 10px;
+  font-size: 11px;
   height: auto;
   justify-content: center;
   align-items: center;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
+  font-family: var(--f-Regular);
 }
 .navMenu {
   display: flex !important;
@@ -30,7 +31,7 @@
   border: 1px solid rgba(222, 225, 236, 0.1607843137);
   box-shadow: rgba(114, 106, 132, 0.2862745098) 0px 1px 6px -2px;
   width: 100%;
-  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.1));
+  // filter: drop-shadow(1px 1px 2px rgba(39, 39, 39, 0.4));
   gap: 5px;
   flex-direction: column !important;
   cursor: pointer !important;
@@ -39,6 +40,15 @@
   margin: unset !important;
   line-height: normal !important;
   min-height: 70px;
+  &.activeMenu {
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.095));
+    // .iconWrap {
+    //   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+    // }
+    .navLabel {
+      // filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.2));
+    }
+  }
   > span {
     margin: unset !important;
     line-height: normal !important;

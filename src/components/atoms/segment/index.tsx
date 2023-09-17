@@ -41,7 +41,7 @@ const SegmentComponent = ({ label, value, onChange, options, type, size = MIDDLE
                             }}>
                                 {option.icon}
                             </div>}
-                            <div className={styles.name}>{option.key}</div>
+                            <div className={styles.name} style={{ color: token.colorTextBase }}>{option.key}</div>
                         </div>
                     </Tooltip>,
                 value: option.key

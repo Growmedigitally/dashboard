@@ -11,8 +11,8 @@ export default () => {
       height="256"
     >
       <path
-        // fill="#d8d8ff"
-        fill={token.colorPrimaryBgHover}
+        fill="#d8d8ff"
+        // fill={token.colorPrimaryBgHover}
         d="M21 13H5a1 1 0 0 1-1-.999v-1a3.003 3.003 0 0 1 3-3h12a3.003 3.003 0 0 1 3 3v1a1 1 0 0 1-.999 1H21z"
       ></path>
       <path

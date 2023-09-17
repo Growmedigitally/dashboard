@@ -19,11 +19,19 @@ function TabsWrapper({ setActiveEditorTab, activeEditorTab }) {
                 label: (<span className={styles.navLabel}>{nav.label}</span>),
                 key: nav.key,
                 icon: (<span role="img" aria-label="desktop"
-                    style={{ filter: `drop-shadow(2px 0px 1px ${token.colorBgTextHover})` }}
+                    style={{
+                        filter: activeEditorTab == nav.key ? `drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2))` : ``
+                    }}
                     className={`${styles.navIcon} anticon anticon-desktop ant-menu-item-icon`}>
                     <SvgIcon icon={nav.icon} onlySvg={true} />
                 </span>),
-                className: (isSubMenu ? styles.navMenu + ' ' + styles.navSubMenu : styles.navMenu) + ' ' + (nav.subNav ? styles.hasSubMenu : '') + (((nav.key == 'dark' && isDarkMode) || (nav.key == 'light' && !isDarkMode) ? ' ant-menu-item-selected' : '')),
+                style: {
+                    // transition: "all ease-out 0.3s"
+                    // background: activeEditorTab == nav.key ? token.colorPrimaryBg : token.colorBgLayout
+                },
+                className: (activeEditorTab == nav.key ? styles.activeMenu : '') + ' ' +
+                    (isSubMenu ? styles.navMenu + ' ' + styles.navSubMenu : styles.navMenu) + ' ' +
+                    (nav.subNav ? styles.hasSubMenu : '') + ' ' + (((nav.key == 'dark' && isDarkMode) || (nav.key == 'light' && !isDarkMode) ? ' ant-menu-item-selected' : '')),
             })
         })
         return menuItems;

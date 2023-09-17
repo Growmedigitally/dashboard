@@ -11,19 +11,19 @@ export default () => {
       height="256"
     >
       <path
-        fill={token.colorPrimaryBgHover}
+        fill={token.colorPrimaryHover}
         d="M10,14H3a.99974.99974,0,0,1-1-1V3A.99974.99974,0,0,1,3,2h7a.99974.99974,0,0,1,1,1V13A.99974.99974,0,0,1,10,14Z"
       ></path>
       <path
-        fill={token.colorPrimaryHover}
+        fill={token.colorPrimary}
         d="M10,22H3a.99974.99974,0,0,1-1-1V17a.99974.99974,0,0,1,1-1h7a.99974.99974,0,0,1,1,1v4A.99974.99974,0,0,1,10,22Z"
       ></path>
       <path
-        fill={token.colorPrimaryBgHover}
+        fill={token.colorPrimaryHover}
         d="M21,22H14a.99974.99974,0,0,1-1-1V13a.99974.99974,0,0,1,1-1h7a.99974.99974,0,0,1,1,1v8A.99974.99974,0,0,1,21,22Z"
       ></path>
       <path
-        fill={token.colorPrimaryHover}
+        fill={token.colorPrimary}
         d="M21,10H14a.99974.99974,0,0,1-1-1V3a.99974.99974,0,0,1,1-1h7a.99974.99974,0,0,1,1,1V9A.99974.99974,0,0,1,21,10Z"
       ></path>
     </svg>
